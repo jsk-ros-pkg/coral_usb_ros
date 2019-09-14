@@ -48,7 +48,7 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
             '~label_file', os.path.join(pkg_path, './models/coco_labels.txt'))
 
         self.engine = DetectionEngine(model_file)
-        self.label_names = self._load_label_names(label_file)
+        self.label_ids, self.label_names = self._load_labels(label_file)
 
         # dynamic reconfigure
         self.srv = Server(EdgeTPUObjectDetectorConfig, self.config_callback)
@@ -76,11 +76,12 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
         self.top_k = config.top_k
         return config
 
-    def _load_label_names(self, path):
+    def _load_labels(self, path):
         p = re.compile(r'\s*(\d+)(.+)')
         with open(path, 'r', encoding='utf-8') as f:
             lines = (p.match(line).groups() for line in f.readlines())
-            return [text.strip() for num, text in lines]
+            labels = {int(num): text.strip() for num, text in lines}
+            return list(labels.keys()), list(labels.values())
 
     def image_cb(self, msg):
         img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
@@ -102,7 +103,7 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
             y_max = int(np.round(y_max * H))
             bboxes.append([y_min, x_min, y_max, x_max])
             scores.append(obj.score)
-            labels.append(obj.label_id)
+            labels.append(self.label_ids.index(int(obj.label_id)))
             rect = Rect(
                 x=x_min, y=y_min,
                 width=x_max-x_min, height=y_max-y_min)

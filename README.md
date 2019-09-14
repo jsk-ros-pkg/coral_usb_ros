@@ -25,6 +25,7 @@ cd ~/ros/coral_ws
 catkin init
 catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so
 catkin build
+```
 
 ### Model download
 
@@ -32,7 +33,6 @@ catkin build
 source ~/ros/coral_ws/devel/setup.bash
 roscd coral_usb/scripts
 python download_models.py
-```
 ```
 
 ## Sample

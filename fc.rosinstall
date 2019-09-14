@@ -1,0 +1,12 @@
+- git:
+    local-name: catkin_virtualenv
+    uri: git@github.com:locusrobotics/catkin_virtualenv.git
+    version: master
+- git:
+    local-name: coral_usb_ros
+    uri: git@github.com:knorth55/coral_usb_ros.git
+    version: master
+- git:
+    local-name: vision_opencv
+    uri: git@github.com:knorth55/vision_opencv.git
+    version: python35

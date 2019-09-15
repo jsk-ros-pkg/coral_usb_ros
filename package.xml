@@ -10,6 +10,7 @@
   <author email="s-kitagawa@jsk.imi.i.u-tokyo.ac.jp">Shingo Kitagawa</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>python3-catkin-pkg-modules</buildtool_depend>
   <build_depend>catkin_virtualenv</build_depend>
   <build_depend>cv_bridge</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
@@ -17,6 +18,7 @@
   <build_depend>jsk_topic_tools</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <run_depend>jsk_perception</run_depend>
+  <run_depend>python3-rospkg-modules</run_depend>
 
   <export>
     <pip_requirements>requirements.txt</pip_requirements>

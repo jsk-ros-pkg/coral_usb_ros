@@ -43,7 +43,7 @@ python download_models.py
 ```bash
 # source normal workspace, not edge tpu workspace
 source ~/ros/kinetic/devel/setup.bash
-rosrun jsk_perception image_publisher _file_name:=$(rospack find jsk_perception)/sample/object_detection_example_1.jpg
+rosrun jsk_perception image_publisher.py _file_name:=$(rospack find jsk_perception)/sample/object_detection_example_1.jpg
 ```
 
 ### Run Edge TPU launch

@@ -10,3 +10,7 @@
     local-name: vision_opencv
     uri: git@github.com:knorth55/vision_opencv.git
     version: python35
+- git:
+    local-name: jsk_common
+    uri: git@github.com:knorth55/jsk_common.git
+    version: cpickle-python3

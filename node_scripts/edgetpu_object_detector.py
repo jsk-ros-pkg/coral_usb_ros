@@ -137,6 +137,8 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
             vis_img.shape = (h, w, 3)
             plt.close()
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
+            # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/
+            vis_msg.step = int(vis_msg.step)
             vis_msg.header = msg.header
             self.pub_image.publish(vis_msg)
 

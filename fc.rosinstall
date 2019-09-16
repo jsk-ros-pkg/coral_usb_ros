@@ -1,16 +1,16 @@
 - git:
     local-name: catkin_virtualenv
-    uri: git@github.com:locusrobotics/catkin_virtualenv.git
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
     version: master
 - git:
     local-name: coral_usb_ros
-    uri: git@github.com:knorth55/coral_usb_ros.git
+    uri: https://github.com/knorth55/coral_usb_ros.git
     version: master
 - git:
     local-name: vision_opencv
-    uri: git@github.com:knorth55/vision_opencv.git
+    uri: https://github.com/knorth55/vision_opencv.git
     version: python35
 - git:
     local-name: jsk_common
-    uri: git@github.com:knorth55/jsk_common.git
+    uri: https://github.com/knorth55/jsk_common.git
     version: cpickle-python3

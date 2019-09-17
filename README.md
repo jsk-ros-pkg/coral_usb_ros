@@ -2,6 +2,12 @@
 
 ROS package for Coral Edge TPU USB Accelerator 
 
+## Environment
+
+Ubuntu 16.04 + Kinetic
+
+(We can run also on Ubuntu 14.04 + Indigo, but it needs more dependencies.)
+
 ## Notice
 
 We need `python3.5` to run this package.

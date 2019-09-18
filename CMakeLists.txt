@@ -9,6 +9,7 @@ find_package(
 
 generate_dynamic_reconfigure_options(
   cfg/EdgeTPUObjectDetector.cfg
+  cfg/EdgeTPUFaceDetector.cfg
 )
 
 catkin_package()

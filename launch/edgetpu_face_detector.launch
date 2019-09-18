@@ -1,0 +1,9 @@
+<launch>
+  <arg name="INPUT_IMAGE"/>
+
+  <node name="edgetpu_face_detector"
+        pkg="coral_usb" type="edgetpu_face_detector.py"
+        output="screen" respawn="true">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+  </node>
+</launch>

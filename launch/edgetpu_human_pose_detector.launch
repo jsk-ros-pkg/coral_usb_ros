@@ -1,0 +1,9 @@
+<launch>
+  <arg name="INPUT_IMAGE"/>
+
+  <node name="edgetpu_human_pose_estimator"
+        pkg="coral_usb" type="edgetpu_human_pose_estimator.py"
+        output="screen" respawn="true">
+    <remap from="~input" to="$(arg INPUT_IMAGE)" />
+  </node>
+</launch>

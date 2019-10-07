@@ -7,9 +7,12 @@ find_package(
   dynamic_reconfigure
 )
 
+catkin_python_setup()
+
 generate_dynamic_reconfigure_options(
   cfg/EdgeTPUObjectDetector.cfg
   cfg/EdgeTPUFaceDetector.cfg
+  cfg/EdgeTPUHumanPoseEstimator.cfg
 )
 
 catkin_package()

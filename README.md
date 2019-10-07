@@ -12,6 +12,10 @@ Ubuntu 16.04 + Kinetic
 
 We need `python3.5` to run this package.
 
+## Nodes
+- Object detector: `edgetpu_object_detector.py`
+- Face detector: `edgetpu_face_detector.py`
+- Human Pose Estimator: `edgetpu_human_pose_estimator.py`
 
 ## Setup
 
@@ -57,7 +61,12 @@ rosrun jsk_perception image_publisher.py _file_name:=$(rospack find jsk_percepti
 ```bash
 # source edge tpu workspace
 source ~/ros/coral_ws/devel/setup.bash
+# object detector
 roslaunch coral_usb edgetpu_object_detector.launch INPUT_IMAGE:=/image_publisher/output
+# face detector
+roslaunch coral_usb edgetpu_face_detector.launch INPUT_IMAGE:=/image_publisher/output
+# human pose estimator
+roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publisher/output
 ```
 
 ### Run `image_view`

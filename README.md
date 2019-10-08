@@ -19,9 +19,36 @@ We need `python3.5` to run this package.
 
 ## Setup
 
+### Install python3.5
+
+```bash
+sudo apt-get update
+sudo apt-get install python3.5-dev
+```
+
 ### Install Edge TPU Dependencies
 
-Follow this [page](https://coral.withgoogle.com/docs/accelerator/get-started/).
+```bash
+cd ~/Downloads
+wget https://dl.google.com/coral/edgetpu_api/edgetpu_api_latest.tar.gz -O edgetpu_api.tar.gz --trust-server-names
+tar xzf edgetpu_api.tar.gz
+cd edgetpu_api
+bash ./install.sh
+```
+
+### Install Python Dependencies
+
+```bash
+sudo python3.5 -m pip install numpy==1.12.1
+sudo python3.5 Pillow==4.0.0
+
+```
+
+### Add user in `plugdev`
+
+```bash
+sudo adduser -a -G plugdev username
+```
 
 ### Workspace build 
 

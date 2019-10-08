@@ -6,7 +6,9 @@ ROS package for Coral Edge TPU USB Accelerator
 
 Ubuntu 16.04 + Kinetic
 
-(We can run also on Ubuntu 14.04 + Indigo, but it needs more dependencies.)
+If you want to run this on Ubuntu 14.04 + Indigo, please see [indigo branch](https://github.com/knorth55/coral_usb_ros/tree/indigo).
+
+If you want to run this on PR2, please see [pr2 branch](https://github.com/knorth55/coral_usb_ros/tree/pr2).
 
 ## Notice
 

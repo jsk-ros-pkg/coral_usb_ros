@@ -40,8 +40,8 @@ bash ./install.sh
 
 ```bash
 sudo python3.5 -m pip install numpy==1.12.1
-sudo python3.5 Pillow==4.0.0
-sudo python3.5 ensurepip-vanilla
+sudo python3.5 -m pip install Pillow==4.0.0
+sudo python3.5 -m pip install ensurepip-vanilla
 sudo apt-get install cmake3 python3.4-venv
 
 ```

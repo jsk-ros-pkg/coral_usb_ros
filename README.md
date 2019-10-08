@@ -34,7 +34,7 @@ wstool up
 rosdep install --from-paths . --ignore-src -y -r
 cd ~/ros/coral_ws
 catkin init
-catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so
+catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.4m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.4m.so
 catkin build
 ```
 

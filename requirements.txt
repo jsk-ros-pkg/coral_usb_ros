@@ -1,5 +1,5 @@
 chainercv
 numpy
-matplotlib
+matplotlib==3.0.3
 opencv-python
 Pillow

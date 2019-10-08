@@ -55,7 +55,7 @@ sudo adduser -a -G plugdev username
 ```
 mkdir ~/ros/coral_ws/src
 cd ~/ros/coral_ws/src
-git clone git@github.com:knorth55/coral_usb_ros.git
+git clone https://github.com/knorth55/coral_usb_ros.git
 ln -sf ~/ros/coral_ws/src/coral_usb_ros/fc.rosinstall ~/ros/coral_ws/src/.rosinstall
 wstool up
 rosdep install --from-paths . --ignore-src -y -r

@@ -5,7 +5,7 @@
 - git:
     local-name: coral_usb_ros
     uri: https://github.com/knorth55/coral_usb_ros.git
-    version: indigo
+    version: pr2
 - git:
     local-name: vision_opencv
     uri: https://github.com/knorth55/vision_opencv.git

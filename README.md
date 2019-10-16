@@ -25,6 +25,25 @@ We need `python3.5` to run this package.
 
 Follow this [page](https://coral.withgoogle.com/docs/accelerator/get-started/).
 
+##### [Install the Edge TPU runtime](https://coral.withgoogle.com/docs/accelerator/get-started/#1-install-the-edge-tpu-runtime)
+
+```
+echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install libedgetpu1-max # If you do not have USB3, install libedgetpu1-std
+sudo apt-get install python3-edgetpu
+```
+
+#### [Install just the TensorFlow Lite interpreter](https://www.tensorflow.org/lite/guide/python)
+```
+sudo apt-get install python3-pip
+wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
+pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
+```
+
+####
+
 ### Workspace build (kinetic)
 
 ```

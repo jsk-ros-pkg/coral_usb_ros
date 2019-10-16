@@ -4,7 +4,8 @@ ROS package for Coral Edge TPU USB Accelerator
 
 ## Environment
 
-Ubuntu 16.04 + Kinetic
+- Ubuntu 16.04 + Kinetic
+- Ubuntu 18.04 + Melodic
 
 If you want to run this on Ubuntu 14.04 + Indigo, please see [indigo branch](https://github.com/knorth55/coral_usb_ros/tree/indigo).
 
@@ -12,7 +13,7 @@ If you want to run this on PR2, please see [pr2 branch](https://github.com/knort
 
 ## Notice
 
-We need `python3.5` to run this package.
+We need `python3.5` or `python3.6` to run this package.
 
 ## Nodes
 - Object detector: `edgetpu_object_detector.py`

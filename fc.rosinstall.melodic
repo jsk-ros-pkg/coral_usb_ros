@@ -1,0 +1,19 @@
+- git:
+    local-name: coral_usb_ros
+    uri: https://github.com/knorth55/coral_usb_ros.git
+    version: master
+###    
+### wait for import _pickle as pickle for python3
+### https://github.com/jsk-ros-pkg/jsk_common/pull/1636
+###
+- git:
+    local-name: jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: master
+###
+### cv_bridge must be recompliled for python3
+###
+- git:
+    local-name: vision_opencv
+    uri: https://github.com/ros-perception/vision_opencv.git
+    version: melodic

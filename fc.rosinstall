@@ -12,5 +12,5 @@
     version: python35
 - git:
     local-name: jsk_common
-    uri: https://github.com/knorth55/jsk_common.git
-    version: cpickle-python3
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: master

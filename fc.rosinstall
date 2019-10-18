@@ -10,3 +10,7 @@
     local-name: vision_opencv
     uri: https://github.com/knorth55/vision_opencv.git
     version: indigo-python34
+- git:
+    local-name: jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: master

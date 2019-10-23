@@ -1,9 +1,13 @@
 <launch>
   <arg name="INPUT_IMAGE"/>
+  <arg name="model_file" default="$(find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
+  <arg name="label_file" default="$(find coral_usb)/models/coco_labels.txt"/>
 
   <node name="edgetpu_object_detector"
         pkg="coral_usb" type="edgetpu_object_detector.py"
         output="screen" respawn="true">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
+    <param name="model_file" value="$(arg model_file)"/>
+    <param name="label_file" value="$(arg label_file)"/>
   </node>
 </launch>

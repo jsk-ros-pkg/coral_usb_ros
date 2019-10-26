@@ -102,8 +102,15 @@ roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publ
 
 ```bash
 # source normal workspace, not edge tpu workspace
-source ~/ros/kinetic/devel/setup.bash
+# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
+source /opt/ros/kinetic/setup.bash
+# object detector
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
+# face detector
+rosrun image_view image_view image:=/edgetpu_face_detector/output/image
+# human pose estimator
+rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
+
 ```
 
 ## Nodes

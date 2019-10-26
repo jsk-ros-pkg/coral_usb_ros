@@ -124,7 +124,7 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
         self.pub_class.publish(cls_msg)
 
         if self.visualize:
-            vis_img = img[:, :, ::-1].transpose(2, 0, 1)
+            vis_img = img[:, :, ::-1].transpose((2, 0, 1))
             vis_bbox(
                 vis_img, bboxes, labels, scores,
                 label_names=self.label_names)

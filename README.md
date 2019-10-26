@@ -87,7 +87,7 @@ catkin build
 ```
 source ~/coral_ws/devel/setup.bash
 roscd coral_usb/scripts
-python download_models.py
+rosrun coral_usb download_models.py
 ```
 
 ## Sample
@@ -151,7 +151,7 @@ Classification results of detected objects
 
 - `~output/image` (`sensor_msgs/Image`)
 
-Visualization of detection results.
+Visualization of detection results
 
 **Parameters**
 
@@ -176,3 +176,85 @@ Score threshold for object detection
 - `~top_k`: (`Int`, default: `100`)
 
 Maximum number of detected objects
+
+
+### Face detector: `edgetpu_face_detector.py`
+
+**Subscribing Topic**
+
+- `~input/image` (`sensor_msgs/Image`)
+
+Input image
+
+**Publishing Topic**
+
+- `~output/rects` (`jsk_recognition_msgs/RectArray`)
+
+Rectangles of detected faces
+
+- `~output/class` (`jsk_recognition_msgs/ClassificationResult`)
+
+Classification results of detected faces
+
+- `~output/image` (`sensor_msgs/Image`)
+
+Visualization of detection results
+
+**Parameters**
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+Classifier name
+
+- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite`)
+
+Model file path
+
+**Dynamic parameters**
+
+- `~score_thresh`: (`Float`, default: `0.6`)
+
+Score threshold for face detection
+
+- `~top_k`: (`Int`, default: `100`)
+
+Maximum number of detected faces
+
+
+### Human pose estimator: `edgetpu_human_pose_estimator.py`
+
+**Subscribing Topic**
+
+- `~input/image` (`sensor_msgs/Image`)
+
+Input image
+
+**Publishing Topic**
+
+- `~output/poses` (`jsk_recognition_msgs/PeoplePoseArray`)
+
+Estimated human poses
+
+- `~output/image` (`sensor_msgs/Image`)
+
+Visualization of estimation results
+
+**Parameters**
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+Classifier name
+
+- `~model_file` (`String`, default: `$(rospack find coral_usb)/python/coral_usb/posenet/models/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite`)
+
+Model file path
+
+**Dynamic parameters**
+
+- `~score_thresh`: (`Float`, default: `0.2`)
+
+Score threshold for human pose estimation
+
+- `~joint_score_thresh`: (`Float`, default: `0.2`)
+
+Score threshold of each joint for human pose estimation

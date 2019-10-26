@@ -16,9 +16,18 @@ If you want to run this on PR2, please see [pr2 branch](https://github.com/knort
 We need `python3.5` or `python3.6` to run this package.
 
 ## ROS Node list
-- Object detector: `edgetpu_object_detector.py`
-- Face detector: `edgetpu_face_detector.py`
-- Human Pose Estimator: `edgetpu_human_pose_estimator.py`
+
+**Object detector: `edgetpu_object_detector.py`**
+
+![edgetpu_object_detector](./media/edgetpu_object_detector.gif)
+
+**Face detector: `edgetpu_face_detector.py`**
+
+![edgetpu_face_detector](./media/edgetpu_face_detector.gif)
+
+**Human Pose Estimator: `edgetpu_human_pose_estimator.py`**
+
+![edgetpu_human_pose_estimator](./media/edgetpu_human_pose_estimator.gif)
 
 For more detailed information, see [here](https://github.com/knorth55/coral_usb_ros#ROS-node-information).
 

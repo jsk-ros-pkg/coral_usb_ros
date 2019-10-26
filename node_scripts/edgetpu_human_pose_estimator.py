@@ -46,6 +46,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         model_file = rospy.get_param('~model_file', model_file)
 
         self.engine = PoseEngine(model_file, mirror=False)
+        self.resized_H = self.engine.image_height
+        self.resized_W = self.engine.image_width
 
         # dynamic reconfigure
         self.srv = Server(
@@ -74,7 +76,11 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
 
     def image_cb(self, msg):
         img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
-        resized_img = cv2.resize(img, (641, 481))
+        resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
+        H, W, _ = img.shape
+        y_scale = self.resized_H / H
+        x_scale = self.resized_W / W
+
         poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
 
         poses_msg = PeoplePoseArray()
@@ -88,15 +94,17 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             point = []
             visible = []
             for lbl, keypoint in pose.keypoints.items():
-                point.append(keypoint.yx)
+                resized_key_y, resized_key_x = keypoint.yx
+                key_y = resized_key_y / y_scale
+                key_x = resized_key_x / x_scale
+                point.append((key_y, key_x))
                 if keypoint.score < self.joint_score_thresh:
                     visible.append(False)
                     continue
                 pose_msg.limb_names.append(lbl)
                 pose_msg.scores.append(keypoint.score)
                 pose_msg.poses.append(
-                    Pose(position=Point(x=keypoint.yx[1],
-                                        y=keypoint.yx[0])))
+                    Pose(position=Point(x=key_x, y=key_y)))
                 visible.append(True)
             poses_msg.poses.append(pose_msg)
             points.append(point)
@@ -107,7 +115,7 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         visibles = np.array(visibles, dtype=np.bool)
 
         if self.visualize:
-            vis_img = resized_img.transpose(2, 0, 1)
+            vis_img = img.transpose((2, 0, 1))
             vis_point(vis_img, points, visibles)
             fig = plt.gcf()
             fig.canvas.draw()

@@ -105,3 +105,51 @@ roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publ
 source ~/ros/kinetic/devel/setup.bash
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 ```
+
+## Nodes
+
+### `edgetpu_object_detector.py`
+
+**Subscribing Topic**
+
+- `~input/image` (`sensor_msgs/Image`)
+
+Input image
+
+**Publishing Topic**
+
+- `~output/rects` (`jsk_recognition_msgs/RectArray`)
+
+Rectangles of detected objects
+
+- `~output/class` (`jsk_recognition_msgs/ClassificationResult`)
+
+Classification results of detected objects
+
+- `~output/image` (`sensor_msgs/Image`)
+
+Visualization of detection results.
+
+**Parameters**
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+Classifier name
+
+- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite`)
+
+Model file path
+
+- `~label_file` (`String`, default: `$(rospack find coral_usb)/models/coco_labels.txt`)
+
+Label file path.
+
+**Dynamic parameters**
+
+- `~score_thresh`: (`Float`, default: `0.6`)
+
+Score threshold for object detection
+
+- `~top_k`: (`Int`, default: `100`)
+
+Maximum number of detected objects

@@ -15,10 +15,12 @@ If you want to run this on PR2, please see [pr2 branch](https://github.com/knort
 
 We need `python3.5` or `python3.6` to run this package.
 
-## Nodes
+## ROS Node list
 - Object detector: `edgetpu_object_detector.py`
 - Face detector: `edgetpu_face_detector.py`
 - Human Pose Estimator: `edgetpu_human_pose_estimator.py`
+
+For more detailed information, see [here](https://github.com/knorth55/coral_usb_ros#ROS-node-information).
 
 ## Setup
 
@@ -127,9 +129,9 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
 ```
 
-## Nodes
+## ROS Node information
 
-### `edgetpu_object_detector.py`
+### Object detector: `edgetpu_object_detector.py`
 
 **Subscribing Topic**
 

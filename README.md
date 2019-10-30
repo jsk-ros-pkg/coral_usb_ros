@@ -61,7 +61,7 @@ pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
 
 ```
 source /opt/kinetic/ros/setup.bash
-mkdir ~/coral_ws/src
+mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
 git clone https://github.com/knorth55/coral_usb_ros.git
 wstool init
@@ -78,7 +78,7 @@ catkin build
 
 ```
 source /opt/melodic/ros/setup.bash
-mkdir ~/coral_ws/src
+mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
 git clone https://github.com/knorth55/coral_usb_ros.git
 wstool init

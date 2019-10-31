@@ -116,17 +116,21 @@ class EdgeTPUFaceDetector(ConnectionBasedTransport):
         self.pub_class.publish(cls_msg)
 
         if self.visualize:
-            vis_img = img[:, :, ::-1].transpose((2, 0, 1))
+            fig = plt.figure(
+                tight_layout={'pad': 0})
+            ax = plt.Axes(fig, [0., 0., 1., 1.])
+            ax.axis('off')
+            fig.add_axes(ax)
             vis_bbox(
-                vis_img, bboxes, labels, scores,
-                label_names=self.label_names)
-            fig = plt.gcf()
+                img[:, :, ::-1].transpose((2, 0, 1)),
+                bboxes, labels, scores,
+                label_names=self.label_names, ax=ax)
             fig.canvas.draw()
             w, h = fig.canvas.get_width_height()
             vis_img = np.fromstring(
                 fig.canvas.tostring_rgb(), dtype=np.uint8)
-            fig.clf()
             vis_img.shape = (h, w, 3)
+            fig.clf()
             plt.close()
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
             # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA

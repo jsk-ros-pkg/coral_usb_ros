@@ -48,14 +48,19 @@ sudo apt-get install libedgetpu1-max
 sudo apt-get install python3-edgetpu
 ```
 
-#### [Install just the TensorFlow Lite interpreter](https://www.tensorflow.org/lite/guide/python)
+#### [Install just the TensorFlow Lite interpreter (kinetic)](https://www.tensorflow.org/lite/guide/python)
+```
+sudo apt-get install python3-pip
+wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl
+pip3 install tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl
+```
+
+#### [Install just the TensorFlow Lite interpreter (melodic)](https://www.tensorflow.org/lite/guide/python)
 ```
 sudo apt-get install python3-pip
 wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
 pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
 ```
-
-####
 
 ### Workspace build (kinetic)
 
@@ -142,13 +147,13 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
 ### Object detector: `edgetpu_object_detector.py`
 
-**Subscribing Topic**
+#### Subscribing Topic
 
 - `~input/image` (`sensor_msgs/Image`)
 
   - Input image
 
-**Publishing Topic**
+#### Publishing Topic
 
 - `~output/rects` (`jsk_recognition_msgs/RectArray`)
 
@@ -162,7 +167,7 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
   - Visualization of detection results
 
-**Parameters**
+#### Parameters
 
 - `~classifier_name` (`String`, default: `rospy.get_name()`)
 
@@ -176,7 +181,7 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
   - Label file path.
 
-**Dynamic parameters**
+#### Dynamic parameters
 
 - `~score_thresh`: (`Float`, default: `0.6`)
 
@@ -189,13 +194,13 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
 ### Face detector: `edgetpu_face_detector.py`
 
-**Subscribing Topic**
+#### Subscribing Topic
 
 - `~input/image` (`sensor_msgs/Image`)
 
   - Input image
 
-**Publishing Topic**
+#### Publishing Topic
 
 - `~output/rects` (`jsk_recognition_msgs/RectArray`)
 
@@ -209,7 +214,7 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
   - Visualization of detection results
 
-**Parameters**
+#### Parameters
 
 - `~classifier_name` (`String`, default: `rospy.get_name()`)
 
@@ -219,7 +224,7 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
   - Model file path
 
-**Dynamic parameters**
+#### Dynamic parameters
 
 - `~score_thresh`: (`Float`, default: `0.6`)
 
@@ -238,7 +243,7 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
   - Input image
 
-**Publishing Topic**
+#### Publishing Topic
 
 - `~output/poses` (`jsk_recognition_msgs/PeoplePoseArray`)
 
@@ -248,7 +253,7 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
   - Visualization of estimation results
 
-**Parameters**
+#### Parameters
 
 - `~classifier_name` (`String`, default: `rospy.get_name()`)
 
@@ -258,7 +263,7 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
   - Model file path
 
-**Dynamic parameters**
+#### Dynamic parameters
 
 - `~score_thresh`: (`Float`, default: `0.2`)
 

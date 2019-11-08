@@ -19,7 +19,7 @@ env:
     - USE_JENKINS=false
     - USE_TRAVIS=true
     - USE_DOCKER=true
-    - BEFORE_SCRIPT="sh coral_usb_ros/.travis_before_script.sh"
+    - BEFORE_SCRIPT="bash coral_usb_ros/.travis_before_script.bash"
   matrix:
     - ROS_DISTRO=kinetic USE_DEB=true CATKIN_TOOLS_CONFIG_OPTIONS="-DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so"
     - ROS_DISTRO=melodic USE_DEB=true CATKIN_TOOLS_CONFIG_OPTIONS="-DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so"

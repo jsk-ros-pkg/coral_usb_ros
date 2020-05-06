@@ -84,6 +84,7 @@ catkin build
 ### Workspace build (melodic)
 
 ```
+sudo apt-get install python3-opencv
 source /opt/ros/melodic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src

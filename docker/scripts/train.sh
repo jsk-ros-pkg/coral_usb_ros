@@ -139,3 +139,5 @@ run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model -
 CUDA_VISIBLE_DEVICES=0 run ./retrain_detection_model.sh --num_training_steps $num_training_steps --num_eval_steps $num_eval_steps --dataset_dir $DATASET_DIR
 # change to edgetpu model
 run ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $checkpoint_num --dataset_dir $DATASET_DIR
+run cd /tensorflow/models/research/learn/models
+run edgetpu_compiler output_tflite_graph.tflite

@@ -122,7 +122,8 @@ rosrun jsk_perception image_publisher.py _file_name:=$(rospack find jsk_percepti
 
 ```bash
 # source edge tpu workspace
-source ~/coral_ws/devel/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash # THIS IS VERY IMPORTANT FOR MELODIC to set /opt/ros/${ROS_DISTRO}/lib/python2.7/dist-packages in $PYTHONPATH
+source ~/coral_ws/devel/setup.bash       # THIS PUT devel/lib/python3/dist-packages in fornt of /opt/ros/${ROS_DISTRO}/lib/python2.7/dist-package
 # object detector
 roslaunch coral_usb edgetpu_object_detector.launch INPUT_IMAGE:=/image_publisher/output
 # face detector

@@ -21,11 +21,11 @@ usage() {
 
 Fine tuning in docker container
 
- $0 --train_whole_model false --network_type mobilenet_v2_ssd --num_training_steps 500 --num_eval_steps 100 --checkpoint_num 500 --gpu 0 --daetaset_dir <path_to>/dataset
+ $0 --train_whole_model false --network_type mobilenet_v2_ssd --num_training_steps 500 --num_eval_steps 100 --checkpoint_num 500 --gpu 0 --dataset_dir <path_to>/dataset
 
 Whole retraining in docker container
 
- $0 --train_whole_model true --network_type mobilenet_v2_ssd --num_training_steps 50000 --num_eval_steps 2000 --checkpoint_num 50000 --gpu 0 --daetaset_dir <path_to>/dataset
+ $0 --train_whole_model true --network_type mobilenet_v2_ssd --num_training_steps 50000 --num_eval_steps 2000 --checkpoint_num 50000 --gpu 0 --dataset_dir <path_to>/dataset
 
 END_OF_USAGE
 }

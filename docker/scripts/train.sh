@@ -94,7 +94,7 @@ num_training_steps=500
 num_eval_steps=100
 checkpoint_num=500
 
-while [[ $# -gt 1 ]]; do
+while [[ $# -gt 0 ]]; do
   case "$1" in
     --dataset_dir)
       DATASET_DIR=$2
@@ -120,6 +120,10 @@ while [[ $# -gt 1 ]]; do
     --help)
       usage
       exit 0 ;;
+    tensorboard)
+      message 32 "execute $1 --port $PORT --logdir $DATASET_DIR/learn/train"
+      exec $@ --port $PORT --logdir $DATASET_DIR/learn/train
+      shift 1;;
     *)
       echo "ERROR: Unknown flag $1"
       usage
@@ -129,11 +133,6 @@ done
 
 [ ! -e "$DATASET_DIR" ] && error "Could not found '$DATASET_DIR' dataset directory";
 run tree -L 2 $DATASET_DIR
-
-if [ "$1" == "tensorboard" ]; then
-    message 32 "execute $1 --port $PORT --logdir $DATASET_DIR/learn/train"
-    exec $@ --port $PORT --logdir $DATASET_DIR/learn/train
-fi
 
 message 32 "train_whole_model  : $train_whole_model"
 message 32 "network_type       : $network_type"

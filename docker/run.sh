@@ -28,6 +28,17 @@ if [ "$1" == "--port" ]; then
     PORT=$2
     shift 2
 fi
+if [ "$1" == "bash" -o "$1" == "/bin/bash" ]; then
+    DOCKER_OPTION="";
+else
+    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME}";
+fi
+if [ "$1" == "tensorboard" ]; then
+    TENSORBOARD_OPTION="--port $PORT";
+else
+    TENSORBOARD_OPTION="";
+fi
+
 
 mkdir -p ${DATASET_DIR}/learn
 if [ -t 1 ]; then
@@ -36,12 +47,14 @@ else
     TTY_OPT=''
 fi
 
+set -x
 docker run --rm --privileged -p $PORT:$PORT \
     --gpus all \
     --name train-edgetpu-object-detection-${DATASET_NAME}-$$ \
     --mount type=bind,src=${DATASET_DIR}/learn,dst=/tensorflow/models/research/learn \
     --mount type=bind,src=${DATASET_DIR},dst=/tensorflow/models/research/${DATASET_NAME} \
-    ${TTY_OPT} train-edgetpu-object-detection --dataset_dir /tensorflow/models/research/${DATASET_NAME} $@
+    ${TTY_OPT} train-edgetpu-object-detection ${DOCKER_OPTION} ${TENSORBOARD_OPTION} $@
+set +x
 
 message 32 "Done generating model file for edgetpu object detection"
 message 32 " - ${DATASET_DIR}/learn/models/labels.txt"

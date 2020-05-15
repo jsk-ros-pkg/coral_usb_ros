@@ -83,9 +83,11 @@ function error() {
 
 # 'docke run -ti IMAGE_NAME bash' for debug
 if [ "$1" == "bash" -o "$1" == "/bin/bash" ]; then
+    message 32 "execute $@"
     exec $@
 fi
 
+PORT=6006
 train_whole_model=false
 network_type=mobilenet_v2_ssd
 num_training_steps=500
@@ -96,6 +98,9 @@ while [[ $# -gt 1 ]]; do
   case "$1" in
     --dataset_dir)
       DATASET_DIR=$2
+      shift 2;;
+    --port)
+      PORT=$2
       shift 2;;
     --network_type)
       network_type=$2
@@ -124,6 +129,11 @@ done
 
 [ ! -e "$DATASET_DIR" ] && error "Could not found '$DATASET_DIR' dataset directory";
 run tree -L 2 $DATASET_DIR
+
+if [ "$1" == "tensorboard" ]; then
+    message 32 "execute $1 --port $PORT --logdir $DATASET_DIR/learn/train"
+    exec $@ --port $PORT --logdir $DATASET_DIR/learn/train
+fi
 
 message 32 "train_whole_model  : $train_whole_model"
 message 32 "network_type       : $network_type"

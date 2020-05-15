@@ -15,6 +15,7 @@ usage() {
   --num_training_steps Number of training steps to run, 500 by default.
   --num_eval_steps     Number of evaluation steps to run, 100 by default.
   --checkpoint_num     Checkpoint number, by default 50.
+  --gpu                Specify GPU number, by defualt 0
   --help               Display this help.
 
 
@@ -93,6 +94,7 @@ network_type=mobilenet_v2_ssd
 num_training_steps=500
 num_eval_steps=100
 checkpoint_num=500
+gpu=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -116,6 +118,9 @@ while [[ $# -gt 0 ]]; do
       shift 2;;
     --checkpoint_num)
       checkpoint_num=$2
+      shift 2;;
+    --gpu)
+      gpu=$2
       shift 2;;
     --help)
       usage
@@ -145,7 +150,9 @@ run cd /tensorflow/models/research/scripts
 
 run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model --network_type $network_type --dataset_dir $DATASET_DIR
 # retraining on GPU 0
-CUDA_VISIBLE_DEVICES=0 run ./retrain_detection_model.sh --num_training_steps $num_training_steps --num_eval_steps $num_eval_steps --dataset_dir $DATASET_DIR
+export CUDA_VISIBLE_DEVICES=$gpu
+message 32 "CUDA_VISIBLE_DEVICES : $gpu"
+run ./retrain_detection_model.sh --num_training_steps $num_training_steps --num_eval_steps $num_eval_steps --dataset_dir $DATASET_DIR
 # change to edgetpu model
 run ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $checkpoint_num --dataset_dir $DATASET_DIR
 run cd /tensorflow/models/research/learn/models

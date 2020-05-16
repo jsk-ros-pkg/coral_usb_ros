@@ -50,6 +50,7 @@ fi
 set -x
 docker run --rm --privileged -p $PORT:$PORT \
     --gpus all \
+    --user=$(id -u):$(id -g) --userns=host \
     --name $USER-train-edgetpu-object-detection-${DATASET_NAME}-$$ \
     --mount type=bind,src=${DATASET_DIR}/learn,dst=/tensorflow/models/research/learn \
     --mount type=bind,src=${DATASET_DIR},dst=/tensorflow/models/research/${DATASET_NAME} \

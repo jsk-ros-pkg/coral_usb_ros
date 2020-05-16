@@ -15,17 +15,17 @@ usage() {
   --num_training_steps Number of training steps to run, 500 by default.
   --num_eval_steps     Number of evaluation steps to run, 100 by default.
   --checkpoint_num     Checkpoint number, by default 50.
-  --gpu                Specify GPU number, by defualt 0
+  --gpu                Specify GPU id, by defualt 0
   --help               Display this help.
 
 
 Fine tuning in docker container
 
- $0 --train_whole_model false --network_type mobilenet_v2_ssd --num_training_steps 500 --num_eval_steps 100 --checkpoint_num 500 --daetaset_dir <path_to>/dataset
+ $0 --train_whole_model false --network_type mobilenet_v2_ssd --num_training_steps 500 --num_eval_steps 100 --checkpoint_num 500 --gpu 0 --dataset_dir <path_to>/dataset
 
 Whole retraining in docker container
 
- $0 --train_whole_model true --network_type mobilenet_v2_ssd --num_training_steps 50000 --num_eval_steps 2000 --checkpoint_num 50000 --daetaset_dir <path_to>/dataset
+ $0 --train_whole_model true --network_type mobilenet_v2_ssd --num_training_steps 50000 --num_eval_steps 2000 --checkpoint_num 50000 --gpu 0 --dataset_dir <path_to>/dataset
 
 END_OF_USAGE
 }
@@ -149,7 +149,7 @@ message 32 "DATASET_DIR        : $DATASET_DIR"
 run cd /tensorflow/models/research/scripts
 
 run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model --network_type $network_type --dataset_dir $DATASET_DIR
-# retraining on GPU 0
+# retraining on GPU $gpu
 export CUDA_VISIBLE_DEVICES=$gpu
 message 32 "CUDA_VISIBLE_DEVICES : $gpu"
 run ./retrain_detection_model.sh --num_training_steps $num_training_steps --num_eval_steps $num_eval_steps --dataset_dir $DATASET_DIR

@@ -54,7 +54,6 @@ tar zxvf "${ckpt_name}.tar.gz"
 rm "${CKPT_DIR}" -rf
 mv "${ckpt_name}" "${CKPT_DIR}"
 chmod a+rx "${CKPT_DIR}"
-chmod a+r "${CKPT_DIR}/*"
 
 echo "CHOSING config file..."
 config_filename="${config_filename_map[${network_type}-${train_whole_model}]}"

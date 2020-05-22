@@ -28,14 +28,17 @@ if [ "$1" == "--port" ]; then
     PORT=$2
     shift 2
 fi
+
 if [ "$1" == "bash" -o "$1" == "/bin/bash" ]; then
     DOCKER_OPTION="";
 else
     DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME}";
 fi
 if [ "$1" == "tensorboard" ]; then
+    DOCKER_PORT_OPTION="-p $PORT:$PORT";
     TENSORBOARD_OPTION="--port $PORT";
 else
+    DOCKER_PORT_OPTION="";
     TENSORBOARD_OPTION="";
 fi
 
@@ -48,7 +51,7 @@ else
 fi
 
 set -x
-docker run --rm --privileged -p $PORT:$PORT \
+docker run --rm --privileged ${DOCKER_PORT_OPTION} \
     --gpus all \
     --user=$(id -u):$(id -g) --userns=host \
     --name $USER-train-edgetpu-object-detection-${DATASET_NAME}-$$ \

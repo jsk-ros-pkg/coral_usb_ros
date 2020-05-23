@@ -41,7 +41,7 @@ Follow this [page](https://coral.withgoogle.com/docs/accelerator/get-started/).
 
 ##### [Install the Edge TPU runtime](https://coral.withgoogle.com/docs/accelerator/get-started/#1-install-the-edge-tpu-runtime)
 
-```
+```bash
 echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt-get update
@@ -51,14 +51,16 @@ sudo apt-get install python3-edgetpu
 ```
 
 #### [Install just the TensorFlow Lite interpreter (kinetic)](https://www.tensorflow.org/lite/guide/python)
-```
+
+```bash
 sudo apt-get install python3-pip
 wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl
 pip3 install tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl
 ```
 
 #### [Install just the TensorFlow Lite interpreter (melodic)](https://www.tensorflow.org/lite/guide/python)
-```
+
+```bash
 sudo apt-get install python3-pip
 wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
 pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
@@ -66,7 +68,7 @@ pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
 
 ### Workspace build (kinetic)
 
-```
+```bash
 source /opt/ros/kinetic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
@@ -83,7 +85,7 @@ catkin build
 
 ### Workspace build (melodic)
 
-```
+```bash
 sudo apt-get install python3-opencv
 source /opt/ros/melodic/setup.bash
 mkdir -p ~/coral_ws/src
@@ -99,13 +101,18 @@ catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/inc
 catkin build
 ```
 
-### Model download
+### Downloading EdgeTPU model
 
-```
+```bash
 source ~/coral_ws/devel/setup.bash
 roscd coral_usb/scripts
 rosrun coral_usb download_models.py
 ```
+
+### Training EdgeTPU model with your dataset
+
+Please see [here](./training/README.md) for more detailed information.
+
 
 ## Sample
 

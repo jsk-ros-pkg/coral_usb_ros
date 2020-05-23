@@ -1,6 +1,10 @@
 # coral_usb_ros
 [![GitHub version](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros.svg)](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros)
 [![Build Status](https://travis-ci.com/knorth55/coral_usb_ros.svg?branch=master)](https://travis-ci.com/knorth55/coral_usb_ros)
+[![Docker Stars](https://img.shields.io/docker/stars/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
+[![Docker Pulls](https://img.shields.io/docker/pulls/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
+[![Docker Automated](https://img.shields.io/docker/cloud/automated/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 
 ROS package for Coral Edge TPU USB Accelerator 
 

@@ -1,14 +1,14 @@
 ###
-### cv_bridge must be recompliled for python3
+### cv_bridge must be recompliled for python3.5
 ###
 - git:
     local-name: vision_opencv
-    uri: https://github.com/ros-perception/vision_opencv.git
-    version: melodic
+    uri: https://github.com/knorth55/vision_opencv.git
+    version: python35
 ###
 ### dynamic_reconfigure must be recompliled for python3
 ###
 - git:
     local-name: dynamic_reconfigure
     uri: https://github.com/ros/dynamic_reconfigure.git
-    version: 1.6.3
+    version: 1.5.50

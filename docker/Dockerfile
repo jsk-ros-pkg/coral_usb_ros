@@ -42,17 +42,17 @@ RUN cd ~ && \
     wstool init && \
     wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git -v master --git -y && \
     wstool up -j 2 && \
-    if [ ${ROS_DISTRO} = "kinetic" ] ; then \
-      wstool merge coral_usb_ros/fc.rosinstall; \
-    else \
-      wstool merge coral_usb_ros/fc.rosinstall.melodic; \
-    fi && \
+    wstool merge -y coral_usb_ros/fc.rosinstall && \
+    wstool merge -y coral_usb_ros/fc.rosinstall.${ROS_DISTRO} &&\
     wstool up -j 2
 
 RUN rosdep update --include-eol-distros
 
 # /opt/ros/${ROS_DISTRO}/share can be changed after rosdep install, so we run it 3 times.
-RUN for i in $(seq 3); do rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src; done
+RUN apt-get update && \
+    for i in $(seq 3); do \
+      rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src; \
+    done
 
 ARG ROS_DISTRO
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \

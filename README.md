@@ -6,7 +6,7 @@
 [![Docker Automated](https://img.shields.io/docker/cloud/automated/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 [![Docker Build Status](https://img.shields.io/docker/cloud/build/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 
-ROS package for Coral Edge TPU USB Accelerator 
+ROS package for Coral Edge TPU USB Accelerator
 
 ## Environment
 
@@ -79,6 +79,7 @@ cd ~/coral_ws/src
 git clone https://github.com/knorth55/coral_usb_ros.git
 wstool init
 wstool merge coral_usb_ros/fc.rosinstall
+wstool merge coral_usb_ros/fc.rosinstall.kinetic
 wstool update
 rosdep install --from-paths . --ignore-src -y -r
 cd ~/coral_ws
@@ -96,6 +97,7 @@ mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
 git clone https://github.com/knorth55/coral_usb_ros.git
 wstool init
+wstool merge coral_usb_ros/fc.rosinstall
 wstool merge coral_usb_ros/fc.rosinstall.melodic
 wstool update
 rosdep install --from-paths . --ignore-src -y -r

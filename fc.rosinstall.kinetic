@@ -1,0 +1,7 @@
+###
+### cv_bridge must be recompliled for python3.5
+###
+- git:
+    local-name: vision_opencv
+    uri: https://github.com/knorth55/vision_opencv.git
+    version: python35

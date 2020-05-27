@@ -42,11 +42,8 @@ RUN cd ~ && \
     wstool init && \
     wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git -v master --git -y && \
     wstool up -j 2 && \
-    if [ ${ROS_DISTRO} = "kinetic" ] ; then \
-      wstool merge coral_usb_ros/fc.rosinstall; \
-    else \
-      wstool merge coral_usb_ros/fc.rosinstall.melodic; \
-    fi && \
+    wstool merge coral_usb_ros/fc.rosinstall && \
+    wstool merge coral_usb_ros/fc.rosinstall.${ROS_DISTRO} &&\
     wstool up -j 2
 
 RUN rosdep update --include-eol-distros

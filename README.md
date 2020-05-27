@@ -6,7 +6,7 @@
 [![Docker Automated](https://img.shields.io/docker/cloud/automated/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 [![Docker Build Status](https://img.shields.io/docker/cloud/build/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 
-ROS package for Coral Edge TPU USB Accelerator 
+ROS package for Coral Edge TPU USB Accelerator
 
 ## Environment
 

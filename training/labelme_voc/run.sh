@@ -60,9 +60,9 @@ docker run --rm --privileged ${DOCKER_PORT_OPTION} \
     ${TTY_OPT} train-edgetpu-object-detection ${DOCKER_OPTION} ${TENSORBOARD_OPTION} $@
 set +x
 
-message 32 "Done generating model file for edgetpu object detection"
-message 32 " - ${DATASET_DIR}/learn/models/labels.txt"
-message 32 " - ${DATASET_DIR}/learn/models/output_tflite_graph.tflite"
-message 32 " - ${DATASET_DIR}/learn/models/output_tflite_graph_edgetpu.tflite"
-
-
+if [ "$1" != "tensorboard" ]; then
+  message 32 "Done generating model file for edgetpu object detection"
+  message 32 " - ${DATASET_DIR}/learn/models/labels.txt"
+  message 32 " - ${DATASET_DIR}/learn/models/output_tflite_graph.tflite"
+  message 32 " - ${DATASET_DIR}/learn/models/output_tflite_graph_edgetpu.tflite"
+fi

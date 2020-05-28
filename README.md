@@ -21,29 +21,37 @@ If you want to run this on PR2, please see [pr2 branch](https://github.com/knort
 
 We need `python3.5` or `python3.6` to run this package.
 
-## ROS Node list
+## ROS node list
 
-**Object detector: `edgetpu_object_detector.py`**
+### Object detector: `edgetpu_object_detector.py`
 
 ![edgetpu_object_detector](./media/edgetpu_object_detector.gif)
 
-**Face detector: `edgetpu_face_detector.py`**
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_object_detectorpy).
+
+### Face detector: `edgetpu_face_detector.py`
 
 ![edgetpu_face_detector](./media/edgetpu_face_detector.gif)
 
-**Human Pose Estimator: `edgetpu_human_pose_estimator.py`**
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_face_detectorpy).
+
+### Human pose estimator: `edgetpu_human_pose_estimator.py`
 
 ![edgetpu_human_pose_estimator](./media/edgetpu_human_pose_estimator.gif)
 
-For more detailed information, see [here](https://github.com/knorth55/coral_usb_ros#ROS-node-information).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#human-pose-estimator-edgetpu_human_pose_estimatorpy).
+
+### Semantic segmenter: `edgetpu_semantic_segmenter.py`
+
+![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.png)
+
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy).
 
 ## Setup
 
-### Install Edge TPU Dependencies
+### Edge TPU dependencies installation
 
-Follow this [page](https://coral.withgoogle.com/docs/accelerator/get-started/).
-
-##### [Install the Edge TPU runtime](https://coral.withgoogle.com/docs/accelerator/get-started/#1-install-the-edge-tpu-runtime)
+#### [Install the Edge TPU runtime](https://coral.withgoogle.com/docs/accelerator/get-started/#1-install-the-edge-tpu-runtime)
 
 ```bash
 echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
@@ -54,7 +62,7 @@ sudo apt-get install libedgetpu1-max
 sudo apt-get install python3-edgetpu
 ```
 
-#### [Install just the TensorFlow Lite interpreter (kinetic)](https://www.tensorflow.org/lite/guide/python)
+#### [Install just the TensorFlow Lite interpreter (Kinetic)](https://www.tensorflow.org/lite/guide/python)
 
 ```bash
 sudo apt-get install python3-pip
@@ -62,7 +70,7 @@ wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp35-cp35m-linux_x
 pip3 install tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl
 ```
 
-#### [Install just the TensorFlow Lite interpreter (melodic)](https://www.tensorflow.org/lite/guide/python)
+#### [Install just the TensorFlow Lite interpreter (Melodic)](https://www.tensorflow.org/lite/guide/python)
 
 ```bash
 sudo apt-get install python3-pip
@@ -70,7 +78,11 @@ wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x
 pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
 ```
 
-### Workspace build (kinetic)
+For more information, please see [here](https://coral.withgoogle.com/docs/accelerator/get-started/).
+
+### Workspace build
+
+#### Workspace build (Kinetic)
 
 ```bash
 source /opt/ros/kinetic/setup.bash
@@ -88,7 +100,7 @@ catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/inc
 catkin build
 ```
 
-### Workspace build (melodic)
+#### Workspace build (Melodic)
 
 ```bash
 sudo apt-get install python3-opencv
@@ -107,7 +119,7 @@ catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/inc
 catkin build
 ```
 
-### Downloading EdgeTPU model
+### Model download
 
 ```bash
 source ~/coral_ws/devel/setup.bash
@@ -115,12 +127,12 @@ roscd coral_usb/scripts
 rosrun coral_usb download_models.py
 ```
 
-### Training EdgeTPU model with your dataset
+### Model training with your dataset
 
 Please see [here](./training/README.md) for more detailed information.
 
 
-## Sample
+## Demo 
 
 ### Run `image_publisher`
 
@@ -143,6 +155,8 @@ roslaunch coral_usb edgetpu_object_detector.launch INPUT_IMAGE:=/image_publisher
 roslaunch coral_usb edgetpu_face_detector.launch INPUT_IMAGE:=/image_publisher/output
 # human pose estimator
 roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publisher/output
+# semantic segmenter
+roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/image_publisher/output
 ```
 
 ### Run `image_view`
@@ -157,12 +171,15 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 rosrun image_view image_view image:=/edgetpu_face_detector/output/image
 # human pose estimator
 rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
-
+# semantic segmenter
+rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 ```
 
-## ROS Node information
+## ROS node information
 
 ### Object detector: `edgetpu_object_detector.py`
+
+![edgetpu_object_detector](./media/edgetpu_object_detector.gif)
 
 #### Subscribing Topic
 
@@ -211,6 +228,8 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
 ### Face detector: `edgetpu_face_detector.py`
 
+![edgetpu_face_detector](./media/edgetpu_face_detector.gif)
+
 #### Subscribing Topic
 
 - `~input/image` (`sensor_msgs/Image`)
@@ -254,7 +273,9 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 
 ### Human pose estimator: `edgetpu_human_pose_estimator.py`
 
-**Subscribing Topic**
+![edgetpu_human_pose_estimator](./media/edgetpu_human_pose_estimator.gif)
+
+#### Subscribing Topic
 
 - `~input/image` (`sensor_msgs/Image`)
 
@@ -289,3 +310,38 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 - `~joint_score_thresh`: (`Float`, default: `0.2`)
 
   - Score threshold of each joint for human pose estimation
+
+
+### Semantic segmenter
+
+![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.png)
+
+#### Subscribing Topic
+
+- `~input/image` (`sensor_msgs/Image`)
+
+  - Input image
+
+#### Publishing Topic
+
+- `~output/label` (`sensor_msgs/Image`)
+
+  - Estimated label image
+
+- `~output/image` (`sensor_msgs/Image`)
+
+  - Visualization of estimation results
+
+#### Parameters
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+  - Classifier name
+
+- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/deeplabv3_mnv2_pascal_quant_edgetpu.tflite`)
+
+  - Model file path
+
+- `~label_file` (`String`, default: `None`)
+
+  - Label file path. `pascal_voc` label is used by default.

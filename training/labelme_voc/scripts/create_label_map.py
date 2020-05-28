@@ -27,7 +27,7 @@ def main():
         text = text + txt
     text = text[:-1]
     output_path = os.path.join(
-        args.output_dir, 'kitchen_dataset_label_map.pbtxt')
+        args.output_dir, 'labelme_voc_dataset_label_map.pbtxt')
     with open(output_path, 'w') as f:
         f.write(text)
 

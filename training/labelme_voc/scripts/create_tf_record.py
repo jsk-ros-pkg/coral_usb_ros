@@ -120,8 +120,8 @@ def create_tf_record(root_dir, output_path):
         instance_label_paths.append(instance_label_path)
 
     writer = tf.python_io.TFRecordWriter(output_path)
-    print('Reading from 73B2 kitchen dataset.')
-    logging.info('Reading from 73B2 kitchen dataset.')
+    print('Reading dataset from {}.'.format(root_dir))
+    logging.info('Reading dataset from {}.'.format(root_dir))
     for i, (img_path, class_label_path, instance_label_path) in enumerate(
             zip(img_paths, class_label_paths, instance_label_paths)):
         if i % 100 == 0:
@@ -139,7 +139,7 @@ def main(_):
     for set_name in ['train', 'test']:
         root_dir = os.path.join(data_dir, set_name)
         output_path = os.path.join(
-            FLAGS.output_dir, 'kitchen_dataset_{}.record'.format(set_name))
+            FLAGS.output_dir, 'labelme_voc_dataset_{}.record'.format(set_name))
         create_tf_record(root_dir, output_path)
 
 

@@ -61,11 +61,6 @@ config_filename="${config_filename_map[${network_type}-${train_whole_model}]}"
 cd "${OBJ_DET_DIR}"
 cp "${OBJ_DET_DIR}/configs/${config_filename}" "${CKPT_DIR}/pipeline.config"
 
-# echo "PREPARING dataset..."
-# cd "${LEARN_DIR}"
-# gdown ${DATASET_URL}
-# tar zxvf ${DATASET_TGZ}
-
 echo "REPLACING variables in config file..."
 cd "${OBJ_DET_DIR}"
 python create_config.py \

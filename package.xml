@@ -19,6 +19,9 @@
   <build_depend>sensor_msgs</build_depend>
   <run_depend>jsk_perception</run_depend>
   <run_depend>python3-rospkg-modules</run_depend>
+  <run_depend>python3-empy</run_depend>
+  <run_depend>python3-numpy</run_depend>
+  <run_depend>python3-setuptools</run_depend>
 
   <export>
     <pip_requirements>requirements.txt</pip_requirements>

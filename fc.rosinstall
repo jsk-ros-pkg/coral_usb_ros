@@ -1,15 +1,7 @@
 - git:
-    local-name: catkin_virtualenv
-    uri: https://github.com/locusrobotics/catkin_virtualenv.git
-    version: master
-- git:
     local-name: coral_usb_ros
     uri: https://github.com/knorth55/coral_usb_ros.git
     version: indigo
-- git:
-    local-name: vision_opencv
-    uri: https://github.com/knorth55/vision_opencv.git
-    version: indigo-python34
 - git:
     local-name: jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git

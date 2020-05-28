@@ -60,12 +60,13 @@ def get_tf_example(
     ymax = []
     classes = []
     classes_text = []
-    R = np.max(instance_label)
-    for inst_lbl in range(R):
-        if inst_lbl == 0:
-            continue
+    for inst_lbl in np.unique(instance_label):
         inst_mask = instance_label == inst_lbl
-        cls_lbl = np.argmax(np.bincount(class_label[inst_mask]))
+        cls_count = np.bincount(class_label[inst_mask])
+        # check if it only has background or not
+        if len(cls_count) == 1:
+            continue
+        cls_lbl = np.argmax(cls_count[1:]) + 1
         classes.append(cls_lbl)
         classes_text.append(class_names[cls_lbl].encode('utf8'))
         yind, xind = np.where(inst_mask)
@@ -73,6 +74,10 @@ def get_tf_example(
         ymin.append(float(yind.min() / float(height)))
         xmax.append(float(xind.max() / float(width)))
         ymax.append(float(yind.max() / float(height)))
+
+    if len(classes) == 0:
+        print('No object annotation in {}'.format(img_path))
+        logging.warn('No object annotation in {}'.format(img_path))
 
     example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': int64_feature(height),

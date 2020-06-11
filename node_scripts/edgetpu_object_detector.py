@@ -84,7 +84,7 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
             return list(labels.keys()), list(labels.values())
 
     def image_cb(self, msg):
-        img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+        img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
         H, W = img.shape[:2]
         objs = self.engine.DetectWithImage(
             PIL.Image.fromarray(img), threshold=self.score_thresh,
@@ -130,7 +130,7 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
             ax.axis('off')
             fig.add_axes(ax)
             vis_bbox(
-                img[:, :, ::-1].transpose((2, 0, 1)),
+                img.transpose((2, 0, 1)),
                 bboxes, labels, scores,
                 label_names=self.label_names, ax=ax)
             fig.canvas.draw()

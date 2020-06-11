@@ -1,3 +1,6 @@
 [submodule "python/coral_usb/posenet"]
 	path = python/coral_usb/posenet
 	url = https://github.com/google-coral/project-posenet
+[submodule ".travis"]
+	path = .travis
+	url = https://github.com/jsk-ros-pkg/jsk_travis.git

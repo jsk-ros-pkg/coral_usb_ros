@@ -90,12 +90,12 @@ if [ "$1" == "bash" -o "$1" == "/bin/bash" ]; then
 fi
 
 PORT=6006
-train_whole_model=true
+train_whole_model=false
 network_type=mobilenet_v2_ssd
-num_training_steps=50000
-num_eval_steps=10000
-checkpoint_num=50000
-gpu=0,1,2,3
+num_training_steps=100000
+num_eval_steps=500
+checkpoint_num=100000
+gpu=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in

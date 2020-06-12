@@ -71,7 +71,9 @@ echo "CONVERTING dataset to TF Record..."
 cd "${OBJ_DET_DIR}"
 python create_tf_record.py \
     --data_dir="${DATASET_DIR}" \
-    --output_dir="${DATASET_DIR}"
+    --output_dir="${DATASET_DIR}" \
+    --ckpt_dir="${CKPT_DIR}"
+
 python create_label_map.py \
     --data_dir="${DATASET_DIR}" \
     --output_dir="${DATASET_DIR}"

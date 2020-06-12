@@ -110,23 +110,7 @@ def get_tf_example(img_path, img_id, annotation, class_names):
     return example
 
 
-def create_tf_record(root_dir, dir_names, annotation, output_path):
-    ids = []
-    for dir_name in dir_names:
-        data_dir = os.path.join(root_dir, dir_name)
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)
-            tar_path = os.path.join(root_dir, '{}.tar'.format(dir_name))
-            subprocess.call(['tar', 'xvf', tar_path, '-C', data_dir])
-        for img_name in sorted(os.listdir(data_dir)):
-            ids.append('{}/{}'.format(dir_name, img_name.split('.')[0]))
-
-    anno_ids = annotation[annotation['bounding_boxes'] != '[]']
-    anno_ids = anno_ids[['participant_id', 'video_id', 'frame']].values
-    anno_ids[:, 2] = ['{0:010d}'.format(x) for x in anno_ids[:, 2]]
-    anno_ids = ['/'.join(x) for x in anno_ids]
-    ids = sorted(list(set(ids) & set(anno_ids)))
-
+def create_tf_record(root_dir, ids, annotation, output_path):
     writer = tf.python_io.TFRecordWriter(output_path)
     print('Reading dataset from {}.'.format(root_dir))
     logging.info('Reading dataset from {}.'.format(root_dir))
@@ -149,21 +133,36 @@ def main(_):
     anno_path = os.path.join(anno_dir, 'EPIC_train_object_labels.csv')
     annotation = pd.read_csv(anno_path)
 
-    train_dir_names, test_dir_names = train_test_split(
-        epic_kitchens_data_dir_names, test_size=0.05, shuffle=None)
+    ids = []
+    for dir_name in epic_kitchens_data_dir_names:
+        data_dir = os.path.join(root_dir, dir_name)
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+            tar_path = os.path.join(root_dir, '{}.tar'.format(dir_name))
+            subprocess.call(['tar', 'xvf', tar_path, '-C', data_dir])
+        for img_name in sorted(os.listdir(data_dir)):
+            ids.append('{}/{}'.format(dir_name, img_name.split('.')[0]))
+
+    anno_ids = annotation[annotation['bounding_boxes'] != '[]']
+    anno_ids = anno_ids[['participant_id', 'video_id', 'frame']].values
+    anno_ids[:, 2] = ['{0:010d}'.format(x) for x in anno_ids[:, 2]]
+    anno_ids = ['/'.join(x) for x in anno_ids]
+    ids = sorted(list(set(ids) & set(anno_ids)))
+
+    train_ids, test_ids = train_test_split(ids, test_size=0.001, shuffle=None)
 
     train_output_path = os.path.join(
         FLAGS.output_dir,
         'epic_kitchens_dataset_train.record')
     if not os.path.exists(train_output_path):
         create_tf_record(
-            root_dir, train_dir_names, annotation, train_output_path)
+            root_dir, train_ids, annotation, train_output_path)
     test_output_path = os.path.join(
         FLAGS.output_dir,
         'epic_kitchens_dataset_test.record')
     if not os.path.exists(test_output_path):
         create_tf_record(
-            root_dir, test_dir_names, annotation, test_output_path)
+            root_dir, test_ids, annotation, test_output_path)
 
     config_path = os.path.join(ckpt_dir, 'pipeline.config')
     n_example = sum(

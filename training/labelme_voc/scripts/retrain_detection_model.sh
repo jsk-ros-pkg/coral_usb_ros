@@ -11,7 +11,6 @@ usage() {
 
   --dataset_dir        Set path to VOC dataset directory
   --num_training_steps Number of training steps to run, 500 by default.
-  --num_eval_steps     Number of evaluation steps to run, 100 by default.
   --help               Display this help.
 END_OF_USAGE
 }
@@ -21,9 +20,6 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --num_training_steps)
       num_training_steps=$2
-      shift 2 ;;
-    --num_eval_steps)
-      num_eval_steps=$2
       shift 2 ;;
     --dataset_dir)
       DATASET_DIR=$2
@@ -46,5 +42,4 @@ cd "${OBJ_DET_DIR}"
 python ${RESEARCH_DIR}/object_detection/model_main.py \
   --pipeline_config_path="${CKPT_DIR}/pipeline.config" \
   --model_dir="${TRAIN_DIR}" \
-  --num_train_steps="${num_training_steps}" \
-  --num_eval_steps="${num_eval_steps}"
+  --num_train_steps="${num_training_steps}"

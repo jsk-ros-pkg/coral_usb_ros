@@ -13,7 +13,6 @@ usage() {
   --train_whole_model  Whether or not to train all layers of the model. false
                        by default, in which only the last few layers are trained.
   --num_training_steps Number of training steps to run, 500 by default.
-  --num_eval_steps     Number of evaluation steps to run, 100 by default.
   --checkpoint_num     Checkpoint number, by default 50.
   --gpu                Specify GPU id, by defualt 0
   --help               Display this help.
@@ -21,11 +20,11 @@ usage() {
 
 Fine tuning in docker container
 
- $0 --train_whole_model false --network_type mobilenet_v2_ssd --num_training_steps 500 --num_eval_steps 100 --checkpoint_num 500 --gpu 0 --dataset_dir <path_to>/dataset
+ $0 --train_whole_model false --network_type mobilenet_v2_ssd --num_training_steps 500 --checkpoint_num 500 --gpu 0 --dataset_dir <path_to>/dataset
 
 Whole retraining in docker container
 
- $0 --train_whole_model true --network_type mobilenet_v2_ssd --num_training_steps 50000 --num_eval_steps 2000 --checkpoint_num 50000 --gpu 0 --dataset_dir <path_to>/dataset
+ $0 --train_whole_model true --network_type mobilenet_v2_ssd --num_training_steps 50000 --checkpoint_num 50000 --gpu 0 --dataset_dir <path_to>/dataset
 
 END_OF_USAGE
 }
@@ -92,7 +91,6 @@ PORT=6006
 train_whole_model=false
 network_type=mobilenet_v2_ssd
 num_training_steps=500
-num_eval_steps=100
 checkpoint_num=500
 gpu=0
 
@@ -112,9 +110,6 @@ while [[ $# -gt 0 ]]; do
       shift 2;;
     --num_training_steps)
       num_training_steps=$2
-      shift 2;;
-    --num_eval_steps)
-      num_eval_steps=$2
       shift 2;;
     --checkpoint_num)
       checkpoint_num=$2
@@ -142,7 +137,6 @@ run tree -L 2 $DATASET_DIR
 message 32 "train_whole_model  : $train_whole_model"
 message 32 "network_type       : $network_type"
 message 32 "num_training_steps : $num_training_steps"
-message 32 "num_eval_steps     : $num_eval_steps"
 message 32 "checkpoint_num     : $checkpoint_num"
 message 32 "DATASET_DIR        : $DATASET_DIR"
 
@@ -152,7 +146,7 @@ run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model -
 # retraining on GPU $gpu
 export CUDA_VISIBLE_DEVICES=$gpu
 message 32 "CUDA_VISIBLE_DEVICES : $gpu"
-run ./retrain_detection_model.sh --num_training_steps $num_training_steps --num_eval_steps $num_eval_steps --dataset_dir $DATASET_DIR
+run ./retrain_detection_model.sh --num_training_steps $num_training_steps --dataset_dir $DATASET_DIR
 # change to edgetpu model
 run ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $checkpoint_num --dataset_dir $DATASET_DIR
 run cd /tensorflow/models/research/learn/models

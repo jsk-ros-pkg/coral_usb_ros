@@ -148,7 +148,7 @@ def main(_):
     annotation = pd.read_csv(anno_path)
 
     train_dir_names, test_dir_names = train_test_split(
-        epic_kitchens_data_dir_names, test_size=0.05)
+        epic_kitchens_data_dir_names, test_size=0.05, shuffle=None)
 
     train_output_path = os.path.join(
         FLAGS.output_dir,

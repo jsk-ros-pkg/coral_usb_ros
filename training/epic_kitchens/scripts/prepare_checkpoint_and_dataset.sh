@@ -76,6 +76,8 @@ cd "${OBJ_DET_DIR}"
 python create_tf_record.py \
     --data_dir="${DATASET_DIR}" \
     --anno_dir="${ANNO_DIR}" \
-    --output_dir="${DATASET_DIR}"
+    --output_dir="${DATASET_DIR}" \
+    --ckpt_dir="${CKPT_DIR}"
+
 python create_label_map.py \
     --output_dir="${DATASET_DIR}"

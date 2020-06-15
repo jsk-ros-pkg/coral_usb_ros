@@ -92,8 +92,8 @@ fi
 PORT=6006
 train_whole_model=false
 network_type=mobilenet_v2_ssd
-num_training_steps=100000
-checkpoint_num=100000
+num_training_steps=3000000
+checkpoint_num=3000000
 gpu=0
 sample_1_of_n_eval_examples=1
 

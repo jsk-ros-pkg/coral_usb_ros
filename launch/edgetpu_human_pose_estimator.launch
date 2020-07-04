@@ -1,6 +1,6 @@
 <launch>
   <arg name="INPUT_IMAGE"/>
-  <arg name="model_file" default="$(find coral_usb)/python/coral_usb/posenet/models/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite"/>
+  <arg name="model_file" default="$(find coral_usb)/python/coral_usb/posenet/models/mobilenet/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite"/>
 
   <node name="edgetpu_human_pose_estimator"
         pkg="coral_usb" type="edgetpu_human_pose_estimator.py"

@@ -1,4 +1,8 @@
-# Training Object detection model + Epic Kitchens 55 Dataset
+# Training Object detection model + [Epic Kitchens 55 Dataset](https://epic-kitchens.github.io/2020-55.html)
+
+## Dataset information 
+
+You can get the dataset information in [EPIC-KITCHENS-55](https://epic-kitchens.github.io/2020-55.html). 
 
 ## Download dataset
 

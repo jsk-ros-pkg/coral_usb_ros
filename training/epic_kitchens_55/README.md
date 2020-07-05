@@ -1,13 +1,13 @@
-# Training Object detection model + Epic Kitchens Dataset
+# Training Object detection model + Epic Kitchens 55 Dataset
 
 ## Download dataset
 
 ## Build docker image
 
-Then, you need to build docker image called `train-epic-kitchens-edgetpu-object-detection`.
+Then, you need to build docker image called `train-epic-kitchens-55-edgetpu-object-detection`.
 
 ```bash
-roscd coral_usb_ros/training/epic_kitchens
+roscd coral_usb_ros/training/epic_kitchens_55
 make
 ```
 
@@ -16,9 +16,13 @@ make
 Finally, you can train the model with your dataset.
 
 ```bash
-roscd coral_usb_ros/training/epic_kitchens
-bash ./run.sh <your_dataset_path>
+roscd coral_usb_ros/training/epic_kitchens_55
+bash ./run.sh <your_dataset_path> <annotation_path>
 ```
+
+The dataset can be downloaded with [epic-kitchens/epic-kitchens-download-scripts](https://github.com/epic-kitchens/epic-kitchens-download-scripts).
+Annotation can be found in [epic-kitchens/epic-kitchens-55-annotations](https://github.com/epic-kitchens/epic-kitchens-55-annotations).
+
 After training, you can get trained model and label file as below;
 - EdgeTPU model: `<your_dataset_path>/learn/models/output_tflite_graph_edgetpu.tflite`
 - Label file: `<your_dataset_path>/learn/models/labels.txt`

@@ -6,8 +6,8 @@
   <license>BSD</license>
   <url type="website">http://wiki.ros.org/coral_usb</url>
 
-  <maintainer email="s-kitagawa@jsk.imi.i.u-tokyo.ac.jp">Shingo Kitagawa</maintainer>
-  <author email="s-kitagawa@jsk.imi.i.u-tokyo.ac.jp">Shingo Kitagawa</author>
+  <maintainer email="shingogo.5511@gmail.com">Shingo Kitagawa</maintainer>
+  <author email="shingogo.5511@gmail.com">Shingo Kitagawa</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <buildtool_depend>python3-catkin-pkg-modules</buildtool_depend>

@@ -1,0 +1,8 @@
+- git:
+    local-name: jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: 2.2.11
+- git:
+    local-name: dynamic_reconfigure
+    uri: https://github.com/ros/dynamic_reconfigure.git
+    version: 1.6.3

@@ -3,6 +3,6 @@
     uri: https://github.com/knorth55/vision_opencv.git
     version: python35
 - git:
-    local-name: jsk_common
-    uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: master
+    local-name: dynamic_reconfigure
+    uri: https://github.com/ros/dynamic_reconfigure.git
+    version: 1.5.50

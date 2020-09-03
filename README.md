@@ -85,7 +85,7 @@ For more information, please see [here](https://coral.withgoogle.com/docs/accele
 #### Workspace build (Kinetic)
 
 ```bash
-pip3 install --user opencv-python
+pip3 install --user opencv-python==4.0.2.32 numpy\<1.19.0
 source /opt/ros/kinetic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src

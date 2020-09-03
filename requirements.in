@@ -1,0 +1,4 @@
+chainercv
+numpy
+matplotlib>=3.0.3
+Pillow

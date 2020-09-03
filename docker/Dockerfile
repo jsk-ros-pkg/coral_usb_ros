@@ -30,7 +30,7 @@ ARG ROS_DISTRO
 RUN if [ ${ROS_DISTRO} = "kinetic" ]; then \
       wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl && \
       pip3 install tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl; \
-      pip3 install --user opencv-python==4.0.2.32 numpy\<1.19.0; \
+      pip3 install --user opencv-python==4.2.0.32 numpy\<1.19.0; \
     else \
       wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl && \
       pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl; \

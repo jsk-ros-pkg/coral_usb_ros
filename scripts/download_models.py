@@ -2,9 +2,14 @@
 
 import os
 import tarfile
-import urllib
 
 import rospkg
+
+try:
+    from urllib.request import urlretrieve
+except ImportError:
+    from urllib import urlretrieve
+
 
 url = 'https://dl.google.com/coral/canned_models/all_models.tar.gz'
 seg_urls = [
@@ -21,7 +26,7 @@ models_path = os.path.join(pkg_path, './models')
 tar_path = os.path.join(models_path, 'all_models.tar.gz')
 if not os.path.exists(models_path):
     os.makedirs(models_path)
-urllib.urlretrieve(url, tar_path)
+urlretrieve(url, tar_path)
 
 with tarfile.open(tar_path) as tar_f:
     tar_f.extractall(models_path)
@@ -29,4 +34,4 @@ with tarfile.open(tar_path) as tar_f:
 for seg_url in seg_urls:
     filename = seg_url.split('/')[-1]
     filepath = os.path.join(models_path, filename)
-    urllib.urlretrieve(seg_url, filepath)
+    urlretrieve(seg_url, filepath)

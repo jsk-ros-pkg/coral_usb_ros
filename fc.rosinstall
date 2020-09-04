@@ -10,3 +10,10 @@
     local-name: jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
     version: 2.2.11
+###
+### wait for 0.6.1 release
+###
+- git:
+    local-name: catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 0.6.1

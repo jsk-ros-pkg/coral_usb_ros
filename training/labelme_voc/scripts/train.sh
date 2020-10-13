@@ -90,8 +90,8 @@ fi
 PORT=6006
 train_whole_model=false
 network_type=mobilenet_v2_ssd
-num_training_steps=500
-checkpoint_num=500
+num_training_steps=2000
+checkpoint_num=2000
 gpu=0
 
 while [[ $# -gt 0 ]]; do

@@ -104,6 +104,7 @@ catkin build
 #### Workspace build (Melodic)
 
 ```bash
+sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
 sudo apt-get install python3-opencv
 source /opt/ros/melodic/setup.bash
 mkdir -p ~/coral_ws/src

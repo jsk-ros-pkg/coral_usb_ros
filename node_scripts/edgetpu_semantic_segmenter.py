@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-
+import copy
 import matplotlib
 matplotlib.use("Agg")  # NOQA
 import matplotlib.pyplot as plt
@@ -8,6 +8,7 @@ import numpy as np
 import os
 import re
 import sys
+import threading
 
 # OpenCV import for python3.5
 sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
@@ -38,6 +39,7 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             './models/deeplabv3_mnv2_pascal_quant_edgetpu.tflite')
         model_file = rospy.get_param('~model_file', model_file)
         label_file = rospy.get_param('~label_file', None)
+        duration = rospy.get_param('~visualize_duration', 0.1)
 
         self.engine = BasicEngine(model_file)
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]
@@ -74,6 +76,13 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             '~output/label', Image, queue_size=1)
         self.pub_image = self.advertise(
             '~output/image', Image, queue_size=1)
+
+        # visualize timer
+        self.lock = threading.Lock()
+        self.timer = rospy.Timer(rospy.Duration(duration), self.visualize_cb)
+        self.img = None
+        self.header = None
+        self.label = None
 
     def subscribe(self):
         self.sub_image = rospy.Subscriber(
@@ -115,29 +124,43 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         label_msg.header = msg.header
         self.pub_label.publish(label_msg)
 
-        if self.visualize:
-            fig = plt.figure(
-                tight_layout={'pad': 0})
-            ax = plt.subplot(1, 1, 1)
-            ax.axis('off')
-            ax, legend_handles = vis_semantic_segmentation(
-                img.transpose((2, 0, 1)), label,
-                label_names=self.label_names, alpha=0.7,
-                all_label_names_in_legend=True, ax=ax)
-            ax.legend(
-                handles=legend_handles, bbox_to_anchor=(1, 1), loc=2)
-            fig.canvas.draw()
-            w, h = fig.canvas.get_width_height()
-            vis_img = np.fromstring(
-                fig.canvas.tostring_rgb(), dtype=np.uint8)
-            vis_img.shape = (h, w, 3)
-            fig.clf()
-            plt.close()
-            vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
-            # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA
-            vis_msg.step = int(vis_msg.step)
-            vis_msg.header = msg.header
-            self.pub_image.publish(vis_msg)
+        with self.lock:
+            self.img = img
+            self.header = msg.header
+            self.label = label
+
+    def visualize_cb(self, event):
+        if (not self.visualize or self.img is None
+                or self.header is None or self.label is None):
+            return
+
+        with self.lock:
+            img = self.img.copy()
+            header = copy.deepcopy(self.header)
+            label = self.label.copy()
+
+        fig = plt.figure(
+            tight_layout={'pad': 0})
+        ax = plt.subplot(1, 1, 1)
+        ax.axis('off')
+        ax, legend_handles = vis_semantic_segmentation(
+            img.transpose((2, 0, 1)), label,
+            label_names=self.label_names, alpha=0.7,
+            all_label_names_in_legend=True, ax=ax)
+        ax.legend(
+            handles=legend_handles, bbox_to_anchor=(1, 1), loc=2)
+        fig.canvas.draw()
+        w, h = fig.canvas.get_width_height()
+        vis_img = np.fromstring(
+            fig.canvas.tostring_rgb(), dtype=np.uint8)
+        vis_img.shape = (h, w, 3)
+        fig.clf()
+        plt.close()
+        vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
+        # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA
+        vis_msg.step = int(vis_msg.step)
+        vis_msg.header = header
+        self.pub_image.publish(vis_msg)
 
 
 if __name__ == '__main__':

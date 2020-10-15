@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 
+import copy
 import matplotlib
 matplotlib.use("Agg")  # NOQA
 import matplotlib.pyplot as plt
@@ -8,6 +9,7 @@ import numpy as np
 import os
 import re
 import sys
+import threading
 
 # OpenCV import for python3.5
 sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
@@ -46,6 +48,9 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
         model_file = rospy.get_param('~model_file', model_file)
         label_file = rospy.get_param(
             '~label_file', os.path.join(pkg_path, './models/coco_labels.txt'))
+        duration = rospy.get_param('~visualize_duration', 0.1)
+        self.enable_visualization = rospy.get_param(
+            '~enable_visualization', True)
 
         self.engine = DetectionEngine(model_file)
         self.label_ids, self.label_names = self._load_labels(label_file)
@@ -57,8 +62,19 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
             '~output/rects', RectArray, queue_size=1)
         self.pub_class = self.advertise(
             '~output/class', ClassificationResult, queue_size=1)
-        self.pub_image = self.advertise(
-            '~output/image', Image, queue_size=1)
+
+        # visualize timer
+        if self.enable_visualization:
+            self.lock = threading.Lock()
+            self.pub_image = self.advertise(
+                '~output/image', Image, queue_size=1)
+            self.timer = rospy.Timer(
+                rospy.Duration(duration), self.visualize_cb)
+            self.img = None
+            self.header = None
+            self.bboxes = None
+            self.labels = None
+            self.scores = None
 
     def subscribe(self):
         self.sub_image = rospy.Subscriber(
@@ -123,28 +139,48 @@ class EdgeTPUObjectDetector(ConnectionBasedTransport):
         self.pub_rects.publish(rect_msg)
         self.pub_class.publish(cls_msg)
 
-        if self.visualize:
-            fig = plt.figure(
-                tight_layout={'pad': 0})
-            ax = plt.Axes(fig, [0., 0., 1., 1.])
-            ax.axis('off')
-            fig.add_axes(ax)
-            vis_bbox(
-                img.transpose((2, 0, 1)),
-                bboxes, labels, scores,
-                label_names=self.label_names, ax=ax)
-            fig.canvas.draw()
-            w, h = fig.canvas.get_width_height()
-            vis_img = np.fromstring(
-                fig.canvas.tostring_rgb(), dtype=np.uint8)
-            vis_img.shape = (h, w, 3)
-            fig.clf()
-            plt.close()
-            vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
-            # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA
-            vis_msg.step = int(vis_msg.step)
-            vis_msg.header = msg.header
-            self.pub_image.publish(vis_msg)
+        if self.enable_visualization:
+            with self.lock:
+                self.img = img
+                self.header = msg.header
+                self.bboxes = bboxes
+                self.labels = labels
+                self.scores = scores
+
+    def visualize_cb(self, event):
+        if (not self.visualize or self.img is None
+                or self.header is None or self.bboxes is None
+                or self.labels is None or self.scores is None):
+            return
+
+        with self.lock:
+            img = self.img.copy()
+            header = copy.deepcopy(self.header)
+            bboxes = self.bboxes.copy()
+            labels = self.labels.copy()
+            scores = self.scores.copy()
+
+        fig = plt.figure(
+            tight_layout={'pad': 0})
+        ax = plt.Axes(fig, [0., 0., 1., 1.])
+        ax.axis('off')
+        fig.add_axes(ax)
+        vis_bbox(
+            img.transpose((2, 0, 1)),
+            bboxes, labels, scores,
+            label_names=self.label_names, ax=ax)
+        fig.canvas.draw()
+        w, h = fig.canvas.get_width_height()
+        vis_img = np.fromstring(
+            fig.canvas.tostring_rgb(), dtype=np.uint8)
+        vis_img.shape = (h, w, 3)
+        fig.clf()
+        plt.close()
+        vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
+        # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA
+        vis_msg.step = int(vis_msg.step)
+        vis_msg.header = header
+        self.pub_image.publish(vis_msg)
 
 
 if __name__ == '__main__':

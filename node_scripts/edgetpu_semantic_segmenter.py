@@ -40,6 +40,8 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         model_file = rospy.get_param('~model_file', model_file)
         label_file = rospy.get_param('~label_file', None)
         duration = rospy.get_param('~visualize_duration', 0.1)
+        self.enable_visualization = rospy.get_param(
+            '~enable_visualization', True)
 
         self.engine = BasicEngine(model_file)
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]
@@ -74,15 +76,17 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
 
         self.pub_label = self.advertise(
             '~output/label', Image, queue_size=1)
-        self.pub_image = self.advertise(
-            '~output/image', Image, queue_size=1)
 
         # visualize timer
-        self.lock = threading.Lock()
-        self.timer = rospy.Timer(rospy.Duration(duration), self.visualize_cb)
-        self.img = None
-        self.header = None
-        self.label = None
+        if self.enable_visualization:
+            self.lock = threading.Lock()
+            self.pub_image = self.advertise(
+                '~output/image', Image, queue_size=1)
+            self.timer = rospy.Timer(
+                rospy.Duration(duration), self.visualize_cb)
+            self.img = None
+            self.header = None
+            self.label = None
 
     def subscribe(self):
         self.sub_image = rospy.Subscriber(
@@ -124,10 +128,11 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         label_msg.header = msg.header
         self.pub_label.publish(label_msg)
 
-        with self.lock:
-            self.img = img
-            self.header = msg.header
-            self.label = label
+        if self.enable_visualization:
+            with self.lock:
+                self.img = img
+                self.header = msg.header
+                self.label = label
 
     def visualize_cb(self, event):
         if (not self.visualize or self.img is None

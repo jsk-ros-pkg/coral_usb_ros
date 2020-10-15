@@ -47,6 +47,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite')
         model_file = rospy.get_param('~model_file', model_file)
         duration = rospy.get_param('~visualize_duration', 0.1)
+        self.enable_visualization = rospy.get_param(
+            '~enable_visualization', True)
 
         self.engine = PoseEngine(model_file, mirror=False)
         self.resized_H = self.engine.image_height
@@ -58,15 +60,17 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
 
         self.pub_pose = self.advertise(
             '~output/poses', PeoplePoseArray, queue_size=1)
-        self.pub_image = self.advertise(
-            '~output/image', Image, queue_size=1)
 
         # visualize timer
-        self.lock = threading.Lock()
-        self.timer = rospy.Timer(rospy.Duration(duration), self.visualize_cb)
-        self.img = None
-        self.visibles = None
-        self.points = None
+        if self.enable_visualization:
+            self.lock = threading.Lock()
+            self.pub_image = self.advertise(
+                '~output/image', Image, queue_size=1)
+            self.timer = rospy.Timer(
+                rospy.Duration(duration), self.visualize_cb)
+            self.img = None
+            self.visibles = None
+            self.points = None
 
     def subscribe(self):
         self.sub_image = rospy.Subscriber(
@@ -121,11 +125,12 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             visibles.append(visible)
         self.pub_pose.publish(poses_msg)
 
-        with self.lock:
-            self.img = img
-            self.header = msg.header
-            self.points = np.array(points, dtype=np.int32)
-            self.visibles = np.array(visibles, dtype=np.bool)
+        if self.enable_visualization:
+            with self.lock:
+                self.img = img
+                self.header = msg.header
+                self.points = np.array(points, dtype=np.int32)
+                self.visibles = np.array(visibles, dtype=np.bool)
 
     def visualize_cb(self, event):
         if (not self.visualize or self.img is None

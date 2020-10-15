@@ -43,7 +43,7 @@ For more information, please see [here](https://github.com/knorth55/coral_usb_ro
 
 ### Semantic segmenter: `edgetpu_semantic_segmenter.py`
 
-![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.png)
+![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.gif)
 
 For more information, please see [here](https://github.com/knorth55/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy).
 

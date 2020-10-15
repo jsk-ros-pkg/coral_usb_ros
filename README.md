@@ -217,6 +217,10 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 
   - Label file path.
 
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
+
 - `~visualize_duration` (`Float`, default: `0.1`)
 
   - Time duration for visualization
@@ -266,6 +270,10 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 
   - Model file path
 
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
+
 - `~visualize_duration` (`Float`, default: `0.1`)
 
   - Time duration for visualization
@@ -310,6 +318,10 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 - `~model_file` (`String`, default: `$(rospack find coral_usb)/python/coral_usb/posenet/models/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite`)
 
   - Model file path
+
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
 
 - `~visualize_duration` (`Float`, default: `0.1`)
 
@@ -359,6 +371,10 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 - `~label_file` (`String`, default: `None`)
 
   - Label file path. `pascal_voc` label is used by default.
+
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
 
 - `~visualize_duration` (`Float`, default: `0.1`)
 

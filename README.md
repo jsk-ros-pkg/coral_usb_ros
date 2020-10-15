@@ -340,7 +340,7 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 
 ### Semantic segmenter
 
-![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.png)
+![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.gif)
 
 #### Subscribing Topic
 

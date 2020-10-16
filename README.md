@@ -136,12 +136,19 @@ Please see [here](./training/README.md) for more detailed information.
 
 ## Demo 
 
+### Run `roscore`
+
+```bash
+roscore
+```
+
 ### Run `image_publisher`
 
 ```bash
 # source normal workspace, not edge tpu workspace
 # /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-source /opt/ros/kinetic/setup.bash
+# source /opt/ros/kinetic/setup.bash
+source /opt/ros/melodic/setup.bash
 rosrun jsk_perception image_publisher.py _file_name:=$(rospack find jsk_perception)/sample/object_detection_example_1.jpg
 ```
 

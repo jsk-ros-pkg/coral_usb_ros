@@ -94,6 +94,7 @@ num_training_steps=2000
 checkpoint_num=2000
 gpu=0
 
+RUN_TENSORBOARD=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dataset_dir)
@@ -121,8 +122,7 @@ while [[ $# -gt 0 ]]; do
       usage
       exit 0 ;;
     tensorboard)
-      message 32 "execute $1 --port $PORT --logdir $DATASET_DIR/learn/train"
-      exec $@ --port $PORT --logdir $DATASET_DIR/learn/train
+      RUN_TENSORBOARD=1
       shift 1;;
     *)
       echo "ERROR: Unknown flag $1"
@@ -131,23 +131,29 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[ ! -e "$DATASET_DIR" ] && error "Could not found '$DATASET_DIR' dataset directory";
-run tree -L 2 $DATASET_DIR
+if [ $RUN_TENSORBOARD -eq 0 ]; then
+  [ ! -e "$DATASET_DIR" ] && error "Could not found '$DATASET_DIR' dataset directory";
+  run tree -L 2 $DATASET_DIR
 
-message 32 "train_whole_model  : $train_whole_model"
-message 32 "network_type       : $network_type"
-message 32 "num_training_steps : $num_training_steps"
-message 32 "checkpoint_num     : $checkpoint_num"
-message 32 "DATASET_DIR        : $DATASET_DIR"
+  message 32 "train_whole_model  : $train_whole_model"
+  message 32 "network_type       : $network_type"
+  message 32 "num_training_steps : $num_training_steps"
+  message 32 "checkpoint_num     : $checkpoint_num"
+  message 32 "GPU                : $gpu"
+  message 32 "DATASET_DIR        : $DATASET_DIR"
 
-run cd /tensorflow/models/research/scripts
+  run cd /tensorflow/models/research/scripts
 
-run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model --network_type $network_type --dataset_dir $DATASET_DIR
-# retraining on GPU $gpu
-export CUDA_VISIBLE_DEVICES=$gpu
-message 32 "CUDA_VISIBLE_DEVICES : $gpu"
-run ./retrain_detection_model.sh --num_training_steps $num_training_steps --dataset_dir $DATASET_DIR
-# change to edgetpu model
-run ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $checkpoint_num --dataset_dir $DATASET_DIR
-run cd /tensorflow/models/research/learn/models
-run edgetpu_compiler output_tflite_graph.tflite
+  run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model --network_type $network_type --dataset_dir $DATASET_DIR
+  # retraining on GPU $gpu
+  export CUDA_VISIBLE_DEVICES=$gpu
+  message 32 "CUDA_VISIBLE_DEVICES : $gpu"
+  run ./retrain_detection_model.sh --num_training_steps $num_training_steps --dataset_dir $DATASET_DIR
+  # change to edgetpu model
+  run ./convert_checkpoint_to_edgetpu_tflite.sh --checkpoint_num $checkpoint_num --dataset_dir $DATASET_DIR
+  run cd /tensorflow/models/research/learn/models
+  run edgetpu_compiler output_tflite_graph.tflite
+else
+  message 32 "execute tensorboard --port $PORT --logdir $DATASET_DIR/learn/train"
+  tensorboard --port $PORT --logdir $DATASET_DIR/learn/train
+fi

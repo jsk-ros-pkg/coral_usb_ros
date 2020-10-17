@@ -24,24 +24,34 @@ if [ ! -e $DATASET_DIR/train/JPEGImages -o \
 fi
 
 PORT=6006
-if [ "$1" == "--port" ]; then
-    PORT=$2
-    shift 2
-fi
-
+gpu=0
 if [ "$1" == "bash" -o "$1" == "/bin/bash" ]; then
     DOCKER_OPTION="";
 else
-    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME}";
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --port)
+          PORT=$2
+          shift 2;;
+        --gpu)
+          gpu=$2
+          shift 2;;
+        tensorboard)
+          shift 1;;
+        *)
+          echo "ERROR: Unknown flag $1"
+          exit 1 ;;
+      esac
+    done
+    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME} --gpu ${gpu}";
+    if [ "$1" == "tensorboard" ]; then
+        DOCKER_PORT_OPTION="-p $PORT:$PORT";
+        TENSORBOARD_OPTION="--port $PORT";
+    else
+        DOCKER_PORT_OPTION="";
+        TENSORBOARD_OPTION="";
+    fi
 fi
-if [ "$1" == "tensorboard" ]; then
-    DOCKER_PORT_OPTION="-p $PORT:$PORT";
-    TENSORBOARD_OPTION="--port $PORT";
-else
-    DOCKER_PORT_OPTION="";
-    TENSORBOARD_OPTION="";
-fi
-
 
 mkdir -p ${DATASET_DIR}/learn
 if [ -t 1 ]; then

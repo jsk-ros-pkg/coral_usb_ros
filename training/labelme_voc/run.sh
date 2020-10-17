@@ -24,32 +24,25 @@ if [ ! -e $DATASET_DIR/train/JPEGImages -o \
 fi
 
 PORT=6006
-gpu=0
+DOCKER_OPTION=""
+DOCKER_PORT_OPTION=""
+RUN_TENSORBOARD=0
+RUN_BASH=0
 if [ "$1" == "bash" -o "$1" == "/bin/bash" ]; then
     DOCKER_OPTION="";
+    RUN_BASH=1
 else
-    while [[ $# -gt 0 ]]; do
-      case "$1" in
-        --port)
-          PORT=$2
-          shift 2;;
-        --gpu)
-          gpu=$2
-          shift 2;;
-        tensorboard)
-          shift 1;;
-        *)
-          echo "ERROR: Unknown flag $1"
-          exit 1 ;;
-      esac
+    for i in `seq 1 $#`; do
+        if [ "${!i}" == "tensorboard" ]; then
+            RUN_TENSORBOARD=1
+        elif [ "${!i}" == "--port" ]; then
+            j=$(expr $i + 1)
+            PORT=${!j}
+        fi;
     done
-    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME} --gpu ${gpu}";
-    if [ "$1" == "tensorboard" ]; then
-        DOCKER_PORT_OPTION="-p $PORT:$PORT";
-        TENSORBOARD_OPTION="--port $PORT";
-    else
-        DOCKER_PORT_OPTION="";
-        TENSORBOARD_OPTION="";
+    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME}";
+    if [[  RUN_TENSORBOARD -eq 1 ]]; then
+        DOCKER_PORT_OPTION="-p $PORT:$PORT"
     fi
 fi
 
@@ -67,10 +60,10 @@ docker run --rm --privileged ${DOCKER_PORT_OPTION} \
     --name $USER-train-edgetpu-object-detection-${DATASET_NAME}-$$ \
     --mount type=bind,src=${DATASET_DIR}/learn,dst=/tensorflow/models/research/learn \
     --mount type=bind,src=${DATASET_DIR},dst=/tensorflow/models/research/${DATASET_NAME} \
-    ${TTY_OPT} train-edgetpu-object-detection ${DOCKER_OPTION} ${TENSORBOARD_OPTION} $@
+    ${TTY_OPT} train-edgetpu-object-detection ${DOCKER_OPTION} $@
 set +x
 
-if [ "$1" != "tensorboard" ]; then
+if [ $RUN_BASH -eq 0 -a $RUN_TENSORBOARD -eq 0 ]; then
   message 32 "Done generating model file for edgetpu object detection"
   message 32 " - ${DATASET_DIR}/learn/models/labels.txt"
   message 32 " - ${DATASET_DIR}/learn/models/output_tflite_graph.tflite"

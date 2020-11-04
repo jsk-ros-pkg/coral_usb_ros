@@ -85,6 +85,9 @@ For more information, please see [here](https://coral.withgoogle.com/docs/accele
 #### Workspace build (Kinetic)
 
 ```bash
+sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
+sudo apt-get install ros-kinetic-opencv3
+sudo apt-get install ros-kinetic-catkin
 pip3 install --user opencv-python==4.2.0.32 numpy\<1.19.0
 source /opt/ros/kinetic/setup.bash
 mkdir -p ~/coral_ws/src
@@ -106,6 +109,7 @@ catkin build
 ```bash
 sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
 sudo apt-get install python3-opencv
+sudo apt-get install ros-melodic-catkin
 source /opt/ros/melodic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src

@@ -1,4 +1,0 @@
-- git:
-    local-name: catkin_virtualenv
-    uri: https://github.com/locusrobotics/catkin_virtualenv.git
-    version: 0.6.1

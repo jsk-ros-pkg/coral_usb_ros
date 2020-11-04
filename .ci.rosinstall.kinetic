@@ -1,4 +1,8 @@
 - git:
+    local-name: catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 0.6.1
+- git:
     local-name: vision_opencv
     uri: https://github.com/knorth55/vision_opencv.git
     version: python35

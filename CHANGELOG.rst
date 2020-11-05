@@ -2,6 +2,55 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update README.md
+* Merge pull request `#37 <https://github.com/knorth55/coral_usb_ros/issues/37>`_ from knorth55/use-github-actions
+* update README.md
+* add github actions
+* remove jsk_common
+* remove .travis
+* Merge pull request `#36 <https://github.com/knorth55/coral_usb_ros/issues/36>`_ from knorth55/fix-run-sh
+* fix run.sh and train.sh in epic_kitchens_55
+* fix run.sh to properly pass arguments
+* Merge pull request `#35 <https://github.com/knorth55/coral_usb_ros/issues/35>`_ from Kanazawanaoaki/arg-run-gpu
+  add --gpu args in train.sh
+* add --gpu args
+* Update README.md
+* Merge pull request `#34 <https://github.com/knorth55/coral_usb_ros/issues/34>`_ from knorth55/add-vis-duration
+* fix typo in README
+* add enable_visualization doc
+* add enable_visualization param
+* update readme
+* update edgetpu_semantic_segmenter gif
+* add visualize_duration in edgetpu_semantic_segmenter
+* add visualize_duration in edgetpu_face_detector
+* add visualize_duration in edgetpu_object_detector
+* add visualize_duration in edgetpu_human_pose_estimator
+* Merge pull request `#33 <https://github.com/knorth55/coral_usb_ros/issues/33>`_ from k-okada/patch-2
+* add more python3  modules to compile
+* Merge pull request `#32 <https://github.com/knorth55/coral_usb_ros/issues/32>`_ from knorth55/training-data-augmentation
+* add augmentation options for other models
+* update training steps
+* add more data_augmentation_options
+* update CHANGELOG.rst
+* fix urllib for python3
+* fix .travis.roinstall
+* add catkin_virtualenv 0.6.1 in rosinstall
+* fix typo
+* update Dockerfile
+* update readme
+* set git protocol
+* use bionic for travis
+* add more tests
+* update rosinstalls
+* update .travis
+* Merge pull request `#27 <https://github.com/knorth55/coral_usb_ros/issues/27>`_ from knorth55/fix-build
+* disable venv check
+* use catkin_virtualenv 0.6.1
+* remove catkin_virtualenv in kinetic
+* Contributors: Kei Okada, Naoaki Kanazawa, Shingo Kitagawa
+
 0.0.1 (2020-07-14)
 ------------------
 * remove unnecesarry space

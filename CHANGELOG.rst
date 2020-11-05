@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2020-11-05)
+------------------
 * Update README.md
 * Merge pull request `#37 <https://github.com/knorth55/coral_usb_ros/issues/37>`_ from knorth55/use-github-actions
 * update README.md

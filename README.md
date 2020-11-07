@@ -138,7 +138,7 @@ rosrun coral_usb download_models.py
 Please see [here](./training/README.md) for more detailed information.
 
 
-## Demo 
+## Demo
 
 ### Run `roscore`
 

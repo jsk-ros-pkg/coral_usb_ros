@@ -13,7 +13,7 @@ roscd coral_usb_ros/training/labelme_voc
 make
 ```
 
-## Train model 
+## Train model
 
 Finally, you can train the model with your dataset.
 
@@ -21,7 +21,9 @@ Finally, you can train the model with your dataset.
 roscd coral_usb_ros/training/labelme_voc
 bash ./run.sh <your_dataset_path>
 ```
-After training, you can get trained model and label file as below;
+
+After training, you can get trained model and label file as below:
+
 - EdgeTPU model: `<your_dataset_path>/learn/models/output_tflite_graph_edgetpu.tflite`
 - Label file: `<your_dataset_path>/learn/models/labels.txt`
 

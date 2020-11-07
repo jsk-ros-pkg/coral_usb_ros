@@ -2,7 +2,7 @@
 
 ## Usage
 
-```
+```bash
 # melodic
 docker build --build-arg ROS_DISTRO=melodic --build-arg UBUNTU_VERSION=bionic -t knorth55/coral_usb_ros:melodic-latest .
 # kinetic

@@ -1,4 +1,5 @@
 # coral_usb_ros
+
 [![GitHub version](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros.svg)](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/knorth55/coral_usb_ros/CI/master)](https://github.com/knorth55/coral_usb_ros/actions)
 [![Docker Stars](https://img.shields.io/docker/stars/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
@@ -137,7 +138,6 @@ rosrun coral_usb download_models.py
 
 Please see [here](./training/README.md) for more detailed information.
 
-
 ## Demo
 
 ### Run `roscore`
@@ -246,7 +246,6 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 
   - Maximum number of detected objects
 
-
 ### Face detector: `edgetpu_face_detector.py`
 
 ![edgetpu_face_detector](./media/edgetpu_face_detector.gif)
@@ -299,7 +298,6 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 
   - Maximum number of detected faces
 
-
 ### Human pose estimator: `edgetpu_human_pose_estimator.py`
 
 ![edgetpu_human_pose_estimator](./media/edgetpu_human_pose_estimator.gif)
@@ -347,7 +345,6 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 - `~joint_score_thresh`: (`Float`, default: `0.2`)
 
   - Score threshold of each joint for human pose estimation
-
 
 ### Semantic segmenter
 

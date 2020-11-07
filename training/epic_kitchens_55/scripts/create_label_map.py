@@ -18,7 +18,7 @@ def main():
   name: '{1}'
 }}
 
-""".format(i+1, name)
+""".format(i + 1, name)
         text = text + txt
     text = text[:-1]
     output_path = os.path.join(

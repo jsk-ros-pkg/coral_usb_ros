@@ -105,8 +105,8 @@ def get_tf_example(img_path, img_id, annotation, class_names):
         'image/object/bbox/ymin': float_list_feature(ymins),
         'image/object/bbox/ymax': float_list_feature(ymaxs),
         'image/object/class/text': bytes_list_feature(classes_text),
-        'image/object/class/label': int64_list_feature(classes),
-        }))
+        'image/object/class/label': int64_list_feature(classes)
+    }))
     return example
 
 

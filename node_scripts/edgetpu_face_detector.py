@@ -114,7 +114,7 @@ class EdgeTPUFaceDetector(ConnectionBasedTransport):
             labels.append(self.label_ids.index(int(obj.label_id)))
             rect = Rect(
                 x=x_min, y=y_min,
-                width=x_max-x_min, height=y_max-y_min)
+                width=x_max - x_min, height=y_max - y_min)
             rect_msg.rects.append(rect)
         bboxes = np.array(bboxes)
         scores = np.array(scores)
@@ -125,7 +125,7 @@ class EdgeTPUFaceDetector(ConnectionBasedTransport):
             classifier=self.classifier_name,
             target_names=self.label_names,
             labels=labels,
-            label_names=[self.label_names[l] for l in labels],
+            label_names=[self.label_names[lbl] for lbl in labels],
             label_proba=scores)
 
         self.pub_rects.publish(rect_msg)

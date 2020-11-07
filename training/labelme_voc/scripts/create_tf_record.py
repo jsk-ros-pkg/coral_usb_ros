@@ -94,7 +94,7 @@ def get_tf_example(
         'image/object/bbox/ymax': float_list_feature(ymax),
         'image/object/class/text': bytes_list_feature(classes_text),
         'image/object/class/label': int64_list_feature(classes),
-        }))
+    }))
     return example
 
 

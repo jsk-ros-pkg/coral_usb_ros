@@ -14,7 +14,8 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y \
     python-rosdep \
     python-setuptools \
     python-wstool \
-    python-pip
+    python-pip && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN pip install 'pip==9.0.3' && \
     pip install 'setuptools==44.1.0'
@@ -24,7 +25,8 @@ RUN apt-get update && \
     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && \
-    apt-get install -y libedgetpu1-std python3-edgetpu python3-pip
+    apt-get install -y libedgetpu1-std python3-edgetpu python3-pip && \
+    rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
 RUN if [ ${ROS_DISTRO} = "kinetic" ]; then \
@@ -35,7 +37,8 @@ RUN if [ ${ROS_DISTRO} = "kinetic" ]; then \
       wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl && \
       pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl; \
       apt-get install python3-opencv; \
-    fi
+    fi && \
+    rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
 RUN cd ~ && \
@@ -54,7 +57,8 @@ RUN rosdep update --include-eol-distros
 RUN apt-get update && \
     for i in $(seq 3); do \
       rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src; \
-    done
+    done && \
+    rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \

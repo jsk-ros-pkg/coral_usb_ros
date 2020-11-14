@@ -29,7 +29,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
-RUN if [ ${ROS_DISTRO} = "kinetic" ]; then \
+RUN apt-get update && \
+    if [ ${ROS_DISTRO} = "kinetic" ]; then \
       wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl && \
       pip3 install tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl; \
       pip3 install --user opencv-python==4.2.0.32 numpy\<1.19.0; \
@@ -51,10 +52,9 @@ RUN cd ~ && \
     wstool merge -y coral_usb_ros/fc.rosinstall.${ROS_DISTRO} &&\
     wstool up -j 2
 
-RUN rosdep update --include-eol-distros
-
 # /opt/ros/${ROS_DISTRO}/share can be changed after rosdep install, so we run it 3 times.
-RUN apt-get update && \
+RUN rosdep update --include-eol-distros && \
+    apt-get update && \
     for i in $(seq 3); do \
       rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src; \
     done && \

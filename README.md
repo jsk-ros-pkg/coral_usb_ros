@@ -89,7 +89,6 @@ mkdir ~/ros/coral_ws/src
 cd ~/ros/coral_ws/src
 git clone https://github.com/knorth55/coral_usb_ros.git
 wstool init
-wstool merge coral_usb_ros/fc.rosinstall
 wstool merge coral_usb_ros/fc.rosinstall.indigo
 wstool update
 rosdep install --from-paths . --ignore-src -y -r

@@ -26,7 +26,7 @@ from geometry_msgs.msg import Pose
 from jsk_recognition_msgs.msg import PeoplePose
 from jsk_recognition_msgs.msg import PeoplePoseArray
 from jsk_topic_tools import ConnectionBasedTransport
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 
 from coral_usb.cfg import EdgeTPUHumanPoseEstimatorConfig
 from coral_usb import PoseEngine
@@ -35,6 +35,10 @@ from coral_usb import PoseEngine
 class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
 
     def __init__(self):
+        # get image_trasport before ConnectionBasedTransport subscribes ~input
+        self.transport_hint = rospy.get_param('~image_transport', 'raw')
+        rospy.loginfo("Using transport {}".format(self.transport_hint))
+        #
         super(EdgeTPUHumanPoseEstimator, self).__init__()
         rospack = rospkg.RosPack()
         pkg_path = rospack.get_path('coral_usb')
@@ -66,6 +70,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             self.lock = threading.Lock()
             self.pub_image = self.advertise(
                 '~output/image', Image, queue_size=1)
+            self.pub_image_compressed = self.advertise(
+                '~output/image/compressed', CompressedImage, queue_size=1)
             self.timer = rospy.Timer(
                 rospy.Duration(duration), self.visualize_cb)
             self.img = None
@@ -73,15 +79,21 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             self.points = None
 
     def subscribe(self):
-        self.sub_image = rospy.Subscriber(
-            '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
+        if self.transport_hint == 'compressed':
+            self.sub_image = rospy.Subscriber(
+                '{}/compressed'.format(rospy.resolve_name('~input')),
+                CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
+        else:
+            self.sub_image = rospy.Subscriber(
+                '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
 
     def unsubscribe(self):
         self.sub_image.unregister()
 
     @property
     def visualize(self):
-        return self.pub_image.get_num_connections() > 0
+        return self.pub_image.get_num_connections() > 0 or \
+            self.pub_image_compressed.get_num_connections() > 0
 
     def config_callback(self, config, level):
         self.score_thresh = config.score_thresh
@@ -89,7 +101,11 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         return config
 
     def image_cb(self, msg):
-        img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
+        if self.transport_hint == 'compressed':
+            np_arr = np.fromstring(msg.data, np.uint8)
+            img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        else:
+            img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
         resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
         H, W, _ = img.shape
         y_scale = self.resized_H / H
@@ -156,11 +172,21 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         vis_img.shape = (h, w, 3)
         fig.clf()
         plt.close()
-        vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
-        # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA
-        vis_msg.step = int(vis_msg.step)
-        vis_msg.header = header
-        self.pub_image.publish(vis_msg)
+        if self.pub_image.get_num_connections() > 0:
+            vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
+            # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA
+            vis_msg.step = int(vis_msg.step)
+            vis_msg.header = header
+            self.pub_image.publish(vis_msg)
+        if self.pub_image_compressed.get_num_connections() > 0:
+            # publish compressed http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber  # NOQA
+            vis_compressed_msg = CompressedImage()
+            vis_compressed_msg.header = header
+            vis_compressed_msg.format = "jpeg"
+            vis_img_rgb = cv2.cvtColor(vis_img, cv2.COLOR_BGR2RGB)
+            vis_compressed_msg.data = np.array(
+                cv2.imencode('.jpg', vis_img_rgb)[1]).tostring()
+            self.pub_image_compressed.publish(vis_compressed_msg)
 
 
 if __name__ == '__main__':

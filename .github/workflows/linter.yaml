@@ -9,6 +9,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          pip install flake8 hacking
+      - name: Lint with hacking
+        run: |
+          flake8 . --ignore=E402,W503,H102
       - name: Run Super-Linter
         uses: github/super-linter@v3
         env:

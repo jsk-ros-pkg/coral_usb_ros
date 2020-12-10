@@ -172,6 +172,12 @@ roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publ
 roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/image_publisher/output
 ```
 
+To subscribe compressed input image, use `IMAGE_TRANSPORT:=compressed`
+
+```bash
+roslaunch edgetpu_object_detector.launch INPUT_IMAGE:=/image_publisher/output IMAGE_TRANSPORT:=compressed
+```
+
 ### Run `image_view`
 
 ```bash
@@ -186,6 +192,12 @@ rosrun image_view image_view image:=/edgetpu_face_detector/output/image
 rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 # semantic segmenter
 rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
+```
+
+To subscribe compressed output image, set `~image_transport` param to `compressed`
+
+```bash
+rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image_transport:=compressed
 ```
 
 ## ROS node information
@@ -235,6 +247,10 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 - `~visualize_duration` (`Float`, default: `0.1`)
 
   - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
 
 #### Dynamic parameters
 
@@ -288,6 +304,10 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 
   - Time duration for visualization
 
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
+
 #### Dynamic parameters
 
 - `~score_thresh`: (`Float`, default: `0.6`)
@@ -335,6 +355,10 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 - `~visualize_duration` (`Float`, default: `0.1`)
 
   - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
 
 #### Dynamic parameters
 
@@ -387,3 +411,7 @@ rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 - `~visualize_duration` (`Float`, default: `0.1`)
 
   - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image

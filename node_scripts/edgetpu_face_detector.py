@@ -27,7 +27,8 @@ from jsk_recognition_msgs.msg import ClassificationResult
 from jsk_recognition_msgs.msg import Rect
 from jsk_recognition_msgs.msg import RectArray
 from jsk_topic_tools import ConnectionBasedTransport
-from sensor_msgs.msg import Image, CompressedImage
+from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 
 from coral_usb.cfg import EdgeTPUFaceDetectorConfig
 

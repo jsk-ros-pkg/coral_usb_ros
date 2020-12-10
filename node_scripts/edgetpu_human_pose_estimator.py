@@ -26,7 +26,8 @@ from geometry_msgs.msg import Pose
 from jsk_recognition_msgs.msg import PeoplePose
 from jsk_recognition_msgs.msg import PeoplePoseArray
 from jsk_topic_tools import ConnectionBasedTransport
-from sensor_msgs.msg import Image, CompressedImage
+from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 
 from coral_usb.cfg import EdgeTPUHumanPoseEstimatorConfig
 from coral_usb import PoseEngine

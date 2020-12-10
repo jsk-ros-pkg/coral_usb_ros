@@ -22,7 +22,8 @@ import rospkg
 import rospy
 
 from jsk_topic_tools import ConnectionBasedTransport
-from sensor_msgs.msg import Image, CompressedImage
+from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 
 
 class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):

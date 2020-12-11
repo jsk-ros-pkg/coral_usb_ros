@@ -108,6 +108,7 @@ class EdgeTPUFaceDetector(ConnectionBasedTransport):
         if self.transport_hint == 'compressed':
             np_arr = np.fromstring(msg.data, np.uint8)
             img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+            img = img[:, :, ::-1]
         else:
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
         H, W = img.shape[:2]

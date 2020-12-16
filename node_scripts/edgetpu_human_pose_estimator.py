@@ -23,6 +23,7 @@ import rospy
 from dynamic_reconfigure.server import Server
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Pose
+from jsk_recognition_msgs.msg import ClassificationResult
 from jsk_recognition_msgs.msg import PeoplePose
 from jsk_recognition_msgs.msg import PeoplePoseArray
 from jsk_recognition_msgs.msg import Rect
@@ -61,6 +62,10 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.resized_H = self.engine.image_height
         self.resized_W = self.engine.image_width
 
+        # only for human
+        self.label_ids = [0]
+        self.label_names = ['human']
+
         # dynamic reconfigure
         self.srv = Server(
             EdgeTPUHumanPoseEstimatorConfig, self.config_callback)
@@ -69,6 +74,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             '~output/poses', PeoplePoseArray, queue_size=1)
         self.pub_rects = self.advertise(
             '~output/rects', RectArray, queue_size=1)
+        self.pub_class = self.advertise(
+            '~output/class', ClassificationResult, queue_size=1)
 
         # visualize timer
         if self.enable_visualization:
@@ -123,6 +130,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         rects_msg = RectArray(header=msg.header)
         points = []
         visibles = []
+        scores = []
+        labels = []
         for pose in poses:
             if pose.score < self.score_thresh:
                 continue
@@ -131,11 +140,15 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             visible = []
             xs = []
             ys = []
+            score = []
             for lbl, keypoint in pose.keypoints.items():
                 resized_key_y, resized_key_x = keypoint.yx
                 key_y = resized_key_y / y_scale
                 key_x = resized_key_x / x_scale
                 point.append((key_y, key_x))
+                xs.append(key_x)
+                ys.append(key_y)
+                score.append(keypoint.score)
                 if keypoint.score < self.joint_score_thresh:
                     visible.append(False)
                     continue
@@ -144,22 +157,31 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
                 pose_msg.poses.append(
                     Pose(position=Point(x=key_x, y=key_y)))
                 visible.append(True)
-                xs.append(key_x)
-                ys.append(key_y)
             poses_msg.poses.append(pose_msg)
             points.append(point)
             visibles.append(visible)
-            if len(xs) > 0:
-                x_min = int(np.round(min(xs)))
-                y_min = int(np.round(min(ys)))
-                x_max = int(np.round(max(xs)))
-                y_max = int(np.round(max(ys)))
-                rect = Rect(
-                    x=x_min, y=y_min,
-                    width=x_max - x_min, height=y_max - y_min)
-                rects_msg.rects.append(rect)
+            x_min = int(np.round(min(xs)))
+            y_min = int(np.round(min(ys)))
+            x_max = int(np.round(max(xs)))
+            y_max = int(np.round(max(ys)))
+            rect = Rect(
+                x=x_min, y=y_min,
+                width=x_max - x_min, height=y_max - y_min)
+            rects_msg.rects.append(rect)
+            scores.append(np.average(score))
+            labels.append(0)
+
+        cls_msg = ClassificationResult(
+            header=msg.header,
+            classifier=self.classifier_name,
+            target_names=self.label_names,
+            labels=labels,
+            label_names=[self.label_names[lbl] for lbl in labels],
+            label_proba=scores)
+
         self.pub_pose.publish(poses_msg)
         self.pub_rects.publish(rects_msg)
+        self.pub_class.publish(cls_msg)
 
         if self.enable_visualization:
             with self.lock:

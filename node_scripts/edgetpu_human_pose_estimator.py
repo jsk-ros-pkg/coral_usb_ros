@@ -25,6 +25,8 @@ from geometry_msgs.msg import Point
 from geometry_msgs.msg import Pose
 from jsk_recognition_msgs.msg import PeoplePose
 from jsk_recognition_msgs.msg import PeoplePoseArray
+from jsk_recognition_msgs.msg import Rect
+from jsk_recognition_msgs.msg import RectArray
 from jsk_topic_tools import ConnectionBasedTransport
 from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
@@ -65,6 +67,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
 
         self.pub_pose = self.advertise(
             '~output/poses', PeoplePoseArray, queue_size=1)
+        self.pub_rects = self.advertise(
+            '~output/rects', RectArray, queue_size=1)
 
         # visualize timer
         if self.enable_visualization:
@@ -115,8 +119,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
 
         poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
 
-        poses_msg = PeoplePoseArray()
-        poses_msg.header = msg.header
+        poses_msg = PeoplePoseArray(header=msg.header)
+        rects_msg = RectArray(header=msg.header)
         points = []
         visibles = []
         for pose in poses:
@@ -125,6 +129,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             pose_msg = PeoplePose()
             point = []
             visible = []
+            xs = []
+            ys = []
             for lbl, keypoint in pose.keypoints.items():
                 resized_key_y, resized_key_x = keypoint.yx
                 key_y = resized_key_y / y_scale
@@ -138,10 +144,22 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
                 pose_msg.poses.append(
                     Pose(position=Point(x=key_x, y=key_y)))
                 visible.append(True)
+                xs.append(key_x)
+                ys.append(key_y)
             poses_msg.poses.append(pose_msg)
             points.append(point)
             visibles.append(visible)
+            if len(xs) > 0:
+                x_min = int(np.round(min(xs)))
+                y_min = int(np.round(min(ys)))
+                x_max = int(np.round(max(xs)))
+                y_max = int(np.round(max(ys)))
+                rect = Rect(
+                    x=x_min, y=y_min,
+                    width=x_max - x_min, height=y_max - y_min)
+                rects_msg.rects.append(rect)
         self.pub_pose.publish(poses_msg)
+        self.pub_rects.publish(rects_msg)
 
         if self.enable_visualization:
             with self.lock:

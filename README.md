@@ -334,6 +334,14 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Estimated human poses
 
+- `~output/rects` (`jsk_recognition_msgs/RectArray`)
+
+  - Rectangles of detected humans
+
+- `~output/class` (`jsk_recognition_msgs/ClassificationResult`)
+
+  - Classification results of detected humans
+
 - `~output/image` (`sensor_msgs/Image`)
 
   - Visualization of estimation results

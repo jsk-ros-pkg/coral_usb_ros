@@ -18,7 +18,7 @@ generate_dynamic_reconfigure_options(
 catkin_package()
 
 catkin_generate_virtualenv(
-  PYTHON_VERSION 3
+  PYTHON_VERSION 3.5
   USE_SYSTEM_PACKAGES TRUE
   ISOLATE_REQUIREMENTS FALSE
 )

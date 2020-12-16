@@ -1,5 +1,6 @@
 <launch>
   <arg name="INPUT_IMAGE"/>
+  <arg name="IMAGE_TRANSPORT" default="raw"/>
   <arg name="model_file" default="$(find coral_usb)/python/coral_usb/posenet/models/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite"/>
   <arg name="machine" default="c2" />
   <machine name="c1" address="c1" default="true"/>
@@ -11,6 +12,7 @@
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <rosparam subst_value="true" >
       model_file: $(arg model_file)
+      image_transport: $(arg IMAGE_TRANSPORT)
     </rosparam>
   </node>
 </launch>

@@ -3,9 +3,10 @@ ARG UBUNTU_VERSION
 FROM osrf/ros:${ROS_DISTRO}-desktop-${UBUNTU_VERSION}
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN apt-get update && apt-get install -y wget curl git
+RUN curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | apt-key add -
 RUN echo "deb http://packages.ros.org/ros-testing/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
-RUN apt-get update && apt-get install -y wget git
-RUN wget http://packages.ros.org/ros.key -O - | apt-key add -
+# RUN wget http://packages.ros.org/ros.key -O - | apt-key add -
 
 # FIXME: https://github.com/start-jsk/jsk_apc/pull/2664
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y \
@@ -25,7 +26,7 @@ RUN apt-get update && \
     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && \
-    apt-get install -y libedgetpu1-std python3-edgetpu python3-pip && \
+    apt-get install -y libedgetpu1-legacy-std python3-edgetpu python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO

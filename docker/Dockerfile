@@ -25,7 +25,7 @@ RUN apt-get update && \
     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && \
-    apt-get install -y libedgetpu1-std python3-edgetpu python3-pip && \
+    apt-get install -y libedgetpu1-legacy-std python3-edgetpu python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO

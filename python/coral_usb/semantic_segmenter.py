@@ -16,6 +16,7 @@ sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_
 from chainercv.visualizations import vis_semantic_segmentation
 from cv_bridge import CvBridge
 from edgetpu.basic.basic_engine import BasicEngine
+from resource_retriever import get_filename
 import rospkg
 import rospy
 
@@ -43,6 +44,10 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             './models/deeplabv3_mnv2_pascal_quant_edgetpu.tflite')
         model_file = rospy.get_param(namespace + 'model_file', model_file)
         label_file = rospy.get_param(namespace + 'label_file', None)
+        if model_file is not None:
+            model_file = get_filename(model_file, False)
+        if label_file is not None:
+            label_file = get_filename(label_file, False)
         duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)

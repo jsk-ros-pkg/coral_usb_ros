@@ -45,14 +45,14 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         model_file = rospy.get_param(namespace + 'model_file', model_file)
         label_file = rospy.get_param(namespace + 'label_file', None)
         if model_file is not None:
-            model_file = get_filename(model_file, False)
+            self.model_file = get_filename(model_file, False)
         if label_file is not None:
             label_file = get_filename(label_file, False)
-        duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
+        self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)
 
-        self.engine = BasicEngine(model_file)
+        self.engine = BasicEngine(self.model_file)
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]
 
         if label_file is None:
@@ -96,21 +96,35 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
                 namespace + 'output/image/compressed',
                 CompressedImage, queue_size=1)
             self.timer = rospy.Timer(
-                rospy.Duration(duration), self.visualize_cb)
+                rospy.Duration(self.duration), self.visualize_cb)
             self.img = None
             self.header = None
             self.label = None
 
+    def start(self):
+        self.engine = BasicEngine(self.model_file)
+        self.input_shape = self.engine.get_input_tensor_shape()[1:3]
+        self.subscribe()
+        if self.enable_visualization:
+            self.timer = rospy.Timer(
+                rospy.Duration(self.duration), self.visualize_cb)
+
+    def stop(self):
+        self.unsubscribe()
+        del self.sub_image
+        if self.enable_visualization:
+            self.timer.shutdown()
+            del self.timer
+        del self.engine
+
     def subscribe(self):
         if self.transport_hint == 'compressed':
             self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(
-                    rospy.resolve_name(self.namespace + 'input')),
+                '{}/compressed'.format(rospy.resolve_name('~input')),
                 CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
         else:
             self.sub_image = rospy.Subscriber(
-                self.namespace + 'input', Image, self.image_cb,
-                queue_size=1, buff_size=2**26)
+                '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
 
     def unsubscribe(self):
         self.sub_image.unregister()
@@ -133,6 +147,8 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             return list(labels.keys()), list(labels.values())
 
     def image_cb(self, msg):
+        if not hasattr(self, 'engine'):
+            return
         if self.transport_hint == 'compressed':
             np_arr = np.fromstring(msg.data, np.uint8)
             img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)

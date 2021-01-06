@@ -31,7 +31,7 @@ from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
 
 from coral_usb.cfg import EdgeTPUHumanPoseEstimatorConfig
-from coral_usb import PoseEngine
+from coral_usb.posenet.pose_engine import PoseEngine
 
 
 class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
@@ -54,12 +54,12 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite')
         model_file = rospy.get_param(namespace + 'model_file', model_file)
         if model_file is not None:
-            model_file = get_filename(model_file, False)
-        duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
+            self.model_file = get_filename(model_file, False)
+        self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)
 
-        self.engine = PoseEngine(model_file, mirror=False)
+        self.engine = PoseEngine(self.model_file, mirror=False)
         self.resized_H = self.engine.image_height
         self.resized_W = self.engine.image_width
 
@@ -71,7 +71,6 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.srv = Server(
             EdgeTPUHumanPoseEstimatorConfig, self.config_callback)
 
-        self.namespace = namespace
         self.pub_pose = self.advertise(
             namespace + 'output/poses', PeoplePoseArray, queue_size=1)
         self.pub_rects = self.advertise(
@@ -88,21 +87,36 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
                 namespace + 'output/image/compressed',
                 CompressedImage, queue_size=1)
             self.timer = rospy.Timer(
-                rospy.Duration(duration), self.visualize_cb)
+                rospy.Duration(self.duration), self.visualize_cb)
             self.img = None
             self.visibles = None
             self.points = None
 
+    def start(self):
+        self.engine = PoseEngine(self.model_file, mirror=False)
+        self.resized_H = self.engine.image_height
+        self.resized_W = self.engine.image_width
+        self.subscribe()
+        if self.enable_visualization:
+            self.timer = rospy.Timer(
+                rospy.Duration(self.duration), self.visualize_cb)
+
+    def stop(self):
+        self.unsubscribe()
+        del self.sub_image
+        if self.enable_visualization:
+            self.timer.shutdown()
+            del self.timer
+        del self.engine
+
     def subscribe(self):
         if self.transport_hint == 'compressed':
             self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(
-                    rospy.resolve_name(self.namespace + 'input')),
+                '{}/compressed'.format(rospy.resolve_name('~input')),
                 CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
         else:
             self.sub_image = rospy.Subscriber(
-                self.namespace + 'input', Image, self.image_cb,
-                queue_size=1, buff_size=2**26)
+                '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
 
     def unsubscribe(self):
         self.sub_image.unregister()
@@ -118,6 +132,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         return config
 
     def image_cb(self, msg):
+        if not hasattr(self, 'engine'):
+            return
         if self.transport_hint == 'compressed':
             np_arr = np.fromstring(msg.data, np.uint8)
             img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)

@@ -32,7 +32,7 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         # get image_trasport before ConnectionBasedTransport subscribes ~input
         self.transport_hint = rospy.get_param('~image_transport', 'raw')
         rospy.loginfo("Using transport {}".format(self.transport_hint))
-        #
+
         super(EdgeTPUSemanticSegmenter, self).__init__()
         rospack = rospkg.RosPack()
         pkg_path = rospack.get_path('coral_usb')

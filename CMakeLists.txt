@@ -5,9 +5,18 @@ find_package(
   catkin REQUIRED
   catkin_virtualenv
   dynamic_reconfigure
+  message_generation
 )
 
 catkin_python_setup()
+
+add_service_files(
+  FILES
+  StartNode.srv
+  StopNode.srv
+)
+
+generate_messages()
 
 generate_dynamic_reconfigure_options(
   cfg/EdgeTPUObjectDetector.cfg
@@ -15,7 +24,9 @@ generate_dynamic_reconfigure_options(
   cfg/EdgeTPUHumanPoseEstimator.cfg
 )
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS message_runtime
+)
 
 catkin_generate_virtualenv(
   INPUT_REQUIREMENTS requirements.in

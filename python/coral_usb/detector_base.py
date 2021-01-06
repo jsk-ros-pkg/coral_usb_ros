@@ -29,20 +29,21 @@ from sensor_msgs.msg import Image
 
 class EdgeTPUDetectorBase(ConnectionBasedTransport):
 
-    def __init__(self, model_file=None, label_file=None):
+    def __init__(self, model_file=None, label_file=None, namespace='~'):
         # get image_trasport before ConnectionBasedTransport subscribes ~input
-        self.transport_hint = rospy.get_param('~image_transport', 'raw')
+        self.transport_hint = rospy.get_param(
+            namespace + 'image_transport', 'raw')
         rospy.loginfo("Using transport {}".format(self.transport_hint))
 
         super(EdgeTPUDetectorBase, self).__init__()
         self.bridge = CvBridge()
         self.classifier_name = rospy.get_param(
-            '~classifier_name', rospy.get_name())
-        model_file = rospy.get_param('~model_file', model_file)
-        label_file = rospy.get_param('~label_file', label_file)
-        duration = rospy.get_param('~visualize_duration', 0.1)
+            namespace + 'classifier_name', rospy.get_name())
+        model_file = rospy.get_param(namespace + 'model_file', model_file)
+        label_file = rospy.get_param(namespace + 'label_file', label_file)
+        duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(
-            '~enable_visualization', True)
+            namespace + 'enable_visualization', True)
 
         self.engine = DetectionEngine(model_file)
         if label_file is None:
@@ -51,18 +52,20 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
         else:
             self.label_ids, self.label_names = self._load_labels(label_file)
 
+        self.namespace = namespace
         self.pub_rects = self.advertise(
-            '~output/rects', RectArray, queue_size=1)
+            namespace + 'output/rects', RectArray, queue_size=1)
         self.pub_class = self.advertise(
-            '~output/class', ClassificationResult, queue_size=1)
+            namespace + 'output/class', ClassificationResult, queue_size=1)
 
         # visualize timer
         if self.enable_visualization:
             self.lock = threading.Lock()
             self.pub_image = self.advertise(
-                '~output/image', Image, queue_size=1)
+                namespace + 'output/image', Image, queue_size=1)
             self.pub_image_compressed = self.advertise(
-                '~output/image/compressed', CompressedImage, queue_size=1)
+                namespace + 'output/image/compressed',
+                CompressedImage, queue_size=1)
             self.timer = rospy.Timer(
                 rospy.Duration(duration), self.visualize_cb)
             self.img = None
@@ -74,11 +77,13 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
     def subscribe(self):
         if self.transport_hint == 'compressed':
             self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(rospy.resolve_name('~input')),
+                '{}/compressed'.format(
+                    rospy.resolve_name(self.namespace + 'input')),
                 CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
         else:
             self.sub_image = rospy.Subscriber(
-                '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
+                self.namespace + 'input', Image, self.image_cb,
+                queue_size=1, buff_size=2**26)
 
     def unsubscribe(self):
         self.sub_image.unregister()

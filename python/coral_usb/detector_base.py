@@ -17,6 +17,7 @@ from chainercv.visualizations import vis_bbox
 from cv_bridge import CvBridge
 from edgetpu.detection.engine import DetectionEngine
 import PIL.Image
+from resource_retriever import get_filename
 import rospy
 
 from jsk_recognition_msgs.msg import ClassificationResult
@@ -41,6 +42,10 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             namespace + 'classifier_name', rospy.get_name())
         model_file = rospy.get_param(namespace + 'model_file', model_file)
         label_file = rospy.get_param(namespace + 'label_file', label_file)
+        if model_file is not None:
+            model_file = get_filename(model_file, False)
+        if label_file is not None:
+            label_file = get_filename(label_file, False)
         duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)

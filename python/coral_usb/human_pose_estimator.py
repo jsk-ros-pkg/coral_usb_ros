@@ -14,6 +14,7 @@ sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_
 
 from chainercv.visualizations import vis_point
 from cv_bridge import CvBridge
+from resource_retriever import get_filename
 import rospkg
 import rospy
 
@@ -52,6 +53,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             './python/coral_usb/posenet/models/mobilenet/'
             'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite')
         model_file = rospy.get_param(namespace + 'model_file', model_file)
+        if model_file is not None:
+            model_file = get_filename(model_file, False)
         duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)

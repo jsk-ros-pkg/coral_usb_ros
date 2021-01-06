@@ -30,12 +30,11 @@ from sensor_msgs.msg import Image
 class EdgeTPUDetectorBase(ConnectionBasedTransport):
 
     def __init__(self, model_file=None, label_file=None):
-        super(EdgeTPUDetectorBase, self).__init__()
-
         # get image_trasport before ConnectionBasedTransport subscribes ~input
         self.transport_hint = rospy.get_param('~image_transport', 'raw')
         rospy.loginfo("Using transport {}".format(self.transport_hint))
 
+        super(EdgeTPUDetectorBase, self).__init__()
         self.bridge = CvBridge()
         self.classifier_name = rospy.get_param(
             '~classifier_name', rospy.get_name())

@@ -74,8 +74,9 @@ class EdgeTPUNodeManager(object):
         else:
             rospy.logerr('{} is not supported type'.format(node_type))
             return False
+        namespace = self.prefix + '/' + name + '/'
         with self.lock:
-            self.running_node = node_class(namespace='/' + name + '/')
+            self.running_node = node_class(namespace=namespace)
             self.running_node_name = name
         return True
 

@@ -15,6 +15,7 @@
           type: human_pose_estimator
         - name: edgetpu_semantic_segmenter
           type: semantic_segmenter
+      default: edgetpu_human_pose_estimator
     </rosparam>
   </node>
 </launch>

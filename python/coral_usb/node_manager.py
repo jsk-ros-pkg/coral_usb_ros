@@ -26,6 +26,7 @@ class EdgeTPUNodeManager(object):
                 rospy.logwarn(
                     'node with same name is registered: {}'.format(node))
             self.nodes[node['name']] = node['type']
+        default = rospy.get_param('~default', None)
         self.running_node = None
         self.running_node_name = None
         self.past_nodes = {}
@@ -36,6 +37,9 @@ class EdgeTPUNodeManager(object):
             '~start', StartNode, self._start_cb)
         self.stop_server = rospy.Service(
             '~stop', StopNode, self._stop_cb)
+
+        if default is not None:
+            self._start_node(default)
 
     def _stop_node(self):
         if self.running_node is None:

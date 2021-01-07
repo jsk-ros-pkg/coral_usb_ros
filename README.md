@@ -1,7 +1,7 @@
 # coral_usb_ros
 
-[![GitHub version](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros.svg)](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/knorth55/coral_usb_ros/CI/master)](https://github.com/knorth55/coral_usb_ros/actions)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/knorth55/coral_usb_ros)
 [![Docker Stars](https://img.shields.io/docker/stars/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 [![Docker Pulls](https://img.shields.io/docker/pulls/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 [![Docker Automated](https://img.shields.io/docker/cloud/automated/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)

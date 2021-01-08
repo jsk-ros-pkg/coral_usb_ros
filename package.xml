@@ -24,6 +24,7 @@
   <run_depend>python3-empy</run_depend>
   <run_depend>python3-numpy</run_depend>
   <run_depend>python3-setuptools</run_depend>
+  <run_depend>resource_retriever</run_depend>
 
   <export>
     <pip_requirements>requirements.txt</pip_requirements>

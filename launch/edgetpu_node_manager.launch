@@ -1,21 +1,11 @@
 <launch>
   <arg name="INPUT_IMAGE"/>
-  <rosparam command="load" file="$(find coral_usb)/launch/edgetpu_node_manager_params.yaml" />
+  <arg name="YAML_PATH" default="$(find coral_usb)/launch/edgetpu_node_manager_params.yaml" />
+
+  <rosparam command="load" file="$(arg YAML_PATH)" />
   <node name="edgetpu_node_manager"
         pkg="coral_usb" type="edgetpu_node_manager.py"
         output="screen" respawn="true">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
-    <rosparam>
-      nodes:
-        - name: edgetpu_face_detector
-          type: face_detector
-        - name: edgetpu_object_detector
-          type: object_detector
-        - name: edgetpu_human_pose_estimator
-          type: human_pose_estimator
-        - name: edgetpu_semantic_segmenter
-          type: semantic_segmenter
-      default: edgetpu_human_pose_estimator
-    </rosparam>
   </node>
 </launch>

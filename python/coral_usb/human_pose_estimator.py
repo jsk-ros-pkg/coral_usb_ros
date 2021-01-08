@@ -50,7 +50,7 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             namespace + 'classifier_name', rospy.get_name())
         model_file = os.path.join(
             pkg_path,
-            './python/coral_usb/posenet/models/mobilenet/'
+            './python/coral_usb/posenet/models/'
             'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite')
         model_file = rospy.get_param(namespace + 'model_file', model_file)
         if model_file is not None:

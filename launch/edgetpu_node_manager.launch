@@ -1,11 +1,14 @@
 <launch>
   <arg name="INPUT_IMAGE"/>
   <arg name="YAML_PATH" default="$(find coral_usb)/launch/edgetpu_node_manager_params.yaml" />
+  <arg name="machine" default="c2" />
+  <machine name="c1" address="c1" default="true"/>
+  <machine name="c2" address="c2" env-loader="$(find coral_usb)/launch/env.sh"/>
 
   <rosparam command="load" file="$(arg YAML_PATH)" />
   <node name="edgetpu_node_manager"
         pkg="coral_usb" type="edgetpu_node_manager.py"
-        output="screen" respawn="true">
+        output="screen" respawn="true" machine="$(arg machine)">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
   </node>
 </launch>

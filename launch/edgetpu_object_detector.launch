@@ -3,6 +3,7 @@
   <arg name="IMAGE_TRANSPORT" default="raw"/>
   <arg name="model_file" default="$(find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
   <arg name="label_file" default="$(find coral_usb)/models/coco_labels.txt"/>
+  <arg name="device_id" default="0" />
   <arg name="machine" default="c2" />
   <machine name="c1" address="c1" default="true"/>
   <machine name="c2" address="c2" env-loader="$(find coral_usb)/launch/env.sh"/>
@@ -15,6 +16,7 @@
       model_file: $(arg model_file)
       label_file: $(arg label_file)
       image_transport: $(arg IMAGE_TRANSPORT)
+      device_id: $(arg device_id)
     </rosparam>
   </node>
 </launch>

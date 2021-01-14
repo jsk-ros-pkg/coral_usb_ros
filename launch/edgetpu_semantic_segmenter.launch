@@ -1,6 +1,7 @@
 <launch>
   <arg name="INPUT_IMAGE"/>
   <arg name="IMAGE_TRANSPORT" default="raw"/>
+  <arg name="device_id" default="0" />
   <arg name="machine" default="c2" />
   <machine name="c1" address="c1" default="true"/>
   <machine name="c2" address="c2" env-loader="$(find coral_usb)/launch/env.sh"/>
@@ -11,6 +12,7 @@
     <remap from="~input" to="$(arg INPUT_IMAGE)" />
     <rosparam subst_value="true" >
       image_transport: $(arg IMAGE_TRANSPORT)
+      device_id: $(arg device_id)
     </rosparam>
   </node>
 </launch>

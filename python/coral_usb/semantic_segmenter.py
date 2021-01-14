@@ -16,6 +16,9 @@ sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_
 from chainercv.visualizations import vis_semantic_segmentation
 from cv_bridge import CvBridge
 from edgetpu.basic.basic_engine import BasicEngine
+from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
+from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
+from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
 import rospkg
 import rospy
@@ -52,7 +55,18 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)
 
-        self.engine = BasicEngine(self.model_file)
+        device_id = rospy.get_param(namespace + 'device_id', None)
+        if device_id is None:
+            device_path = None
+        else:
+            device_path = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)[device_id]
+            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
+            if device_path in assigned_device_paths:
+                rospy.logwarn(
+                    'device {} is already assigned: {}'.format(
+                        device_id, device_path))
+
+        self.engine = BasicEngine(self.model_file, device_path)
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]
 
         if label_file is None:

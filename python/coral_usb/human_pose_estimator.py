@@ -14,6 +14,9 @@ sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_
 
 from chainercv.visualizations import vis_point
 from cv_bridge import CvBridge
+from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
+from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
+from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
 import rospkg
 import rospy
@@ -59,7 +62,19 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)
 
-        self.engine = PoseEngine(self.model_file, mirror=False)
+        device_id = rospy.get_param(namespace + 'device_id', None)
+        if device_id is None:
+            device_path = None
+        else:
+            device_path = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)[device_id]
+            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
+            if device_path in assigned_device_paths:
+                rospy.logwarn(
+                    'device {} is already assigned: {}'.format(
+                        device_id, device_path))
+
+        self.engine = PoseEngine(
+            self.model_file, mirror=False, device_path=device_path)
         self.resized_H = self.engine.image_height
         self.resized_W = self.engine.image_width
 

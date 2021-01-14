@@ -15,6 +15,9 @@ sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_
 
 from chainercv.visualizations import vis_bbox
 from cv_bridge import CvBridge
+from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
+from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
+from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from edgetpu.detection.engine import DetectionEngine
 import PIL.Image
 from resource_retriever import get_filename
@@ -50,7 +53,18 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)
 
-        self.engine = DetectionEngine(self.model_file)
+        device_id = rospy.get_param(namespace + 'device_id', None)
+        if device_id is None:
+            device_path = None
+        else:
+            device_path = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)[device_id]
+            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
+            if device_path in assigned_device_paths:
+                rospy.logwarn(
+                    'device {} is already assigned: {}'.format(
+                        device_id, device_path))
+
+        self.engine = DetectionEngine(self.model_file, device_path=device_path)
         if label_file is None:
             self.label_ids = None
             self.label_names = None

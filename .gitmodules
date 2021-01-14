@@ -1,3 +1,0 @@
-[submodule "python/coral_usb/posenet"]
-	path = python/coral_usb/posenet
-	url = https://github.com/google-coral/project-posenet

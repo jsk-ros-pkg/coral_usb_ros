@@ -83,8 +83,12 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.label_names = ['human']
 
         # dynamic reconfigure
+        dyn_namespace = namespace
+        if namespace == '~':
+            dyn_namespace = ''
         self.srv = Server(
-            EdgeTPUHumanPoseEstimatorConfig, self.config_callback)
+            EdgeTPUHumanPoseEstimatorConfig,
+            self.config_callback, namespace=dyn_namespace)
 
         self.pub_pose = self.advertise(
             namespace + 'output/poses', PeoplePoseArray, queue_size=1)

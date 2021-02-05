@@ -21,6 +21,9 @@ class EdgeTPUFaceDetector(EdgeTPUDetectorBase):
         self.label_names = ['face']
 
         # dynamic reconfigure
+        dyn_namespace = namespace
+        if namespace == '~':
+            dyn_namespace = ''
         self.srv = Server(
             EdgeTPUFaceDetectorConfig,
-            self.config_callback, namespace=namespace)
+            self.config_callback, namespace=dyn_namespace)

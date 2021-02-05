@@ -19,6 +19,9 @@ class EdgeTPUObjectDetector(EdgeTPUDetectorBase):
             model_file, label_file, namespace)
 
         # dynamic reconfigure
+        dyn_namespace = namespace
+        if namespace == '~':
+            dyn_namespace = ''
         self.srv = Server(
             EdgeTPUObjectDetectorConfig,
-            self.config_callback, namespace=namespace)
+            self.config_callback, namespace=dyn_namespace)

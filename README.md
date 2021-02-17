@@ -382,7 +382,7 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Score threshold of each joint for human pose estimation
 
-### Semantic segmenter:  `edgetpu_semantic_segmenter.py`
+### Semantic segmenter: `edgetpu_semantic_segmenter.py`
 
 ![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.gif)
 

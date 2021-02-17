@@ -428,7 +428,7 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Set `compressed` to subscribe compressed image
 
-# Node manager: `edgetpu_node_manager.py`
+### Node manager: `edgetpu_node_manager.py`
 
 You can see the sample launch [edgetpu_node_manager.launch](./launch/edgetpu_node_manager.launch)
 

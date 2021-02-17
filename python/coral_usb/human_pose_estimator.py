@@ -150,6 +150,58 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.joint_score_thresh = config.joint_score_thresh
         return config
 
+    def _estimate_pose(self, img):
+        resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
+        H, W, _ = img.shape
+        y_scale = self.resized_H / H
+        x_scale = self.resized_W / W
+        poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
+
+        points = []
+        key_names = []
+        visibles = []
+        bboxes = []
+        labels = []
+        scores = []
+        for pose in poses:
+            if pose.score < self.score_thresh:
+                continue
+            point = []
+            key_name = []
+            visible = []
+            xs = []
+            ys = []
+            score = []
+            for key_nm, keypoint in pose.keypoints.items():
+                resized_key_y, resized_key_x = keypoint.yx
+                key_y = resized_key_y / y_scale
+                key_x = resized_key_x / x_scale
+                point.append((key_y, key_x))
+                xs.append(key_x)
+                ys.append(key_y)
+                score.append(keypoint.score)
+                key_name.append(key_nm)
+                if keypoint.score < self.joint_score_thresh:
+                    visible.append(False)
+                    continue
+                visible.append(True)
+            points.append(point)
+            key_names.append(key_name)
+            visibles.append(visible)
+            x_min = int(np.round(min(xs)))
+            y_min = int(np.round(min(ys)))
+            x_max = int(np.round(max(xs)))
+            y_max = int(np.round(max(ys)))
+            bboxes.append([y_min, x_min, y_max, x_max])
+            labels.append(0)
+            scores.append(score)
+        points = np.array(points, dtype=np.int)
+        visibles = np.array(visibles, dtype=np.bool)
+        bboxes = np.array(bboxes, dtype=np.int).reshape((len(bboxes), 4))
+        labels = np.array(labels, dtype=np.int)
+        scores = np.array(scores, dtype=np.float)
+        return points, key_names, visibles, bboxes, labels, scores
+
     def image_cb(self, msg):
         if not hasattr(self, 'engine'):
             return
@@ -159,57 +211,28 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             img = img[:, :, ::-1]
         else:
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
-        resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
-        H, W, _ = img.shape
-        y_scale = self.resized_H / H
-        x_scale = self.resized_W / W
 
-        poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
+        points, key_names, visibles, bboxes, labels, scores \
+            = self._estimate_pose(img)
 
         poses_msg = PeoplePoseArray(header=msg.header)
         rects_msg = RectArray(header=msg.header)
-        points = []
-        visibles = []
-        scores = []
-        labels = []
-        for pose in poses:
-            if pose.score < self.score_thresh:
-                continue
+        for point, key_name, visible, bbox, label, score in zip(
+                points, key_names, visibles, bboxes, labels, scores):
             pose_msg = PeoplePose()
-            point = []
-            visible = []
-            xs = []
-            ys = []
-            score = []
-            for lbl, keypoint in pose.keypoints.items():
-                resized_key_y, resized_key_x = keypoint.yx
-                key_y = resized_key_y / y_scale
-                key_x = resized_key_x / x_scale
-                point.append((key_y, key_x))
-                xs.append(key_x)
-                ys.append(key_y)
-                score.append(keypoint.score)
-                if keypoint.score < self.joint_score_thresh:
-                    visible.append(False)
-                    continue
-                pose_msg.limb_names.append(lbl)
-                pose_msg.scores.append(keypoint.score)
-                pose_msg.poses.append(
-                    Pose(position=Point(x=key_x, y=key_y)))
-                visible.append(True)
+            for pt, key_nm, vs, sc in zip(point, key_name, visible, score):
+                if vs:
+                    key_y, key_x = pt
+                    pose_msg.limb_names.append(key_nm)
+                    pose_msg.scores.append(sc)
+                    pose_msg.poses.append(
+                        Pose(position=Point(x=key_x, y=key_y)))
             poses_msg.poses.append(pose_msg)
-            points.append(point)
-            visibles.append(visible)
-            x_min = int(np.round(min(xs)))
-            y_min = int(np.round(min(ys)))
-            x_max = int(np.round(max(xs)))
-            y_max = int(np.round(max(ys)))
+            y_min, x_min, y_max, x_max = bbox
             rect = Rect(
                 x=x_min, y=y_min,
                 width=x_max - x_min, height=y_max - y_min)
             rects_msg.rects.append(rect)
-            scores.append(np.average(score))
-            labels.append(0)
 
         cls_msg = ClassificationResult(
             header=msg.header,
@@ -217,7 +240,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             target_names=self.label_names,
             labels=labels,
             label_names=[self.label_names[lbl] for lbl in labels],
-            label_proba=scores)
+            label_proba=[np.average(score) for score in scores]
+        )
 
         self.pub_pose.publish(poses_msg)
         self.pub_rects.publish(rects_msg)
@@ -227,8 +251,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             with self.lock:
                 self.img = img
                 self.header = msg.header
-                self.points = np.array(points, dtype=np.int32)
-                self.visibles = np.array(visibles, dtype=np.bool)
+                self.points = points
+                self.visibles = visibles
 
     def visualize_cb(self, event):
         if (not self.visualize or self.img is None

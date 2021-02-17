@@ -136,6 +136,30 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             labels = {int(num): text.strip() for num, text in lines}
             return list(labels.keys()), list(labels.values())
 
+    def _detect_objects(self, img):
+        H, W = img.shape[:2]
+        objs = self.engine.DetectWithImage(
+            PIL.Image.fromarray(img), threshold=self.score_thresh,
+            keep_aspect_ratio=True, relative_coord=True,
+            top_k=self.top_k)
+
+        bboxes = []
+        labels = []
+        scores = []
+        for obj in objs:
+            x_min, y_min, x_max, y_max = obj.bounding_box.flatten().tolist()
+            x_min = int(np.round(x_min * W))
+            y_min = int(np.round(y_min * H))
+            x_max = int(np.round(x_max * W))
+            y_max = int(np.round(y_max * H))
+            bboxes.append([y_min, x_min, y_max, x_max])
+            labels.append(self.label_ids.index(int(obj.label_id)))
+            scores.append(obj.score)
+        bboxes = np.array(bboxes)
+        labels = np.array(labels)
+        scores = np.array(scores)
+        return bboxes, labels, scores
+
     def image_cb(self, msg):
         if not hasattr(self, 'engine'):
             return
@@ -145,32 +169,16 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             img = img[:, :, ::-1]
         else:
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
-        H, W = img.shape[:2]
-        objs = self.engine.DetectWithImage(
-            PIL.Image.fromarray(img), threshold=self.score_thresh,
-            keep_aspect_ratio=True, relative_coord=True,
-            top_k=self.top_k)
 
-        bboxes = []
-        scores = []
-        labels = []
+        bboxes, labels, scores = self._detect_objects(img)
+
         rect_msg = RectArray(header=msg.header)
-        for obj in objs:
-            x_min, y_min, x_max, y_max = obj.bounding_box.flatten().tolist()
-            x_min = int(np.round(x_min * W))
-            y_min = int(np.round(y_min * H))
-            x_max = int(np.round(x_max * W))
-            y_max = int(np.round(y_max * H))
-            bboxes.append([y_min, x_min, y_max, x_max])
-            scores.append(obj.score)
-            labels.append(self.label_ids.index(int(obj.label_id)))
+        for bbox in bboxes:
+            y_min, x_min, y_max, x_max = bbox
             rect = Rect(
                 x=x_min, y=y_min,
                 width=x_max - x_min, height=y_max - y_min)
             rect_msg.rects.append(rect)
-        bboxes = np.array(bboxes)
-        scores = np.array(scores)
-        labels = np.array(labels)
 
         cls_msg = ClassificationResult(
             header=msg.header,

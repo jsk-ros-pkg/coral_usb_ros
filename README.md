@@ -28,25 +28,29 @@ We need `python3.5` or `python3.6` to run this package.
 
 ![edgetpu_object_detector](./media/edgetpu_object_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_object_detectorpy).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_object_detectorpy-1).
 
 ### Face detector: `edgetpu_face_detector.py`
 
 ![edgetpu_face_detector](./media/edgetpu_face_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_face_detectorpy).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_face_detectorpy-1).
 
 ### Human pose estimator: `edgetpu_human_pose_estimator.py`
 
 ![edgetpu_human_pose_estimator](./media/edgetpu_human_pose_estimator.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#human-pose-estimator-edgetpu_human_pose_estimatorpy).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#human-pose-estimator-edgetpu_human_pose_estimatorpy-1).
 
 ### Semantic segmenter: `edgetpu_semantic_segmenter.py`
 
 ![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy-1).
+
+### Node manager: `edgetpu_node_manager.py`
+
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).
 
 ## Setup
 
@@ -378,7 +382,7 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Score threshold of each joint for human pose estimation
 
-### Semantic segmenter
+### Semantic segmenter:  `edgetpu_semantic_segmenter.py`
 
 ![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.gif)
 
@@ -423,3 +427,37 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 - `~image_transport:` (`String`, default: `raw`)
 
   - Set `compressed` to subscribe compressed image
+
+# Node manager: `edgetpu_node_manager.py`
+
+You can see the sample launch [edgetpu_node_manager.launch](./launch/edgetpu_node_manager.launch)
+
+#### Parameters
+
+- `~nodes`: (`Dict`, default: `{}`)
+
+  - Dictionary of node's `name` and `type`.
+  - `type` can be as follow:
+    - `edgetpu_object_detector`
+    - `edgetpu_face_detector`
+    - `edgetpu_human_pose_estimator`
+    - `edgetpu_semantic_segmenter`
+  - Parameters for each node can be set after `name` namespace.
+
+- `~default: (`String`, default: `None`)
+
+  - Default node name
+
+- `~prefix`: (`String`, default: `''`)
+
+  - Prefix for each nodes
+
+#### Service
+
+- `~start`: (`coral_usb/StartNode`)
+
+  - Start node by node name
+
+- `~stop`: (`coral_usb/StopNode`)
+
+  - Stop node

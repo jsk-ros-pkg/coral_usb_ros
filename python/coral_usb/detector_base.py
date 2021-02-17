@@ -136,28 +136,37 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             labels = {int(num): text.strip() for num, text in lines}
             return list(labels.keys()), list(labels.values())
 
+    def _process_result(self, objs, H, W, y_offset=None, x_offset=None):
+        bboxes = []
+        labels = []
+        scores = []
+        for obj in objs:
+            x_min, y_min, x_max, y_max = obj.bounding_box.flatten().tolist()
+            y_max = int(np.round(y_max * H))
+            y_min = int(np.round(y_min * H))
+            if y_offset:
+                y_max = y_max + y_offset
+                y_min = y_min + y_offset
+            x_max = int(np.round(x_max * W))
+            x_min = int(np.round(x_min * W))
+            if x_offset:
+                x_max = x_max + x_offset
+                x_min = x_min + x_offset
+            bboxes.append([y_min, x_min, y_max, x_max])
+            labels.append(self.label_ids.index(int(obj.label_id)))
+            scores.append(obj.score)
+        bboxes = np.array(bboxes).reshape((len(bboxes), 4)).astype(np.int)
+        labels = np.array(labels).astype(np.int)
+        scores = np.array(scores).astype(np.float)
+        return bboxes, labels, scores
+
     def _detect_objects(self, img):
         H, W = img.shape[:2]
         objs = self.engine.DetectWithImage(
             PIL.Image.fromarray(img), threshold=self.score_thresh,
             keep_aspect_ratio=True, relative_coord=True,
             top_k=self.top_k)
-
-        bboxes = []
-        labels = []
-        scores = []
-        for obj in objs:
-            x_min, y_min, x_max, y_max = obj.bounding_box.flatten().tolist()
-            x_min = int(np.round(x_min * W))
-            y_min = int(np.round(y_min * H))
-            x_max = int(np.round(x_max * W))
-            y_max = int(np.round(y_max * H))
-            bboxes.append([y_min, x_min, y_max, x_max])
-            labels.append(self.label_ids.index(int(obj.label_id)))
-            scores.append(obj.score)
-        bboxes = np.array(bboxes)
-        labels = np.array(labels)
-        scores = np.array(scores)
+        bboxes, labels, scores = self._process_result(objs, H, W)
         return bboxes, labels, scores
 
     def image_cb(self, msg):

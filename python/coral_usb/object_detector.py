@@ -5,7 +5,7 @@ import rospkg
 
 from coral_usb.cfg import EdgeTPUObjectDetectorConfig
 from coral_usb.detector_base import EdgeTPUDetectorBase
-from coral_usb.panorama_detector_base import EdgeTPUPanoramaDetectorBase
+from coral_usb.detector_base import EdgeTPUPanoramaDetectorBase
 
 
 class EdgeTPUObjectDetector(EdgeTPUDetectorBase):

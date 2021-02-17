@@ -33,11 +33,11 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
                 PIL.Image.fromarray(img), threshold=self.score_thresh,
                 keep_aspect_ratio=True, relative_coord=True,
                 top_k=self.top_k)
-            bb, lbl, scr = self._process_result(
+            bbox, label, score = self._process_result(
                 objs, H, W, x_offset=x_offset)
-            bboxes.append(bb)
-            labels.append(lbl)
-            scores.append(scr)
+            bboxes.append(bbox)
+            labels.append(label)
+            scores.append(score)
         bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
         labels = np.concatenate(labels, axis=0).astype(np.int)
         scores = np.concatenate(scores, axis=0).astype(np.float)

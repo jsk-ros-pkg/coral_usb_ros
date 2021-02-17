@@ -444,7 +444,7 @@ You can see the sample launch [edgetpu_node_manager.launch](./launch/edgetpu_nod
     - `edgetpu_semantic_segmenter`
   - Parameters for each node can be set after `name` namespace.
 
-- `~default: (`String`, default: `None`)
+- `~default`: (`String`, default: `None`)
 
   - Default node name
 

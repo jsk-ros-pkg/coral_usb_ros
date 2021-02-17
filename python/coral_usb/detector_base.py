@@ -273,7 +273,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             if self.split_num == i + 1:
                 x_end_offset = -1
             else:
-                x_end_offset = x_offsets[i+1]
+                x_end_offset = x_offsets[i + 1]
             img = orig_img[:, x_offset:x_end_offset, :]
             H, W = img.shape[:2]
             objs = self.engine.DetectWithImage(

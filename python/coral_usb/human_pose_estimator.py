@@ -331,7 +331,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             if self.split_num == i + 1:
                 x_end_offset = -1
             else:
-                x_end_offset = x_offsets[i+1]
+                x_end_offset = x_offsets[i + 1]
             img = orig_img[:, x_offset:x_end_offset, :]
             resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
             H, W, _ = img.shape

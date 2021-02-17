@@ -150,7 +150,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.joint_score_thresh = config.joint_score_thresh
         return config
 
-    def _process_result(self, poses, y_scale, x_scale):
+    def _process_result(
+            self, poses, y_scale, x_scale, y_offset=None, x_offset=None):
         points = []
         key_names = []
         visibles = []
@@ -170,6 +171,10 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
                 resized_key_y, resized_key_x = keypoint.yx
                 key_y = resized_key_y / y_scale
                 key_x = resized_key_x / x_scale
+                if y_offset:
+                    key_y = key_y + y_offset
+                if x_offset:
+                    key_x = key_x + x_offset
                 point.append((key_y, key_x))
                 xs.append(key_x)
                 ys.append(key_y)
@@ -182,10 +187,16 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             points.append(point)
             key_names.append(key_name)
             visibles.append(visible)
-            x_min = int(np.round(min(xs)))
-            y_min = int(np.round(min(ys)))
-            x_max = int(np.round(max(xs)))
             y_max = int(np.round(max(ys)))
+            y_min = int(np.round(min(ys)))
+            if y_offset:
+                y_max = y_max + y_offset
+                y_min = y_min + y_offset
+            x_max = int(np.round(max(xs)))
+            x_min = int(np.round(min(xs)))
+            if x_offset:
+                x_max = x_max + x_offset
+                x_min = x_min + x_offset
             bboxes.append([y_min, x_min, y_max, x_max])
             labels.append(0)
             scores.append(score)
@@ -295,3 +306,51 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             vis_compressed_msg.data = np.array(
                 cv2.imencode('.jpg', vis_img_rgb)[1]).tostring()
             self.pub_image_compressed.publish(vis_compressed_msg)
+
+
+class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
+    def __init__(self, namespace='~'):
+        super(EdgeTPUPanoramaHumanPoseEstimator, self).__init__(
+            namespace=namespace
+        )
+        self.split_num = rospy.get_param('~split_num', 2)
+
+    def _estimate_pose(self, orig_img):
+        _, orig_W = orig_img.shape[:2]
+        x_offsets = np.arange(self.split_num) * int(orig_W / self.split_num)
+        x_offsets = x_offsets.astype(np.int)
+
+        points = []
+        key_names = []
+        visibles = []
+        bboxes = []
+        labels = []
+        scores = []
+        for i in range(self.split_num):
+            x_offset = x_offsets[i]
+            if self.split_num == i + 1:
+                x_end_offset = -1
+            else:
+                x_end_offset = x_offsets[i+1]
+            img = orig_img[:, x_offset:x_end_offset, :]
+            resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
+            H, W, _ = img.shape
+            y_scale = self.resized_H / H
+            x_scale = self.resized_W / W
+            poses, _ = self.engine.DetectPosesInImage(
+                resized_img.astype(np.uint8))
+            point, key_name, visible, bbox, label, score = \
+                self._process_result(
+                    poses, y_scale, x_scale, x_offset=x_offset)
+            points.append(point)
+            key_names.extend(key_name)
+            visibles.append(visible)
+            bboxes.append(bbox)
+            labels.append(label)
+            scores.append(score)
+        points = np.concatenate(points, axis=0).astype(np.int)
+        visibles = np.concatenate(visibles, axis=0).astype(np.bool)
+        bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
+        labels = np.concatenate(labels, axis=0).astype(np.int)
+        scores = np.concatenate(scores, axis=0).astype(np.float)
+        return points, key_names, visibles, bboxes, labels, scores

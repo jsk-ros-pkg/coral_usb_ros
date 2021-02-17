@@ -155,9 +155,9 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             bboxes.append([y_min, x_min, y_max, x_max])
             labels.append(self.label_ids.index(int(obj.label_id)))
             scores.append(obj.score)
-        bboxes = np.array(bboxes).reshape((len(bboxes), 4)).astype(np.int)
-        labels = np.array(labels).astype(np.int)
-        scores = np.array(scores).astype(np.float)
+        bboxes = np.array(bboxes, dtype=np.int).reshape((len(bboxes), 4))
+        labels = np.array(labels, dtype=np.int)
+        scores = np.array(scores, dtype=np.float)
         return bboxes, labels, scores
 
     def _detect_objects(self, img):
@@ -166,8 +166,7 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             PIL.Image.fromarray(img), threshold=self.score_thresh,
             keep_aspect_ratio=True, relative_coord=True,
             top_k=self.top_k)
-        bboxes, labels, scores = self._process_result(objs, H, W)
-        return bboxes, labels, scores
+        return self._process_result(objs, H, W)
 
     def image_cb(self, msg):
         if not hasattr(self, 'engine'):

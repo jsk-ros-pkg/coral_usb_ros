@@ -150,13 +150,7 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.joint_score_thresh = config.joint_score_thresh
         return config
 
-    def _estimate_pose(self, img):
-        resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
-        H, W, _ = img.shape
-        y_scale = self.resized_H / H
-        x_scale = self.resized_W / W
-        poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
-
+    def _process_result(self, poses, y_scale, x_scale):
         points = []
         key_names = []
         visibles = []
@@ -201,6 +195,14 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         labels = np.array(labels, dtype=np.int)
         scores = np.array(scores, dtype=np.float)
         return points, key_names, visibles, bboxes, labels, scores
+
+    def _estimate_pose(self, img):
+        resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
+        H, W, _ = img.shape
+        y_scale = self.resized_H / H
+        x_scale = self.resized_W / W
+        poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
+        return self._process_result(poses, y_scale, x_scale)
 
     def image_cb(self, msg):
         if not hasattr(self, 'engine'):

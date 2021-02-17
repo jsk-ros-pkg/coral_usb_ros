@@ -313,11 +313,11 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         super(EdgeTPUPanoramaHumanPoseEstimator, self).__init__(
             namespace=namespace
         )
-        self.split_num = rospy.get_param('~split_num', 2)
+        self.n_split = rospy.get_param('~n_split', 2)
 
     def _estimate_pose(self, orig_img):
         _, orig_W = orig_img.shape[:2]
-        x_offsets = np.arange(self.split_num) * int(orig_W / self.split_num)
+        x_offsets = np.arange(self.n_split) * int(orig_W / self.n_split)
         x_offsets = x_offsets.astype(np.int)
 
         points = []
@@ -326,9 +326,9 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         bboxes = []
         labels = []
         scores = []
-        for i in range(self.split_num):
+        for i in range(self.n_split):
             x_offset = x_offsets[i]
-            if self.split_num == i + 1:
+            if self.n_split == i + 1:
                 x_end_offset = -1
             else:
                 x_end_offset = x_offsets[i + 1]

@@ -279,6 +279,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
                 x_end_offset = x_offsets[i + 1]
             img = orig_img[:, x_offset:x_end_offset, :]
             bbox, label, score = self._detect_step(img)
+            bbox = bbox + np.array([0,x_offset,0,x_offset])
             bboxes.append(bbox)
             labels.append(label)
             scores.append(score)

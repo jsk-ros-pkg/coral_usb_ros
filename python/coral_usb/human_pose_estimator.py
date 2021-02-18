@@ -346,15 +346,23 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             point, key_name, visible, bbox, label, score = \
                 self._process_result(
                     poses, y_scale, x_scale, x_offset=x_offset)
-            points.append(point)
-            key_names.extend(key_name)
-            visibles.append(visible)
-            bboxes.append(bbox)
-            labels.append(label)
-            scores.append(score)
-        points = np.concatenate(points, axis=0).astype(np.int)
-        visibles = np.concatenate(visibles, axis=0).astype(np.bool)
-        bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
-        labels = np.concatenate(labels, axis=0).astype(np.int)
-        scores = np.concatenate(scores, axis=0).astype(np.float)
+            if len(point) > 0:
+                points.append(point)
+                key_names.extend(key_name)
+                visibles.append(visible)
+                bboxes.append(bbox)
+                labels.append(label)
+                scores.append(score)
+        if len(points) > 0:
+            points = np.concatenate(points, axis=0).astype(np.int)
+            visibles = np.concatenate(visibles, axis=0).astype(np.bool)
+            bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
+            labels = np.concatenate(labels, axis=0).astype(np.int)
+            scores = np.concatenate(scores, axis=0).astype(np.float)
+        else:
+            points = np.empty((0, 0, 2), dtype=np.int)
+            visibles = np.empty((0, 0, ), dtype=np.bool)
+            bboxes = np.empty((0, 4), dtype=np.int)
+            labels = np.empty((0, ), dtype=np.int)
+            scores = np.empty((0, ), dtype=np.float)
         return points, key_names, visibles, bboxes, labels, scores

@@ -201,6 +201,10 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             labels.append(0)
             scores.append(score)
         points = np.array(points, dtype=np.int)
+        if len(points) == 0:
+            points = points.reshape((len(points), 0, 2))
+        else:
+            points = points.reshape((len(points), -1, 2))
         visibles = np.array(visibles, dtype=np.bool)
         bboxes = np.array(bboxes, dtype=np.int).reshape((len(bboxes), 4))
         labels = np.array(labels, dtype=np.int)

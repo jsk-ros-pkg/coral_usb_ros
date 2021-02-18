@@ -160,13 +160,14 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
         scores = np.array(scores, dtype=np.float)
         return bboxes, labels, scores
 
-    def _detect_step(self, img):
+    def _detect_step(self, img, y_offset=None, x_offset=None):
         H, W = img.shape[:2]
         objs = self.engine.DetectWithImage(
             PIL.Image.fromarray(img), threshold=self.score_thresh,
             keep_aspect_ratio=True, relative_coord=True,
             top_k=self.top_k)
-        return self._process_result(objs, H, W)
+        return self._process_result(
+            objs, H, W, y_offset=y_offset, x_offset=x_offset)
 
     def _detect(self, img):
         return self._detect_step(img)
@@ -278,7 +279,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             else:
                 x_end_offset = x_offsets[i + 1]
             img = orig_img[:, x_offset:x_end_offset, :]
-            bbox, label, score = self._detect_step(img)
+            bbox, label, score = self._detect_step(img, x_offset=x_offset)
             bboxes.append(bbox)
             labels.append(label)
             scores.append(score)

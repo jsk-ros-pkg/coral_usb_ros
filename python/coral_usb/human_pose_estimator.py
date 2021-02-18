@@ -211,13 +211,14 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         scores = np.array(scores, dtype=np.float)
         return points, key_names, visibles, bboxes, labels, scores
 
-    def _estimate_step(self, img):
+    def _estimate_step(self, img, y_offset=None, x_offset=None):
         resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
         H, W, _ = img.shape
         y_scale = self.resized_H / H
         x_scale = self.resized_W / W
         poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
-        return self._process_result(poses, y_scale, x_scale)
+        return self._process_result(
+            poses, y_scale, x_scale, y_offset=y_offset, x_offset=x_offset)
 
     def _estimate(self, img):
         return self._estimate_step(img)
@@ -341,7 +342,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
                 x_end_offset = x_offsets[i + 1]
             img = orig_img[:, x_offset:x_end_offset, :]
             point, key_name, visible, bbox, label, score \
-                = self._estimate_step(img)
+                = self._estimate_step(img, x_offset=x_offset)
             if len(point) > 0:
                 points.append(point)
                 key_names.extend(key_name)

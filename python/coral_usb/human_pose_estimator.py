@@ -323,7 +323,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         super(EdgeTPUPanoramaHumanPoseEstimator, self).__init__(
             namespace=namespace
         )
-        self.n_split = rospy.get_param('~n_split', 2)
+        self.n_split = rospy.get_param('~n_split', 3)
 
     def _estimate(self, orig_img):
         _, orig_W = orig_img.shape[:2]

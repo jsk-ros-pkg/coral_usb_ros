@@ -265,7 +265,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         super(EdgeTPUPanoramaDetectorBase, self).__init__(
             model_file=model_file, label_file=label_file, namespace=namespace
         )
-        self.n_split = rospy.get_param('~n_split', 2)
+        self.n_split = rospy.get_param('~n_split', 3)
 
     def _detect(self, orig_img):
         _, orig_W = orig_img.shape[:2]

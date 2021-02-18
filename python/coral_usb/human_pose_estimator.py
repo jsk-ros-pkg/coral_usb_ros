@@ -324,10 +324,12 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             namespace=namespace
         )
         self.n_split = rospy.get_param('~n_split', 3)
+        self.overlap = rospy.get_param('~overlap', True)
 
     def _estimate(self, orig_img):
         _, orig_W = orig_img.shape[:2]
-        panorama_slices = get_panorama_slices(orig_W, self.n_split)
+        panorama_slices = get_panorama_slices(
+            orig_W, self.n_split, overlap=self.overlap)
 
         points = []
         key_names = []

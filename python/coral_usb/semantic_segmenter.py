@@ -160,6 +160,21 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             labels = {int(num): text.strip() for num, text in lines}
             return list(labels.keys()), list(labels.values())
 
+    def _segment_step(self, img):
+        H, W = img.shape[:2]
+        input_H, input_W = self.input_shape
+        input_tensor = cv2.resize(img, (input_W, input_H))
+        input_tensor = input_tensor.flatten()
+        _, label = self.engine.run_inference(input_tensor)
+        label = label.reshape(self.input_shape)
+        label = cv2.resize(
+            label, (W, H), interpolation=cv2.INTER_NEAREST)
+        label = label.astype(np.int32)
+        return label
+
+    def _segment(self, img):
+        return self._segment_step(img)
+
     def image_cb(self, msg):
         if not hasattr(self, 'engine'):
             return
@@ -169,17 +184,8 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             img = img[:, :, ::-1]
         else:
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
-        H, W = img.shape[:2]
-        input_H, input_W = self.input_shape
-        input_tensor = cv2.resize(img, (input_W, input_H))
-        input_tensor = input_tensor.flatten()
 
-        _, label = self.engine.run_inference(input_tensor)
-        label = label.reshape(self.input_shape)
-        label = cv2.resize(
-            label, (W, H), interpolation=cv2.INTER_NEAREST)
-        label = label.astype(np.int32)
-
+        label = self._segment(img)
         label_msg = self.bridge.cv2_to_imgmsg(label, '32SC1')
         label_msg.header = msg.header
         self.pub_label.publish(label_msg)
@@ -232,3 +238,32 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             vis_compressed_msg.data = np.array(
                 cv2.imencode('.jpg', vis_img_rgb)[1]).tostring()
             self.pub_image_compressed.publish(vis_compressed_msg)
+
+
+class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
+    def __init__(self, namespace='~'):
+        super(EdgeTPUPanoramaSemanticSegmenter, self).__init__(
+            namespace=namespace,
+        )
+        self.n_split = rospy.get_param('~n_split', 2)
+
+    def _segment(self, orig_img):
+        _, orig_W = orig_img.shape[:2]
+        x_offsets = np.arange(self.n_split) * int(orig_W / self.n_split)
+        x_offsets = x_offsets.astype(np.int)
+
+        label = []
+        for i in range(self.n_split):
+            x_offset = x_offsets[i]
+            if self.n_split == i + 1:
+                x_end_offset = -1
+            else:
+                x_end_offset = x_offsets[i + 1]
+            img = orig_img[:, x_offset:x_end_offset, :]
+            lbl = self._segment_step(img)
+            label.append(lbl)
+        if len(label) > 0:
+            label = np.concatenate(label, axis=1).astype(np.int32)
+        else:
+            label = np.empty((0, 0), dtype=np.int32)
+        return label

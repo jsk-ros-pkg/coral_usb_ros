@@ -211,13 +211,16 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         scores = np.array(scores, dtype=np.float)
         return points, key_names, visibles, bboxes, labels, scores
 
-    def _estimate_pose(self, img):
+    def _estimate_step(self, img):
         resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
         H, W, _ = img.shape
         y_scale = self.resized_H / H
         x_scale = self.resized_W / W
         poses, _ = self.engine.DetectPosesInImage(resized_img.astype(np.uint8))
         return self._process_result(poses, y_scale, x_scale)
+
+    def _estimate(self, img):
+        return self._estimate_step(img)
 
     def image_cb(self, msg):
         if not hasattr(self, 'engine'):
@@ -230,7 +233,7 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
 
         points, key_names, visibles, bboxes, labels, scores \
-            = self._estimate_pose(img)
+            = self._estimate(img)
 
         poses_msg = PeoplePoseArray(header=msg.header)
         rects_msg = RectArray(header=msg.header)
@@ -319,7 +322,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         )
         self.n_split = rospy.get_param('~n_split', 2)
 
-    def _estimate_pose(self, orig_img):
+    def _estimate(self, orig_img):
         _, orig_W = orig_img.shape[:2]
         x_offsets = np.arange(self.n_split) * int(orig_W / self.n_split)
         x_offsets = x_offsets.astype(np.int)
@@ -337,15 +340,8 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             else:
                 x_end_offset = x_offsets[i + 1]
             img = orig_img[:, x_offset:x_end_offset, :]
-            resized_img = cv2.resize(img, (self.resized_W, self.resized_H))
-            H, W, _ = img.shape
-            y_scale = self.resized_H / H
-            x_scale = self.resized_W / W
-            poses, _ = self.engine.DetectPosesInImage(
-                resized_img.astype(np.uint8))
-            point, key_name, visible, bbox, label, score = \
-                self._process_result(
-                    poses, y_scale, x_scale, x_offset=x_offset)
+            point, key_name, visible, bbox, label, score \
+                = self._estimate_step(img)
             if len(point) > 0:
                 points.append(point)
                 key_names.extend(key_name)

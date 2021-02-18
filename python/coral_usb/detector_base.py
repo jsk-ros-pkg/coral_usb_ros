@@ -160,13 +160,16 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
         scores = np.array(scores, dtype=np.float)
         return bboxes, labels, scores
 
-    def _detect_objects(self, img):
+    def _detect_step(self, img):
         H, W = img.shape[:2]
         objs = self.engine.DetectWithImage(
             PIL.Image.fromarray(img), threshold=self.score_thresh,
             keep_aspect_ratio=True, relative_coord=True,
             top_k=self.top_k)
         return self._process_result(objs, H, W)
+
+    def _detect(self, img):
+        return self._detect_step(img)
 
     def image_cb(self, msg):
         if not hasattr(self, 'engine'):
@@ -178,7 +181,7 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
         else:
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
 
-        bboxes, labels, scores = self._detect_objects(img)
+        bboxes, labels, scores = self._detect(img)
 
         rect_msg = RectArray(header=msg.header)
         for bbox in bboxes:
@@ -261,7 +264,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         )
         self.n_split = rospy.get_param('~n_split', 2)
 
-    def _detect_objects(self, orig_img):
+    def _detect(self, orig_img):
         _, orig_W = orig_img.shape[:2]
         x_offsets = np.arange(self.n_split) * int(orig_W / self.n_split)
         x_offsets = x_offsets.astype(np.int)
@@ -275,13 +278,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             else:
                 x_end_offset = x_offsets[i + 1]
             img = orig_img[:, x_offset:x_end_offset, :]
-            H, W = img.shape[:2]
-            objs = self.engine.DetectWithImage(
-                PIL.Image.fromarray(img), threshold=self.score_thresh,
-                keep_aspect_ratio=True, relative_coord=True,
-                top_k=self.top_k)
-            bbox, label, score = self._process_result(
-                objs, H, W, x_offset=x_offset)
+            bbox, label, score = self._detect_step(img)
             bboxes.append(bbox)
             labels.append(label)
             scores.append(score)

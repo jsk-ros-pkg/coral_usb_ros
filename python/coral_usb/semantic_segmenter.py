@@ -251,7 +251,8 @@ class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
 
     def _segment(self, orig_img):
         _, orig_W = orig_img.shape[:2]
-        panorama_slices = get_panorama_slices(orig_W, self.n_split)
+        panorama_slices = get_panorama_slices(
+            orig_W, self.n_split, overlap=False)
 
         label = []
         for panorama_slice in panorama_slices:

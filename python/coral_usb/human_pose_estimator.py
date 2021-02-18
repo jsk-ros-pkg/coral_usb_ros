@@ -182,8 +182,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
                 key_name.append(key_nm)
                 if keypoint.score < self.joint_score_thresh:
                     visible.append(False)
-                    continue
-                visible.append(True)
+                else:
+                    visible.append(True)
             points.append(point)
             key_names.append(key_name)
             visibles.append(visible)

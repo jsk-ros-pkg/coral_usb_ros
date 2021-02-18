@@ -21,6 +21,8 @@ from resource_retriever import get_filename
 import rospkg
 import rospy
 
+from coral_usb.util import get_panorama_slices
+
 from dynamic_reconfigure.server import Server
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Pose
@@ -325,8 +327,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
 
     def _estimate(self, orig_img):
         _, orig_W = orig_img.shape[:2]
-        x_offsets = np.arange(self.n_split) * int(orig_W / self.n_split)
-        x_offsets = x_offsets.astype(np.int)
+        panorama_slices = get_panorama_slices(orig_W, self.n_split)
 
         points = []
         key_names = []
@@ -334,15 +335,10 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         bboxes = []
         labels = []
         scores = []
-        for i in range(self.n_split):
-            x_offset = x_offsets[i]
-            if self.n_split == i + 1:
-                x_end_offset = -1
-            else:
-                x_end_offset = x_offsets[i + 1]
-            img = orig_img[:, x_offset:x_end_offset, :]
+        for panorama_slice in panorama_slices:
+            img = orig_img[:, panorama_slice, :]
             point, key_name, visible, bbox, label, score \
-                = self._estimate_step(img, x_offset=x_offset)
+                = self._estimate_step(img, x_offset=panorama_slice.start)
             if len(point) > 0:
                 points.append(point)
                 key_names.extend(key_name)

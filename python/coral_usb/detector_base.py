@@ -23,6 +23,8 @@ import PIL.Image
 from resource_retriever import get_filename
 import rospy
 
+from coral_usb.util import get_panorama_slices
+
 from jsk_recognition_msgs.msg import ClassificationResult
 from jsk_recognition_msgs.msg import Rect
 from jsk_recognition_msgs.msg import RectArray
@@ -267,22 +269,19 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
 
     def _detect(self, orig_img):
         _, orig_W = orig_img.shape[:2]
-        x_offsets = np.arange(self.n_split) * int(orig_W / self.n_split)
-        x_offsets = x_offsets.astype(np.int)
+        panorama_slices = get_panorama_slices(orig_W, self.n_split)
+
         bboxes = []
         labels = []
         scores = []
-        for i in range(self.n_split):
-            x_offset = x_offsets[i]
-            if self.n_split == i + 1:
-                x_end_offset = -1
-            else:
-                x_end_offset = x_offsets[i + 1]
-            img = orig_img[:, x_offset:x_end_offset, :]
-            bbox, label, score = self._detect_step(img, x_offset=x_offset)
+        for panorama_slice in panorama_slices:
+            img = orig_img[:, panorama_slice, :]
+            bbox, label, score = self._detect_step(
+                img, x_offset=panorama_slice.start)
             bboxes.append(bbox)
             labels.append(label)
             scores.append(score)
+
         if len(bboxes) > 0:
             bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
             labels = np.concatenate(labels, axis=0).astype(np.int)

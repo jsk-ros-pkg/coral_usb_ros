@@ -23,6 +23,8 @@ from resource_retriever import get_filename
 import rospkg
 import rospy
 
+from coral_usb.util import get_panorama_slices
+
 from jsk_topic_tools import ConnectionBasedTransport
 from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
@@ -249,17 +251,11 @@ class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
 
     def _segment(self, orig_img):
         _, orig_W = orig_img.shape[:2]
-        x_offsets = np.arange(self.n_split) * int(orig_W / self.n_split)
-        x_offsets = x_offsets.astype(np.int)
+        panorama_slices = get_panorama_slices(orig_W, self.n_split)
 
         label = []
-        for i in range(self.n_split):
-            x_offset = x_offsets[i]
-            if self.n_split == i + 1:
-                x_end_offset = -1
-            else:
-                x_end_offset = x_offsets[i + 1]
-            img = orig_img[:, x_offset:x_end_offset, :]
+        for panorama_slice in panorama_slices:
+            img = orig_img[:, panorama_slice, :]
             lbl = self._segment_step(img)
             label.append(lbl)
         if len(label) > 0:

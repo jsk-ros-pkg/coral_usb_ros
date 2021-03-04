@@ -144,7 +144,7 @@ Please see [here](./training/README.md) for more detailed information.
 
 ### Add Device Access Permission
 
-```
+```bash
 sudo adduser $(whoami) plugdev
 ```
 

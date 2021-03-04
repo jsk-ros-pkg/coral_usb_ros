@@ -143,9 +143,11 @@ rosrun coral_usb download_models.py
 Please see [here](./training/README.md) for more detailed information.
 
 ### Add Device Access Permission
+
 ```
 sudo adduser $(whoami) plugdev
 ```
+
 ## Demo
 
 ### Run `roscore`

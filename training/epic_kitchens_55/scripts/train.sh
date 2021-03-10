@@ -15,7 +15,7 @@ usage() {
                                 by default, in which only the last few layers are trained.
   --num_training_steps          Number of training steps to run, 500 by default.
   --checkpoint_num              Checkpoint number, by default 500.
-  --gpu                         Specify GPU id, by defualt 0
+  --gpu                         Specify GPU id, by default 0
   --sample_1_of_n_eval_examples Sample rate for evaluation, by default 1.
   --help                        Display this help.
 

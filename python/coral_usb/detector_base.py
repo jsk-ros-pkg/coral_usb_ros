@@ -124,13 +124,12 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
         self.score_thresh = config.score_thresh
         self.top_k = config.top_k
         self.model_file = config.model_file
-        self.label_file = config.label_file
-        self.engine = DetectionEngine(self.model_file, device_path=self.device_path)
-        if self.label_file is None:
-            self.label_ids = None
-            self.label_names = None
-        else:
+        try:
+            self.label_file = config.label_file
             self.label_ids, self.label_names = self._load_labels(self.label_file)
+        except:
+            self.label_file = None
+        self.engine = DetectionEngine(self.model_file, device_path=self.device_path)
         return config
 
     def _load_labels(self, path):

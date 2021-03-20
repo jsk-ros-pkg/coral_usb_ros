@@ -2,6 +2,89 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use lower version of pillow
+* update pillows
+* fix typo
+* Merge pull request `#56 <https://github.com/knorth55/coral_usb_ros/issues/56>`_ from ishiguroJSK/patch-1
+* Update README.md
+* Update README.md
+* Update README.md
+* add overlap arguments
+* fix panorama semantic_segmenter
+* update default n_split arg
+* pdate default n_split parameter
+* add get_panorama_slices
+* fix typo
+* add edgetpu_panorama_semantic_segmenter
+* refactor human_pose_estimator and detector_base
+* return empty when no result is detected
+* reshape points
+* fix typo in human_pose_estimator
+* add edgetpu_panorama_face_detector
+* use n_split
+* hacking
+* remove panorama_detector_base.py
+* add edgetpu_panorama_human_pose_estimator
+* refactor panorama_detector_base
+* add _process_result
+* refactor detector_base
+* add _estimate_pose
+* add panorama_detector_base and panorama_object_detector
+* add _detect_objects
+* fix typo
+* fix typo
+* fix readme
+* update reademe
+* do not run jscpd linter
+* fix dynamic_reconfigure namespace `#53 <https://github.com/knorth55/coral_usb_ros/issues/53>`_
+  related to https://github.com/ros-visualization/rqt_reconfigure/issues/92
+* Merge pull request `#50 <https://github.com/knorth55/coral_usb_ros/issues/50>`_ from knorth55/device-path
+* add device_id
+* ad knorth55/project-posenet
+* remove posenet
+* move all param in yaml and add yaml arg
+* add resource_retriever in run_depend
+* update readme version badge
+* Merge pull request `#47 <https://github.com/knorth55/coral_usb_ros/issues/47>`_ from knorth55/add-switcher
+* add default
+* add prefix
+* add node manager launch
+* add node_manager.py
+* add start and stop methods
+* add services
+* use get_filename
+* add namespace args
+* fix EdgeTPUDetectorBase
+* move semantic_segmenter to python/
+* move human_pose_estimator to python/
+* move codes to python
+* refactor nodes
+* Merge pull request `#45 <https://github.com/knorth55/coral_usb_ros/issues/45>`_ from knorth55/use-legacy
+* update key server
+* use legacy version
+* Merge pull request `#42 <https://github.com/knorth55/coral_usb_ros/issues/42>`_ from knorth55/add-human-rects
+* update readme
+* publish ClassificationResult in edgetpu_human_pose_estimator
+* publish human rects in edgetpu_human_pose_estimator
+* fix bgr -> rgb
+* Merge pull request `#40 <https://github.com/knorth55/coral_usb_ros/issues/40>`_ from k-okada/add_compress
+* Merge pull request `#41 <https://github.com/knorth55/coral_usb_ros/issues/41>`_ from knorth55/add-hacking
+* add hacking in linter
+* fix h103
+* add documentation for compressed transport
+* support compressed images, support IMAGE_TRANSPORT ros-args to launch files, publish compressed topic
+* fix Dockerfile for build
+* clean up apt cache in layers
+* fix readme linter
+* enable markdown
+* Merge pull request `#39 <https://github.com/knorth55/coral_usb_ros/issues/39>`_ from knorth55/add-superlinter
+* flake8
+* update linter
+* add superlinter
+* Contributors: Kei Okada, Shingo Kitagawa, Yasuhiro Ishiguro
+
 0.0.2 (2020-11-05)
 ------------------
 * Update README.md

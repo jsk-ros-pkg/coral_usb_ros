@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.3 (2021-03-20)
+------------------
 * use lower version of pillow
 * update pillows
 * fix typo

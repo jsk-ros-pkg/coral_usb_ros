@@ -20,7 +20,6 @@ from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
 from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
-import rospkg
 import rospy
 
 from coral_usb.util import get_panorama_slices
@@ -39,14 +38,11 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         rospy.loginfo("Using transport {}".format(self.transport_hint))
 
         super(EdgeTPUSemanticSegmenter, self).__init__()
-        rospack = rospkg.RosPack()
-        pkg_path = rospack.get_path('coral_usb')
         self.bridge = CvBridge()
         self.classifier_name = rospy.get_param(
             namespace + 'classifier_name', rospy.get_name())
-        model_file = os.path.join(
-            pkg_path,
-            './models/deeplabv3_mnv2_pascal_quant_edgetpu.tflite')
+        model_file = 'package://coral_usb/models/' + \
+            'deeplabv3_mnv2_pascal_quant_edgetpu.tflite'
         model_file = rospy.get_param(namespace + 'model_file', model_file)
         label_file = rospy.get_param(namespace + 'label_file', None)
         if model_file is not None:

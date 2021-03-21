@@ -18,7 +18,6 @@ from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
 from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
-import rospkg
 import rospy
 
 from coral_usb.util import get_panorama_slices
@@ -48,15 +47,12 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         rospy.loginfo("Using transport {}".format(self.transport_hint))
 
         super(EdgeTPUHumanPoseEstimator, self).__init__()
-        rospack = rospkg.RosPack()
-        pkg_path = rospack.get_path('coral_usb')
         self.bridge = CvBridge()
         self.classifier_name = rospy.get_param(
             namespace + 'classifier_name', rospy.get_name())
-        model_file = os.path.join(
-            pkg_path,
-            './python/coral_usb/posenet/models/mobilenet/'
-            'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite')
+        model_file = 'package://coral_usb/python/coral_usb/posenet/' + \
+            'models/mobilenet/' + \
+            'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite'
         model_file = rospy.get_param(namespace + 'model_file', model_file)
         if model_file is not None:
             self.model_file = get_filename(model_file, False)

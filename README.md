@@ -242,14 +242,6 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Classifier name
 
-- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite`)
-
-  - Model file path
-
-- `~label_file` (`String`, default: `$(rospack find coral_usb)/models/coco_labels.txt`)
-
-  - Label file path.
-
 - `~enable_visualization` (`Bool`, default: `True`)
 
   - Whether enable visualization or not
@@ -271,6 +263,14 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 - `~top_k`: (`Int`, default: `100`)
 
   - Maximum number of detected objects
+
+- `~model_file` (`String`, default: `package://coral_usb/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite`)
+
+  - Model file path
+
+- `~label_file` (`String`, default: `package://coral_usb/models/coco_labels.txt`)
+
+  - Label file path.
 
 ### Face detector: `edgetpu_face_detector.py`
 
@@ -302,10 +302,6 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Classifier name
 
-- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite`)
-
-  - Model file path
-
 - `~enable_visualization` (`Bool`, default: `True`)
 
   - Whether enable visualization or not
@@ -327,6 +323,10 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 - `~top_k`: (`Int`, default: `100`)
 
   - Maximum number of detected faces
+
+- `~model_file` (`String`, default: `package://coral_usb/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite`)
+
+  - Model file path
 
 ### Human pose estimator: `edgetpu_human_pose_estimator.py`
 
@@ -362,7 +362,7 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Classifier name
 
-- `~model_file` (`String`, default: `$(rospack find coral_usb)/python/coral_usb/posenet/models/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite`)
+- `~model_file` (`String`, default: `package://coral_usb/python/coral_usb/posenet/models/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite`)
 
   - Model file path
 
@@ -414,7 +414,7 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Classifier name
 
-- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/deeplabv3_mnv2_pascal_quant_edgetpu.tflite`)
+- `~model_file` (`String`, default: `package://coral_usb/models/deeplabv3_mnv2_pascal_quant_edgetpu.tflite`)
 
   - Model file path
 

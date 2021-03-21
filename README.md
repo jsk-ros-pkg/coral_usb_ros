@@ -264,11 +264,11 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Maximum number of detected objects
 
-- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite`)
+- `~model_file` (`String`, default: `package://coral_usb/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite`)
 
   - Model file path
 
-- `~label_file` (`String`, default: `$(rospack find coral_usb)/models/coco_labels.txt`)
+- `~label_file` (`String`, default: `package://coral_usb/models/coco_labels.txt`)
 
   - Label file path.
 
@@ -324,7 +324,7 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Maximum number of detected faces
 
-- `~model_file` (`String`, default: `$(rospack find coral_usb)/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite`)
+- `~model_file` (`String`, default: `package://coral_usb/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite`)
 
   - Model file path
 

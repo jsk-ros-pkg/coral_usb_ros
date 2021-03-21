@@ -1,5 +1,3 @@
-import os
-
 from dynamic_reconfigure.server import Server
 
 from coral_usb.cfg import EdgeTPUFaceDetectorConfig
@@ -9,7 +7,9 @@ from coral_usb.detector_base import EdgeTPUPanoramaDetectorBase
 
 class EdgeTPUFaceDetector(EdgeTPUDetectorBase):
     def __init__(self, namespace='~'):
-        super(EdgeTPUFaceDetector, self).__init__(None, namespace)
+        model_file = 'package://coral_usb/models/' + \
+            'mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite'
+        super(EdgeTPUFaceDetector, self).__init__(model_file, None, namespace)
 
         # only for human face
         self.label_ids = [0]
@@ -26,7 +26,10 @@ class EdgeTPUFaceDetector(EdgeTPUDetectorBase):
 
 class EdgeTPUPanoramaFaceDetector(EdgeTPUPanoramaDetectorBase):
     def __init__(self, namespace='~'):
-        super(EdgeTPUPanoramaFaceDetector, self).__init__(None, namespace)
+        model_file = 'package://coral_usb/models/' + \
+            'mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite'
+        super(EdgeTPUPanoramaFaceDetector, self).__init__(
+            model_file, None, namespace)
 
         # only for human face
         self.label_ids = [0]

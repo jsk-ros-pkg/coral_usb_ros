@@ -51,6 +51,7 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             self.model_file = get_filename(model_file, False)
         if label_file is not None:
             label_file = get_filename(label_file, False)
+
         self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(
             namespace + 'enable_visualization', True)
@@ -66,6 +67,11 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
                     'device {} is already assigned: {}'.format(
                         device_id, device_path))
         self.device_path = device_path
+        if label_file is None:
+            self.label_ids = None
+            self.label_names = None
+        else:
+            self.label_ids, self.label_names = self._load_labels(label_file)
 
         self.pub_rects = self.advertise(
             namespace + 'output/rects', RectArray, queue_size=1)
@@ -89,7 +95,8 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             self.scores = None
 
     def start(self):
-        self.engine = DetectionEngine(self.model_file)
+        self.engine = DetectionEngine(
+            self.model_file, device_path=self.device_path)
         self.subscribe()
         if self.enable_visualization:
             self.timer = rospy.Timer(
@@ -123,13 +130,13 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
     def config_callback(self, config, level):
         self.score_thresh = config.score_thresh
         self.top_k = config.top_k
-        self.model_file = config.model_file
-        try:
-            self.label_file = config.label_file
-            self.label_ids, self.label_names = self._load_labels(self.label_file)
-        except:
-            self.label_file = None
-        self.engine = DetectionEngine(self.model_file, device_path=self.device_path)
+        self.model_file = get_filename(config.model_file, False)
+        if 'label_file' in config:
+            label_file = get_filename(config.label_file, False)
+            self.label_ids, self.label_names = self._load_labels(label_file)
+
+        self.engine = DetectionEngine(
+            self.model_file, device_path=self.device_path)
         return config
 
     def _load_labels(self, path):

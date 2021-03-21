@@ -7,12 +7,7 @@ from coral_usb.detector_base import EdgeTPUPanoramaDetectorBase
 
 class EdgeTPUObjectDetector(EdgeTPUDetectorBase):
     def __init__(self, namespace='~'):
-        model_path = 'package://coral_usb/models/'
-        model_file = model_path + \
-            'mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite'
-        label_file = model_path + 'coco_labels.txt'
-        super(EdgeTPUObjectDetector, self).__init__(
-            model_file, label_file, namespace)
+        super(EdgeTPUObjectDetector, self).__init__(None, None, namespace)
 
         # dynamic reconfigure
         dyn_namespace = namespace
@@ -25,12 +20,8 @@ class EdgeTPUObjectDetector(EdgeTPUDetectorBase):
 
 class EdgeTPUPanoramaObjectDetector(EdgeTPUPanoramaDetectorBase):
     def __init__(self, namespace='~'):
-        model_path = 'package://coral_usb/models/'
-        model_file = model_path + \
-            'mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite'
-        label_file = model_path + 'coco_labels.txt'
         super(EdgeTPUPanoramaObjectDetector, self).__init__(
-            model_file, label_file, namespace)
+            None, None, namespace)
 
         # dynamic reconfigure
         dyn_namespace = namespace

@@ -1,7 +1,6 @@
 import copy
 import matplotlib
-matplotlib.use("Agg")  # NOQA
-import matplotlib.pyplot as plt
+import matplotlib.cm
 import numpy as np
 import os
 import sys
@@ -12,7 +11,6 @@ sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_
 import cv2  # NOQA
 sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
-from chainercv.visualizations import vis_point
 from cv_bridge import CvBridge
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
@@ -279,24 +277,23 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             return
 
         with self.lock:
-            img = self.img.copy()
+            vis_img = self.img.copy()
             header = copy.deepcopy(self.header)
             points = self.points.copy()
             visibles = self.visibles.copy()
 
-        fig = plt.figure(
-            tight_layout={'pad': 0})
-        ax = plt.Axes(fig, [0., 0., 1., 1.])
-        ax.axis('off')
-        fig.add_axes(ax)
-        vis_point(img.transpose((2, 0, 1)), points, visibles, ax=ax)
-        fig.canvas.draw()
-        w, h = fig.canvas.get_width_height()
-        vis_img = np.fromstring(
-            fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_img.shape = (h, w, 3)
-        fig.clf()
-        plt.close()
+        # keypoints
+        cmap = matplotlib.cm.get_cmap('hsv')
+        for i in range(len(points)):
+            for j in range(len(points[i])):
+                n = len(points[i]) - 1
+                rgba = np.array(cmap(1. * j / n))
+                color = rgba[:3] * 255
+                if visibles[i][j]:
+                    cv2.circle(vis_img,
+                               (int(points[i][j][1]), int(points[i][j][0])),
+                               8, color, thickness=-1)
+
         if self.pub_image.get_num_connections() > 0:
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
             # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA

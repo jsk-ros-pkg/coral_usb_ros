@@ -284,15 +284,13 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
 
         # keypoints
         cmap = matplotlib.cm.get_cmap('hsv')
-        for i in range(len(points)):
-            for j in range(len(points[i])):
-                n = len(points[i]) - 1
-                rgba = np.array(cmap(1. * j / n))
-                color = rgba[:3] * 255
-                if visibles[i][j]:
-                    cv2.circle(vis_img,
-                               (int(points[i][j][1]), int(points[i][j][0])),
-                               8, color, thickness=-1)
+        for i, (point, visible) in enumerate(zip(points, visibles)):
+            n = len(point) - 1
+            for j, (pp, vis) in enumerate(zip(point, visible)):
+                if vis:
+                    rgba = np.array(cmap(1. * j / n))
+                    color = rgba[:3] * 255
+                    cv2.circle(vis_img, (pp[1], pp[0]), 8, color, thickness=-1)
 
         if self.pub_image.get_num_connections() > 0:
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')

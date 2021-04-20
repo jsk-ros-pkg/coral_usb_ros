@@ -1,7 +1,6 @@
 import copy
 import matplotlib
-matplotlib.use("Agg")  # NOQA
-import matplotlib.pyplot as plt
+import matplotlib.cm
 import numpy as np
 import os
 import re
@@ -13,7 +12,6 @@ sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_
 import cv2  # NOQA
 sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
-from chainercv.visualizations import vis_bbox
 from cv_bridge import CvBridge
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
@@ -235,28 +233,26 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             return
 
         with self.lock:
-            img = self.img.copy()
+            vis_img = self.img.copy()
             header = copy.deepcopy(self.header)
             bboxes = self.bboxes.copy()
             labels = self.labels.copy()
             scores = self.scores.copy()
 
-        fig = plt.figure(
-            tight_layout={'pad': 0})
-        ax = plt.Axes(fig, [0., 0., 1., 1.])
-        ax.axis('off')
-        fig.add_axes(ax)
-        vis_bbox(
-            img.transpose((2, 0, 1)),
-            bboxes, labels, scores,
-            label_names=self.label_names, ax=ax)
-        fig.canvas.draw()
-        w, h = fig.canvas.get_width_height()
-        vis_img = np.fromstring(
-            fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_img.shape = (h, w, 3)
-        fig.clf()
-        plt.close()
+        # bbox
+        cmap = matplotlib.cm.get_cmap('hsv')
+        n = max(len(bboxes) - 1, 10)
+        for i, (bbox, label, score) in enumerate(zip(bboxes, labels, scores)):
+            rgba = np.array(cmap(1. * i / n))
+            color = rgba[:3] * 255
+            label_text = '{}, {:.2f}'.format(self.label_names[label], score)
+            cv2.rectangle(
+                vis_img, (bbox[1], bbox[0]), (bbox[3], bbox[2]),
+                color, thickness=3)
+            cv2.putText(
+                vis_img, label_text, (bbox[1], max(bbox[0] - 10, 0)),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness=2)
+
         if self.pub_image.get_num_connections() > 0:
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
             # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA

@@ -1,10 +1,10 @@
 <launch>
-  <arg name="namespace" default="edgetpu_semantic_segmenter"/>
+  <arg name="nodename" default="edgetpu_semantic_segmenter"/>
   <arg name="INPUT_IMAGE"/>
   <arg name="IMAGE_TRANSPORT" default="raw"/>
   <arg name="device_id" default="0" />
 
-  <node name="$(arg namespace)"
+  <node name="$(arg nodename)"
         pkg="coral_usb" type="edgetpu_semantic_segmenter.py"
         output="screen" respawn="true">
     <remap from="~input" to="$(arg INPUT_IMAGE)" />

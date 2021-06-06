@@ -248,10 +248,11 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             label_text = '{}, {:.2f}'.format(self.label_names[label], score)
             cv2.rectangle(
                 vis_img, (bbox[1], bbox[0]), (bbox[3], bbox[2]),
-                color, thickness=3)
+                color, thickness=3, lineType=cv2.LINE_AA)
             cv2.putText(
                 vis_img, label_text, (bbox[1], max(bbox[0] - 10, 0)),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness=2)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color,
+                thickness=2, lineType=cv2.LINE_AA)
 
         if self.pub_image.get_num_connections() > 0:
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')

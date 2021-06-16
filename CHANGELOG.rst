@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2021-06-16)
+------------------
 * set linetype
 * Merge pull request `#60 <https://github.com/knorth55/coral_usb_ros/issues/60>`_ from 708yamaguchi/namespace-arg
 * Merge branch 'master' into namespace-arg

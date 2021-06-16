@@ -2,6 +2,36 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* set linetype
+* Merge pull request `#60 <https://github.com/knorth55/coral_usb_ros/issues/60>`_ from 708yamaguchi/namespace-arg
+* Merge branch 'master' into namespace-arg
+* update linter workflows
+* Change arg name
+* Add arg to change namespace of edgetpu node
+* use cv2 visualization for detector_base
+* refactor human_pose_estimator
+* Merge pull request `#59 <https://github.com/knorth55/coral_usb_ros/issues/59>`_ from k-okada/use_cv_draw_point
+  use cv2.circle instead of vis_point/matplot.lot for effective cpu power
+* use cv2.circle instead of vis_point/matplot.lot for effective cpu resources
+* Merge pull request `#58 <https://github.com/knorth55/coral_usb_ros/issues/58>`_ from shmpwk/fix-model-label
+  Change the way model file (and label file) are loaded for object detector and face detector
+* use resource_retriever
+* refactor detector_base
+* refactor model path
+* update README.md
+* fix dynamic parameters
+* update cfg
+* Merge branch 'master' into fix-model-label
+* edit readme for EdgeTPUFaceDetector param
+* change the representation of model_file to adapt dynamic reconfigure for EdgeTPUFaceDetector
+* change for EdgeTPUPanoramaObjectDetector
+* change dynamic parameters
+* ignore to commit __pycache\_\_
+* change the representation of model_file and label_file to adapt to dynamic recongirure of EdgeTPUObjectDetector
+* Contributors: Kei Okada, Naoya Yamaguchi, Shingo Kitagawa, Shumpei Wakabayashi, shmpwk
+
 0.0.3 (2021-03-20)
 ------------------
 * use lower version of pillow

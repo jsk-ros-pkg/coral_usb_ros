@@ -248,11 +248,15 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             rgba = np.array(cmap(1. * i / n))
             color = rgba[:3] * 255
             label_text = '{}, {:.2f}'.format(self.label_names[label], score)
+            p1y = max(bbox[0], 0)
+            p1x = max(bbox[1], 0)
+            p2y = min(bbox[2], vis_img.shape[0])
+            p2x = min(bbox[3], vis_img.shape[1])
             cv2.rectangle(
-                vis_img, (bbox[1], bbox[0]), (bbox[3], bbox[2]),
+                vis_img, (p1x, p1y), (p2x, p2y),
                 color, thickness=3, lineType=cv2.LINE_AA)
             cv2.putText(
-                vis_img, label_text, (bbox[1], max(bbox[0] - 10, 0)),
+                vis_img, label_text, (p1x, max(p1y - 10, 0)),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color,
                 thickness=2, lineType=cv2.LINE_AA)
 

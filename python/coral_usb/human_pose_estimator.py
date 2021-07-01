@@ -289,9 +289,11 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             n = len(point) - 1
             for j, (pp, vis) in enumerate(zip(point, visible)):
                 if vis:
+                    py = pp[0] % vis_img.shape[0]
+                    px = pp[1] % vis_img.shape[1]
                     rgba = np.array(cmap(1. * j / n))
                     color = rgba[:3] * 255
-                    cv2.circle(vis_img, (pp[1], pp[0]), 8, color, thickness=-1)
+                    cv2.circle(vis_img, (px, py), 8, color, thickness=-1)
 
         if self.pub_image.get_num_connections() > 0:
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')

@@ -18,6 +18,7 @@ from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
 import rospy
 
+from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
 from dynamic_reconfigure.server import Server
@@ -329,7 +330,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         labels = []
         scores = []
         for panorama_slice in panorama_slices:
-            img = orig_img[:, panorama_slice, :]
+            img = get_panorama_sliced_image(orig_img, panorama_slice)
             point, key_name, visible, bbox, label, score \
                 = self._estimate_step(img, x_offset=panorama_slice.start)
             if len(point) > 0:

@@ -18,3 +18,13 @@ def get_panorama_slices(width, n_split, overlap=True):
         panorama_slices = [
             slice(x_offset, x_offset + x_width) for x_offset in x_offsets]
         return panorama_slices
+
+
+def get_panorama_sliced_image(panorama_img, panorama_slice):
+    if panorama_slice.start > panorama_slice.stop:
+        left_sliced_img = panorama_img[:, panorama_slice.start:, :]
+        right_sliced_img = panorama_img[:, :panorama_slice.stop, :]
+        img = np.concatenate([left_sliced_img, right_sliced_img], 1)
+    else:
+        img = panorama_img[:, panorama_slice, :]
+    return img

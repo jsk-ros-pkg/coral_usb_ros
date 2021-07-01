@@ -21,7 +21,9 @@ import PIL.Image
 from resource_retriever import get_filename
 import rospy
 
+from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
+
 
 from jsk_recognition_msgs.msg import ClassificationResult
 from jsk_recognition_msgs.msg import Rect
@@ -289,12 +291,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         labels = []
         scores = []
         for panorama_slice in panorama_slices:
-            if panorama_slice.start > panorama_slice.stop:
-                left_sliced_img = orig_img[:, panorama_slice.start:, :]
-                right_sliced_img = orig_img[:, :panorama_slice.stop, :]
-                img = np.concatenate([left_sliced_img, right_sliced_img], 1)
-            else:
-                img = orig_img[:, panorama_slice, :]
+            img = get_panorama_sliced_image(orig_img, panorama_slice)
             bbox, label, score = self._detect_step(
                 img, x_offset=panorama_slice.start)
             bboxes.append(bbox)

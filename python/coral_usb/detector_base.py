@@ -289,7 +289,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         labels = []
         scores = []
         for panorama_slice in panorama_slices:
-            if panorama_slice.start < panorama_slice.stop:
+            if panorama_slice.start > panorama_slice.stop:
                 left_sliced_img = orig_img[:, panorama_slice.start:, :]
                 right_sliced_img = orig_img[:, :panorama_slice.stop, :]
                 img = np.concatenate([left_sliced_img, right_sliced_img], 1)

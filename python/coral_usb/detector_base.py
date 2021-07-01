@@ -21,7 +21,9 @@ import PIL.Image
 from resource_retriever import get_filename
 import rospy
 
+from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
+
 
 from jsk_recognition_msgs.msg import ClassificationResult
 from jsk_recognition_msgs.msg import Rect
@@ -246,11 +248,15 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             rgba = np.array(cmap(1. * i / n))
             color = rgba[:3] * 255
             label_text = '{}, {:.2f}'.format(self.label_names[label], score)
+            p1y = max(bbox[0], 0)
+            p1x = max(bbox[1], 0)
+            p2y = min(bbox[2], vis_img.shape[0])
+            p2x = min(bbox[3], vis_img.shape[1])
             cv2.rectangle(
-                vis_img, (bbox[1], bbox[0]), (bbox[3], bbox[2]),
+                vis_img, (p1x, p1y), (p2x, p2y),
                 color, thickness=3, lineType=cv2.LINE_AA)
             cv2.putText(
-                vis_img, label_text, (bbox[1], max(bbox[0] - 10, 0)),
+                vis_img, label_text, (p1x, max(p1y - 10, 0)),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color,
                 thickness=2, lineType=cv2.LINE_AA)
 
@@ -289,12 +295,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         labels = []
         scores = []
         for panorama_slice in panorama_slices:
-            if panorama_slice.start > panorama_slice.stop:
-                left_sliced_img = orig_img[:, panorama_slice.start:, :]
-                right_sliced_img = orig_img[:, :panorama_slice.stop, :]
-                img = np.concatenate([left_sliced_img, right_sliced_img], 1)
-            else:
-                img = orig_img[:, panorama_slice, :]
+            img = get_panorama_sliced_image(orig_img, panorama_slice)
             bbox, label, score = self._detect_step(
                 img, x_offset=panorama_slice.start)
             bboxes.append(bbox)

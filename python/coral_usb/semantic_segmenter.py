@@ -22,6 +22,7 @@ from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
 import rospy
 
+from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
 from jsk_topic_tools import ConnectionBasedTransport
@@ -252,7 +253,7 @@ class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
 
         label = []
         for panorama_slice in panorama_slices:
-            img = orig_img[:, panorama_slice, :]
+            img = get_panorama_sliced_image(orig_img, panorama_slice)
             lbl = self._segment_step(img)
             label.append(lbl)
         if len(label) > 0:

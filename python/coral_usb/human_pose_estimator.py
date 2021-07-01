@@ -18,6 +18,7 @@ from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
 import rospy
 
+from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
 from dynamic_reconfigure.server import Server
@@ -288,9 +289,11 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             n = len(point) - 1
             for j, (pp, vis) in enumerate(zip(point, visible)):
                 if vis:
+                    py = pp[0] % vis_img.shape[0]
+                    px = pp[1] % vis_img.shape[1]
                     rgba = np.array(cmap(1. * j / n))
                     color = rgba[:3] * 255
-                    cv2.circle(vis_img, (pp[1], pp[0]), 8, color, thickness=-1)
+                    cv2.circle(vis_img, (px, py), 8, color, thickness=-1)
 
         if self.pub_image.get_num_connections() > 0:
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
@@ -329,7 +332,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         labels = []
         scores = []
         for panorama_slice in panorama_slices:
-            img = orig_img[:, panorama_slice, :]
+            img = get_panorama_sliced_image(orig_img, panorama_slice)
             point, key_name, visible, bbox, label, score \
                 = self._estimate_step(img, x_offset=panorama_slice.start)
             if len(point) > 0:

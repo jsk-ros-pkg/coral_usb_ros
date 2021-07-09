@@ -14,6 +14,7 @@ class EdgeTPUFaceDetector(EdgeTPUDetectorBase):
         self.label_ids = [0]
         self.label_names = ['face']
 
+    def start_dynamic_reconfigure(self, namespace):
         # dynamic reconfigure
         dyn_namespace = namespace
         if namespace == '~':
@@ -32,6 +33,7 @@ class EdgeTPUPanoramaFaceDetector(EdgeTPUPanoramaDetectorBase):
         self.label_ids = [0]
         self.label_names = ['face']
 
+    def start_dynamic_reconfigure(self, namespace):
         # dynamic reconfigure
         dyn_namespace = namespace
         if namespace == '~':

@@ -79,6 +79,9 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             self.label_ids, self.label_names = self._load_labels(
                 self.label_file)
 
+        # dynamic reconfigure
+        self.start_dynamic_reconfigure(namespace)
+
         self.pub_rects = self.advertise(
             namespace + 'output/rects', RectArray, queue_size=1)
         self.pub_class = self.advertise(

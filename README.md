@@ -54,6 +54,12 @@ For more information, please see [here](https://github.com/knorth55/coral_usb_ro
 
 For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_panorama_object_detectorpy-1).
 
+### Panorama Face detector: `edgetpu_panorama_face_detector.py`
+
+![edgetpu_panorama_face_detector](./media/edgetpu_panorama_face_detector.gif)
+
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_panorama_face_detectorpy-1).
+
 ### Node manager: `edgetpu_node_manager.py`
 
 For more information, please see [here](https://github.com/knorth55/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).
@@ -188,6 +194,8 @@ roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publ
 roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/image_publisher/output
 # panorama object detector
 roslaunch coral_usb edgetpu_panorama_object_detector.launch INPUT_IMAGE:=/image_publisher/output
+# panorama face detector
+roslaunch coral_usb edgetpu_panorama_face_detector.launch INPUT_IMAGE:=/image_publisher/output
 ```
 
 To subscribe compressed input image, use `IMAGE_TRANSPORT:=compressed`
@@ -212,6 +220,8 @@ rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
 # panorama object detector
 rosrun image_view image_view image:=/edgetpu_panorama_object_detector/output/image
+# panorama face detector
+rosrun image_view image_view image:=/edgetpu_panorama_face_detector/output/image
 ```
 
 To subscribe compressed output image, set `~image_transport` param to `compressed`
@@ -511,6 +521,78 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 - `~overlap` (`Bool`, default: `True`)
 
   - Detect objects with overlapping splitting images.
+
+- `~nms` (`Bool`, default: `True`)
+
+  - Use non-maximum suppression or not for overlap detection.
+
+- `~nms_thresh` (`Double`, default: `0.3`)
+
+  - Non-maximum suppression threshold
+
+### panorama_face detector: `edgetpu_panorama_face_detector.py`
+
+![edgetpu_panorama_face_detector](./media/edgetpu_panorama_face_detector.gif)
+
+#### Subscribing Topic
+
+- `~input/image` (`sensor_msgs/Image`)
+
+  - Input image
+
+#### Publishing Topic
+
+- `~output/rects` (`jsk_recognition_msgs/RectArray`)
+
+  - Rectangles of detected faces
+
+- `~output/class` (`jsk_recognition_msgs/ClassificationResult`)
+
+  - Classification results of detected faces
+
+- `~output/image` (`sensor_msgs/Image`)
+
+  - Visualization of detection results
+
+#### Parameters
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+  - Classifier name
+
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
+
+- `~visualize_duration` (`Float`, default: `0.1`)
+
+  - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
+
+#### Dynamic parameters
+
+- `~score_thresh`: (`Float`, default: `0.6`)
+
+  - Score threshold for face detection
+
+- `~top_k`: (`Int`, default: `100`)
+
+  - Maximum number of detected faces
+
+- `~model_file` (`String`, default: `package://coral_usb/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite`)
+
+  - Model file path
+
+- `~n_split` (`Int`, default: `3`)
+
+  - Number of splitting images from one large panorama image for face detection.
+
+- `~overlap` (`Bool`, default: `True`)
+
+  - Detect faces with overlapping splitting images.
 
 - `~nms` (`Bool`, default: `True`)
 

@@ -23,6 +23,7 @@ import rospy
 
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
+from coral_usb.util import non_maximum_suppression
 
 
 from jsk_recognition_msgs.msg import ClassificationResult
@@ -304,6 +305,10 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
             labels = np.concatenate(labels, axis=0).astype(np.int)
             scores = np.concatenate(scores, axis=0).astype(np.float)
+            keep = non_maximum_suppression(bboxes, self.nms_thresh, scores)
+            bboxes = bboxes[keep]
+            labels = labels[keep]
+            scores = scores[keep]
         else:
             bboxes = np.empty((0, 4), dtype=np.int)
             labels = np.empty((0, ), dtype=np.int)

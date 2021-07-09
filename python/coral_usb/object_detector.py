@@ -1,6 +1,7 @@
 from dynamic_reconfigure.server import Server
 
 from coral_usb.cfg import EdgeTPUObjectDetectorConfig
+from coral_usb.cfg import EdgeTPUPanoramaObjectDetectorConfig
 from coral_usb.detector_base import EdgeTPUDetectorBase
 from coral_usb.detector_base import EdgeTPUPanoramaDetectorBase
 
@@ -28,5 +29,5 @@ class EdgeTPUPanoramaObjectDetector(EdgeTPUPanoramaDetectorBase):
         if namespace == '~':
             dyn_namespace = ''
         self.srv = Server(
-            EdgeTPUObjectDetectorConfig,
+            EdgeTPUPanoramaObjectDetectorConfig,
             self.config_callback, namespace=dyn_namespace)

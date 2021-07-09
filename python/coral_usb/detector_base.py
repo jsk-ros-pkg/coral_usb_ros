@@ -283,8 +283,6 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         super(EdgeTPUPanoramaDetectorBase, self).__init__(
             model_file=model_file, label_file=label_file, namespace=namespace
         )
-        self.n_split = rospy.get_param('~n_split', 3)
-        self.overlap = rospy.get_param('~overlap', True)
 
     def _detect(self, orig_img):
         _, orig_W = orig_img.shape[:2]
@@ -311,3 +309,11 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             labels = np.empty((0, ), dtype=np.int)
             scores = np.empty((0, ), dtype=np.float)
         return bboxes, labels, scores
+
+    def config_callback(self, config, level):
+        self.nms_thresh = config.nms_thresh
+        self.n_split = config.n_split
+        self.overlap = config.overlap
+        config = super(EdgeTPUPanoramaDetectorBase, self).config_callback(
+            config, level)
+        return config

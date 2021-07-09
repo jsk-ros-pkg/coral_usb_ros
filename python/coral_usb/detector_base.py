@@ -297,9 +297,10 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             img = get_panorama_sliced_image(orig_img, panorama_slice)
             bbox, label, score = self._detect_step(
                 img, x_offset=panorama_slice.start)
-            bboxes.append(bbox)
-            labels.append(label)
-            scores.append(score)
+            if len(bbox) > 0:
+                bboxes.append(bbox)
+                labels.append(label)
+                scores.append(score)
         if len(bboxes) > 0:
             bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
             labels = np.concatenate(labels, axis=0).astype(np.int)
@@ -326,9 +327,10 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             nms_bbox = nms_bbox[keep]
             nms_label = nms_label[keep]
             nms_score = nms_score[keep]
-            nms_bboxes.append(nms_bbox)
-            nms_labels.append(nms_label)
-            nms_scores.append(nms_score)
+            if len(nms_bbox) > 0:
+                nms_bboxes.append(nms_bbox)
+                nms_labels.append(nms_label)
+                nms_scores.append(nms_score)
         if len(bboxes) > 0:
             nms_bboxes = np.concatenate(nms_bboxes, axis=0).astype(np.int)
             nms_labels = np.concatenate(nms_labels, axis=0).astype(np.int)

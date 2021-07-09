@@ -534,6 +534,10 @@ You can see the sample launch [edgetpu_node_manager.launch](./launch/edgetpu_nod
     - `edgetpu_face_detector`
     - `edgetpu_human_pose_estimator`
     - `edgetpu_semantic_segmenter`
+    - `edgetpu_panorama_object_detector`
+    - `edgetpu_panorama_face_detector`
+    - `edgetpu_panorama_human_pose_estimator`
+    - `edgetpu_panorama_semantic_segmenter`
   - Parameters for each node can be set after `name` namespace.
 
 - `~default`: (`String`, default: `None`)

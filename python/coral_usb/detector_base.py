@@ -300,20 +300,41 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             bboxes.append(bbox)
             labels.append(label)
             scores.append(score)
-
         if len(bboxes) > 0:
             bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
             labels = np.concatenate(labels, axis=0).astype(np.int)
             scores = np.concatenate(scores, axis=0).astype(np.float)
-            keep = non_maximum_suppression(bboxes, self.nms_thresh, scores)
-            bboxes = bboxes[keep]
-            labels = labels[keep]
-            scores = scores[keep]
         else:
             bboxes = np.empty((0, 4), dtype=np.int)
             labels = np.empty((0, ), dtype=np.int)
             scores = np.empty((0, ), dtype=np.float)
-        return bboxes, labels, scores
+
+        # run with nms
+        nms_bboxes = []
+        nms_labels = []
+        nms_scores = []
+        for lbl in np.unique(labels):
+            mask = labels == lbl
+            nms_bbox = bboxes[mask]
+            nms_label = labels[mask]
+            nms_score = scores[mask]
+            keep = non_maximum_suppression(
+                nms_bbox, self.nms_thresh, nms_score)
+            nms_bbox = nms_bbox[keep]
+            nms_label = nms_label[keep]
+            nms_score = nms_score[keep]
+            nms_bboxes.append(nms_bbox)
+            nms_labels.append(nms_label)
+            nms_scores.append(nms_score)
+        if len(bboxes) > 0:
+            nms_bboxes = np.concatenate(nms_bboxes, axis=0).astype(np.int)
+            nms_labels = np.concatenate(nms_labels, axis=0).astype(np.int)
+            nms_scores = np.concatenate(nms_scores, axis=0).astype(np.float)
+        else:
+            nms_bboxes = np.empty((0, 4), dtype=np.int)
+            nms_labels = np.empty((0, ), dtype=np.int)
+            nms_scores = np.empty((0, ), dtype=np.float)
+        return nms_bboxes, nms_labels, nms_scores
 
     def config_callback(self, config, level):
         self.nms_thresh = config.nms_thresh

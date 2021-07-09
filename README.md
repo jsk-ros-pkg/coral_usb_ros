@@ -66,6 +66,10 @@ For more information, please see [here](https://github.com/knorth55/coral_usb_ro
 
 For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama_human-pose-estimator-edgetpu_panorama_human_pose_estimatorpy-1).
 
+### Panorama semantic segmenter: `edgetpu_panorama_semantic_segmenter.py`
+
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama_semantic-segmenter-edgetpu_panorama_semantic_segmenterpy-1).
+
 ### Node manager: `edgetpu_node_manager.py`
 
 For more information, please see [here](https://github.com/knorth55/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).
@@ -174,8 +178,9 @@ sudo adduser $(whoami) plugdev
 roscore
 ```
 
-### Run `image_publisher`
+### Publish image
 
+#### Run `image_publisher` for virtual camera
 ```bash
 # source normal workspace, not edge tpu workspace
 # /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
@@ -184,7 +189,29 @@ source /opt/ros/melodic/setup.bash
 rosrun jsk_perception image_publisher.py _file_name:=$(rospack find jsk_perception)/sample/object_detection_example_1.jpg
 ```
 
+### Run `usb_cam` for normal image
+
+```bash
+# source normal workspace, not edge tpu workspace
+# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
+# source /opt/ros/kinetic/setup.bash
+source /opt/ros/melodic/setup.bash
+rosrun usb_cam usb_cam_node
+```
+
+### Run `insta360 air` for panorama image
+
+```bash
+# source normal workspace, not edge tpu workspace
+# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
+# source /opt/ros/kinetic/setup.bash
+source /opt/ros/melodic/setup.bash
+roslaunch jsk_perception sample_insta360_air.launch gui:=false
+```
+
 ### Run Edge TPU launch
+
+#### For `image_publisher` virtual image
 
 ```bash
 # source edge tpu workspace
@@ -198,18 +225,44 @@ roslaunch coral_usb edgetpu_face_detector.launch INPUT_IMAGE:=/image_publisher/o
 roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publisher/output
 # semantic segmenter
 roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/image_publisher/output
-# panorama object detector
-roslaunch coral_usb edgetpu_panorama_object_detector.launch INPUT_IMAGE:=/image_publisher/output
-# panorama face detector
-roslaunch coral_usb edgetpu_panorama_face_detector.launch INPUT_IMAGE:=/image_publisher/output
-# panorama human pose estimator
-roslaunch coral_usb edgetpu_panorama_human_pose_estimator.launch INPUT_IMAGE:=/image_publisher/output
 ```
 
 To subscribe compressed input image, use `IMAGE_TRANSPORT:=compressed`
 
 ```bash
 roslaunch edgetpu_object_detector.launch INPUT_IMAGE:=/image_publisher/output IMAGE_TRANSPORT:=compressed
+```
+
+#### For `usb_cam` real image
+
+```bash
+# source edge tpu workspace
+source /opt/ros/${ROS_DISTRO}/setup.bash # THIS IS VERY IMPORTANT FOR MELODIC to set /opt/ros/${ROS_DISTRO}/lib/python2.7/dist-packages in $PYTHONPATH
+source ~/coral_ws/devel/setup.bash       # THIS PUT devel/lib/python3/dist-packages in fornt of /opt/ros/${ROS_DISTRO}/lib/python2.7/dist-package
+# object detector
+roslaunch coral_usb edgetpu_object_detector.launch INPUT_IMAGE:=/usb_cam/image_raw
+# face detector
+roslaunch coral_usb edgetpu_face_detector.launch INPUT_IMAGE:=/usb_cam/image_raw
+# human pose estimator
+roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/usb_cam/image_raw
+# semantic segmenter
+roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/usb_cam/image_raw
+```
+
+#### For `insta360 air` panorama image
+
+```bash
+# source edge tpu workspace
+source /opt/ros/${ROS_DISTRO}/setup.bash # THIS IS VERY IMPORTANT FOR MELODIC to set /opt/ros/${ROS_DISTRO}/lib/python2.7/dist-packages in $PYTHONPATH
+source ~/coral_ws/devel/setup.bash       # THIS PUT devel/lib/python3/dist-packages in fornt of /opt/ros/${ROS_DISTRO}/lib/python2.7/dist-package
+# panorama object detector
+roslaunch coral_usb edgetpu_panorama_object_detector.launch INPUT_IMAGE:=/dual_fisheye_to_panorama/output
+# panorama face detector
+roslaunch coral_usb edgetpu_panorama_face_detector.launch INPUT_IMAGE:=/dual_fisheye_to_panorama/output
+# panorama human pose estimator
+roslaunch coral_usb edgetpu_panorama_human_pose_estimator.launch INPUT_IMAGE:=/dual_fisheye_to_panorama/output
+# panorama semantic segmenter
+roslaunch coral_usb edgetpu_panorama_semantic_segmenter.launch INPUT_IMAGE:=/dual_fisheye_to_panorama/output
 ```
 
 ### Run `image_view`
@@ -232,6 +285,8 @@ rosrun image_view image_view image:=/edgetpu_panorama_object_detector/output/ima
 rosrun image_view image_view image:=/edgetpu_panorama_face_detector/output/image
 # panorama human pose estimator
 rosrun image_view image_view image:=/edgetpu_panorama_human_pose_estimator/output/image
+# panorama semantic segmenter
+rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/image
 ```
 
 To subscribe compressed output image, set `~image_transport` param to `compressed`
@@ -526,11 +581,11 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
 - `~n_split` (`Int`, default: `3`)
 
-  - Number of splitting images from one large panorama image for object detection.
+  - Number of splitting images from one large panorama image.
 
 - `~overlap` (`Bool`, default: `True`)
 
-  - Detect objects with overlapping splitting images.
+  - Recognize with overlapping splitted images.
 
 - `~nms` (`Bool`, default: `True`)
 
@@ -598,11 +653,11 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
 - `~n_split` (`Int`, default: `3`)
 
-  - Number of splitting images from one large panorama image for face detection.
+  - Number of splitting images from one large panorama image.
 
 - `~overlap` (`Bool`, default: `True`)
 
-  - Detect faces with overlapping splitting images.
+  - Recognize with overlapping splitted images.
 
 - `~nms` (`Bool`, default: `True`)
 
@@ -671,6 +726,64 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 - `~joint_score_thresh`: (`Float`, default: `0.2`)
 
   - Score threshold of each joint for human pose estimation
+
+- `~n_split` (`Int`, default: `3`)
+
+  - Number of splitting images from one large panorama image.
+
+- `~overlap` (`Bool`, default: `True`)
+
+  - Recognize with overlapping splitted images.
+
+### Panorama semantic segmenter: `edgetpu_panorama_semantic_segmenter.py`
+
+#### Subscribing Topic
+
+- `~input/image` (`sensor_msgs/Image`)
+
+  - Input image
+
+#### Publishing Topic
+
+- `~output/label` (`sensor_msgs/Image`)
+
+  - Estimated label image
+
+- `~output/image` (`sensor_msgs/Image`)
+
+  - Visualization of estimation results
+
+#### Parameters
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+  - Classifier name
+
+- `~model_file` (`String`, default: `package://coral_usb/models/deeplabv3_mnv2_pascal_quant_edgetpu.tflite`)
+
+  - Model file path
+
+- `~label_file` (`String`, default: `None`)
+
+  - Label file path. `pascal_voc` label is used by default.
+
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
+
+- `~visualize_duration` (`Float`, default: `0.1`)
+
+  - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
+
+#### Dynamic parameters
+
+- `~n_split` (`Int`, default: `3`)
+
+  - Number of splitting images from one large panorama image.
 
 ### Node manager: `edgetpu_node_manager.py`
 

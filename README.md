@@ -52,23 +52,23 @@ For more information, please see [here](https://github.com/knorth55/coral_usb_ro
 
 ![edgetpu_panorama_object_detector](./media/edgetpu_panorama_object_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_panorama_object_detectorpy-1).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-object-detector-edgetpu_panorama_object_detectorpy-1).
 
 ### Panorama face detector: `edgetpu_panorama_face_detector.py`
 
 ![edgetpu_panorama_face_detector](./media/edgetpu_panorama_face_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_panorama_face_detectorpy-1).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-face-detector-edgetpu_panorama_face_detectorpy-1).
 
 ### Panorama human pose estimator: `edgetpu_panorama_human_pose_estimator.py`
 
 ![edgetpu_panorama_human_pose_estimator](./media/edgetpu_panorama_human_pose_estimator.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama_human-pose-estimator-edgetpu_panorama_human_pose_estimatorpy-1).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-human-pose-estimator-edgetpu_panorama_human_pose_estimatorpy-1).
 
 ### Panorama semantic segmenter: `edgetpu_panorama_semantic_segmenter.py`
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama_semantic-segmenter-edgetpu_panorama_semantic_segmenterpy-1).
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-semantic-segmenter-edgetpu_panorama_semantic_segmenterpy-1).
 
 ### Node manager: `edgetpu_node_manager.py`
 

@@ -309,6 +309,9 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             labels = np.empty((0, ), dtype=np.int)
             scores = np.empty((0, ), dtype=np.float)
 
+        if not self.nms:
+            return bboxes, labels, scores
+
         # run with nms
         nms_bboxes = []
         nms_labels = []
@@ -337,6 +340,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         return nms_bboxes, nms_labels, nms_scores
 
     def config_callback(self, config, level):
+        self.nms = config.nms
         self.nms_thresh = config.nms_thresh
         self.n_split = config.n_split
         self.overlap = config.overlap

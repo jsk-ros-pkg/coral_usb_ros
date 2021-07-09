@@ -181,6 +181,7 @@ roscore
 ### Publish image
 
 #### Run `image_publisher` for virtual camera
+
 ```bash
 # source normal workspace, not edge tpu workspace
 # /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash

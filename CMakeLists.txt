@@ -20,8 +20,11 @@ generate_messages()
 
 generate_dynamic_reconfigure_options(
   cfg/EdgeTPUObjectDetector.cfg
+  cfg/EdgeTPUPanoramaObjectDetector.cfg
   cfg/EdgeTPUFaceDetector.cfg
+  cfg/EdgeTPUPanoramaFaceDetector.cfg
   cfg/EdgeTPUHumanPoseEstimator.cfg
+  cfg/EdgeTPUPanoramaHumanPoseEstimator.cfg
 )
 
 catkin_package(

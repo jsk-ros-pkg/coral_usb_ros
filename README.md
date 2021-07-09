@@ -48,6 +48,24 @@ For more information, please see [here](https://github.com/knorth55/coral_usb_ro
 
 For more information, please see [here](https://github.com/knorth55/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy-1).
 
+### Panorama object detector: `edgetpu_panorama_object_detector.py`
+
+![edgetpu_panorama_object_detector](./media/edgetpu_panorama_object_detector.gif)
+
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_panorama_object_detectorpy-1).
+
+### Panorama face detector: `edgetpu_panorama_face_detector.py`
+
+![edgetpu_panorama_face_detector](./media/edgetpu_panorama_face_detector.gif)
+
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_panorama_face_detectorpy-1).
+
+### Panorama human pose estimator: `edgetpu_panorama_human_pose_estimator.py`
+
+![edgetpu_panorama_human_pose_estimator](./media/edgetpu_panorama_human_pose_estimator.gif)
+
+For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama_human-pose-estimator-edgetpu_panorama_human_pose_estimatorpy-1).
+
 ### Node manager: `edgetpu_node_manager.py`
 
 For more information, please see [here](https://github.com/knorth55/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).
@@ -180,6 +198,12 @@ roslaunch coral_usb edgetpu_face_detector.launch INPUT_IMAGE:=/image_publisher/o
 roslaunch coral_usb edgetpu_human_pose_estimator.launch INPUT_IMAGE:=/image_publisher/output
 # semantic segmenter
 roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/image_publisher/output
+# panorama object detector
+roslaunch coral_usb edgetpu_panorama_object_detector.launch INPUT_IMAGE:=/image_publisher/output
+# panorama face detector
+roslaunch coral_usb edgetpu_panorama_face_detector.launch INPUT_IMAGE:=/image_publisher/output
+# panorama human pose estimator
+roslaunch coral_usb edgetpu_panorama_human_pose_estimator.launch INPUT_IMAGE:=/image_publisher/output
 ```
 
 To subscribe compressed input image, use `IMAGE_TRANSPORT:=compressed`
@@ -202,6 +226,12 @@ rosrun image_view image_view image:=/edgetpu_face_detector/output/image
 rosrun image_view image_view image:=/edgetpu_human_pose_estimator/output/image
 # semantic segmenter
 rosrun image_view image_view image:=/edgetpu_semantic_segmenter/output/image
+# panorama object detector
+rosrun image_view image_view image:=/edgetpu_panorama_object_detector/output/image
+# panorama face detector
+rosrun image_view image_view image:=/edgetpu_panorama_face_detector/output/image
+# panorama human pose estimator
+rosrun image_view image_view image:=/edgetpu_panorama_human_pose_estimator/output/image
 ```
 
 To subscribe compressed output image, set `~image_transport` param to `compressed`
@@ -434,6 +464,214 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
   - Set `compressed` to subscribe compressed image
 
+### Panorama object detector: `edgetpu_panorama_object_detector.py`
+
+![edgetpu_panorama_object_detector](./media/edgetpu_panorama_object_detector.gif)
+
+#### Subscribing Topic
+
+- `~input/image` (`sensor_msgs/Image`)
+
+  - Input image
+
+#### Publishing Topic
+
+- `~output/rects` (`jsk_recognition_msgs/RectArray`)
+
+  - Rectangles of detected objects
+
+- `~output/class` (`jsk_recognition_msgs/ClassificationResult`)
+
+  - Classification results of detected objects
+
+- `~output/image` (`sensor_msgs/Image`)
+
+  - Visualization of detection results
+
+#### Parameters
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+  - Classifier name
+
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
+
+- `~visualize_duration` (`Float`, default: `0.1`)
+
+  - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
+
+#### Dynamic parameters
+
+- `~score_thresh`: (`Float`, default: `0.6`)
+
+  - Score threshold for object detection
+
+- `~top_k`: (`Int`, default: `100`)
+
+  - Maximum number of detected objects
+
+- `~model_file` (`String`, default: `package://coral_usb/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite`)
+
+  - Model file path
+
+- `~label_file` (`String`, default: `package://coral_usb/models/coco_labels.txt`)
+
+  - Label file path.
+
+- `~n_split` (`Int`, default: `3`)
+
+  - Number of splitting images from one large panorama image for object detection.
+
+- `~overlap` (`Bool`, default: `True`)
+
+  - Detect objects with overlapping splitting images.
+
+- `~nms` (`Bool`, default: `True`)
+
+  - Use non-maximum suppression or not for overlap detection.
+
+- `~nms_thresh` (`Double`, default: `0.3`)
+
+  - Non-maximum suppression threshold
+
+### Panorama face detector: `edgetpu_panorama_face_detector.py`
+
+![edgetpu_panorama_face_detector](./media/edgetpu_panorama_face_detector.gif)
+
+#### Subscribing Topic
+
+- `~input/image` (`sensor_msgs/Image`)
+
+  - Input image
+
+#### Publishing Topic
+
+- `~output/rects` (`jsk_recognition_msgs/RectArray`)
+
+  - Rectangles of detected faces
+
+- `~output/class` (`jsk_recognition_msgs/ClassificationResult`)
+
+  - Classification results of detected faces
+
+- `~output/image` (`sensor_msgs/Image`)
+
+  - Visualization of detection results
+
+#### Parameters
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+  - Classifier name
+
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
+
+- `~visualize_duration` (`Float`, default: `0.1`)
+
+  - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
+
+#### Dynamic parameters
+
+- `~score_thresh`: (`Float`, default: `0.6`)
+
+  - Score threshold for face detection
+
+- `~top_k`: (`Int`, default: `100`)
+
+  - Maximum number of detected faces
+
+- `~model_file` (`String`, default: `package://coral_usb/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite`)
+
+  - Model file path
+
+- `~n_split` (`Int`, default: `3`)
+
+  - Number of splitting images from one large panorama image for face detection.
+
+- `~overlap` (`Bool`, default: `True`)
+
+  - Detect faces with overlapping splitting images.
+
+- `~nms` (`Bool`, default: `True`)
+
+  - Use non-maximum suppression or not for overlap detection.
+
+- `~nms_thresh` (`Double`, default: `0.3`)
+
+  - Non-maximum suppression threshold
+
+### Panorama human pose estimator: `edgetpu_panorama_human_pose_estimator.py`
+
+![edgetpu_panorama_human_pose_estimator](./media/edgetpu_panorama_human_pose_estimator.gif)
+
+#### Subscribing Topic
+
+- `~input/image` (`sensor_msgs/Image`)
+
+  - Input image
+
+#### Publishing Topic
+
+- `~output/poses` (`jsk_recognition_msgs/PeoplePoseArray`)
+
+  - Estimated human poses
+
+- `~output/rects` (`jsk_recognition_msgs/RectArray`)
+
+  - Rectangles of detected humans
+
+- `~output/class` (`jsk_recognition_msgs/ClassificationResult`)
+
+  - Classification results of detected humans
+
+- `~output/image` (`sensor_msgs/Image`)
+
+  - Visualization of estimation results
+
+#### Parameters
+
+- `~classifier_name` (`String`, default: `rospy.get_name()`)
+
+  - Classifier name
+
+- `~model_file` (`String`, default: `package://coral_usb/python/coral_usb/posenet/models/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite`)
+
+  - Model file path
+
+- `~enable_visualization` (`Bool`, default: `True`)
+
+  - Whether enable visualization or not
+
+- `~visualize_duration` (`Float`, default: `0.1`)
+
+  - Time duration for visualization
+
+- `~image_transport:` (`String`, default: `raw`)
+
+  - Set `compressed` to subscribe compressed image
+
+#### Dynamic parameters
+
+- `~score_thresh`: (`Float`, default: `0.2`)
+
+  - Score threshold for human pose estimation
+
+- `~joint_score_thresh`: (`Float`, default: `0.2`)
+
+  - Score threshold of each joint for human pose estimation
+
 ### Node manager: `edgetpu_node_manager.py`
 
 You can see the sample launch [edgetpu_node_manager.launch](./launch/edgetpu_node_manager.launch)
@@ -448,6 +686,10 @@ You can see the sample launch [edgetpu_node_manager.launch](./launch/edgetpu_nod
     - `edgetpu_face_detector`
     - `edgetpu_human_pose_estimator`
     - `edgetpu_semantic_segmenter`
+    - `edgetpu_panorama_object_detector`
+    - `edgetpu_panorama_face_detector`
+    - `edgetpu_panorama_human_pose_estimator`
+    - `edgetpu_panorama_semantic_segmenter`
   - Parameters for each node can be set after `name` namespace.
 
 - `~default`: (`String`, default: `None`)

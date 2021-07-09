@@ -23,6 +23,7 @@ import rospy
 
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
+from coral_usb.util import non_maximum_suppression
 
 
 from jsk_recognition_msgs.msg import ClassificationResult
@@ -77,6 +78,9 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
         else:
             self.label_ids, self.label_names = self._load_labels(
                 self.label_file)
+
+        # dynamic reconfigure
+        self.start_dynamic_reconfigure(namespace)
 
         self.pub_rects = self.advertise(
             namespace + 'output/rects', RectArray, queue_size=1)
@@ -283,8 +287,6 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         super(EdgeTPUPanoramaDetectorBase, self).__init__(
             model_file=model_file, label_file=label_file, namespace=namespace
         )
-        self.n_split = rospy.get_param('~n_split', 3)
-        self.overlap = rospy.get_param('~overlap', True)
 
     def _detect(self, orig_img):
         _, orig_W = orig_img.shape[:2]
@@ -298,10 +300,10 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             img = get_panorama_sliced_image(orig_img, panorama_slice)
             bbox, label, score = self._detect_step(
                 img, x_offset=panorama_slice.start)
-            bboxes.append(bbox)
-            labels.append(label)
-            scores.append(score)
-
+            if len(bbox) > 0:
+                bboxes.append(bbox)
+                labels.append(label)
+                scores.append(score)
         if len(bboxes) > 0:
             bboxes = np.concatenate(bboxes, axis=0).astype(np.int)
             labels = np.concatenate(labels, axis=0).astype(np.int)
@@ -310,4 +312,43 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             bboxes = np.empty((0, 4), dtype=np.int)
             labels = np.empty((0, ), dtype=np.int)
             scores = np.empty((0, ), dtype=np.float)
-        return bboxes, labels, scores
+
+        if not self.nms:
+            return bboxes, labels, scores
+
+        # run with nms
+        nms_bboxes = []
+        nms_labels = []
+        nms_scores = []
+        for lbl in np.unique(labels):
+            mask = labels == lbl
+            nms_bbox = bboxes[mask]
+            nms_label = labels[mask]
+            nms_score = scores[mask]
+            keep = non_maximum_suppression(
+                nms_bbox, self.nms_thresh, nms_score)
+            nms_bbox = nms_bbox[keep]
+            nms_label = nms_label[keep]
+            nms_score = nms_score[keep]
+            if len(nms_bbox) > 0:
+                nms_bboxes.append(nms_bbox)
+                nms_labels.append(nms_label)
+                nms_scores.append(nms_score)
+        if len(bboxes) > 0:
+            nms_bboxes = np.concatenate(nms_bboxes, axis=0).astype(np.int)
+            nms_labels = np.concatenate(nms_labels, axis=0).astype(np.int)
+            nms_scores = np.concatenate(nms_scores, axis=0).astype(np.float)
+        else:
+            nms_bboxes = np.empty((0, 4), dtype=np.int)
+            nms_labels = np.empty((0, ), dtype=np.int)
+            nms_scores = np.empty((0, ), dtype=np.float)
+        return nms_bboxes, nms_labels, nms_scores
+
+    def config_callback(self, config, level):
+        self.nms = config.nms
+        self.nms_thresh = config.nms_thresh
+        self.n_split = config.n_split
+        self.overlap = config.overlap
+        config = super(EdgeTPUPanoramaDetectorBase, self).config_callback(
+            config, level)
+        return config

@@ -28,3 +28,33 @@ def get_panorama_sliced_image(panorama_img, panorama_slice):
     else:
         img = panorama_img[:, panorama_slice, :]
     return img
+
+
+# copied from chainercv
+def non_maximum_suppression(bbox, thresh, score=None, limit=None):
+    if len(bbox) == 0:
+        return np.zeros((0,), dtype=np.int32)
+
+    if score is not None:
+        order = score.argsort()[::-1]
+        bbox = bbox[order]
+    bbox_area = np.prod(bbox[:, 2:] - bbox[:, :2], axis=1)
+
+    selec = np.zeros(bbox.shape[0], dtype=bool)
+    for i, b in enumerate(bbox):
+        tl = np.maximum(b[:2], bbox[selec, :2])
+        br = np.minimum(b[2:], bbox[selec, 2:])
+        area = np.prod(br - tl, axis=1) * (tl < br).all(axis=1)
+
+        iou = area / (bbox_area[i] + bbox_area[selec] - area)
+        if (iou >= thresh).any():
+            continue
+
+        selec[i] = True
+        if limit is not None and np.count_nonzero(selec) >= limit:
+            break
+
+    selec = np.where(selec)[0]
+    if score is not None:
+        selec = order[selec]
+    return selec.astype(np.int32)

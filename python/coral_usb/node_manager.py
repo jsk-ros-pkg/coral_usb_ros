@@ -2,8 +2,12 @@ import rospy
 import threading
 
 from coral_usb.face_detector import EdgeTPUFaceDetector
+from coral_usb.face_detector import EdgeTPUPanoramaFaceDetector
 from coral_usb.human_pose_estimator import EdgeTPUHumanPoseEstimator
+from coral_usb.human_pose_estimator import EdgeTPUPanoramaHumanPoseEstimator
 from coral_usb.object_detector import EdgeTPUObjectDetector
+from coral_usb.object_detector import EdgeTPUPanoramaObjectDetector
+from coral_usb.semantic_segmenter import EdgeTPUPanoramaSemanticSegmenter
 from coral_usb.semantic_segmenter import EdgeTPUSemanticSegmenter
 
 from coral_usb.srv import StartNode
@@ -75,6 +79,14 @@ class EdgeTPUNodeManager(object):
             node_class = EdgeTPUHumanPoseEstimator
         elif node_type == 'semantic_segmenter':
             node_class = EdgeTPUSemanticSegmenter
+        elif node_type == 'panorama_face_detector':
+            node_class = EdgeTPUPanoramaFaceDetector
+        elif node_type == 'panorama_object_detector':
+            node_class = EdgeTPUPanoramaObjectDetector
+        elif node_type == 'panorama_human_pose_estimator':
+            node_class = EdgeTPUPanoramaHumanPoseEstimator
+        elif node_type == 'panorama_semantic_segmenter':
+            node_class = EdgeTPUPanoramaSemanticSegmenter
         else:
             rospy.logerr('{} is not supported type'.format(node_type))
             return False

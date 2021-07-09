@@ -34,6 +34,7 @@ from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
 
 from coral_usb.cfg import EdgeTPUHumanPoseEstimatorConfig
+from coral_usb.cfg import EdgeTPUPanoramaHumanPoseEstimatorConfig
 from coral_usb.posenet.pose_engine import PoseEngine
 
 
@@ -80,12 +81,7 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.label_names = ['human']
 
         # dynamic reconfigure
-        dyn_namespace = namespace
-        if namespace == '~':
-            dyn_namespace = ''
-        self.srv = Server(
-            EdgeTPUHumanPoseEstimatorConfig,
-            self.config_callback, namespace=dyn_namespace)
+        self.start_dynamic_reconfigure(namespace)
 
         self.pub_pose = self.advertise(
             namespace + 'output/poses', PeoplePoseArray, queue_size=1)
@@ -107,6 +103,15 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             self.img = None
             self.visibles = None
             self.points = None
+
+    def start_dynamic_reconfigure(self, namespace):
+        # dynamic reconfigure
+        dyn_namespace = namespace
+        if namespace == '~':
+            dyn_namespace = ''
+        self.srv = Server(
+            EdgeTPUHumanPoseEstimatorConfig,
+            self.config_callback, namespace=dyn_namespace)
 
     def start(self):
         self.engine = PoseEngine(self.model_file, mirror=False)
@@ -317,8 +322,6 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
         super(EdgeTPUPanoramaHumanPoseEstimator, self).__init__(
             namespace=namespace
         )
-        self.n_split = rospy.get_param('~n_split', 3)
-        self.overlap = rospy.get_param('~overlap', True)
 
     def _estimate(self, orig_img):
         _, orig_W = orig_img.shape[:2]
@@ -355,3 +358,20 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             labels = np.empty((0, ), dtype=np.int)
             scores = np.empty((0, ), dtype=np.float)
         return points, key_names, visibles, bboxes, labels, scores
+
+    def config_callback(self, config, level):
+        self.n_split = config.n_split
+        self.overlap = config.overlap
+        config = super(
+            EdgeTPUPanoramaHumanPoseEstimator, self).config_callback(
+                config, level)
+        return config
+
+    def start_dynamic_reconfigure(self, namespace):
+        # dynamic reconfigure
+        dyn_namespace = namespace
+        if namespace == '~':
+            dyn_namespace = ''
+        self.srv = Server(
+            EdgeTPUPanoramaHumanPoseEstimatorConfig,
+            self.config_callback, namespace=dyn_namespace)

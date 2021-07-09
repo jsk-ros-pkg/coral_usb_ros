@@ -25,6 +25,7 @@ generate_dynamic_reconfigure_options(
   cfg/EdgeTPUPanoramaFaceDetector.cfg
   cfg/EdgeTPUHumanPoseEstimator.cfg
   cfg/EdgeTPUPanoramaHumanPoseEstimator.cfg
+  cfg/EdgeTPUPanoramaSemanticSegmenter.cfg
 )
 
 catkin_package(

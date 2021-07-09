@@ -22,9 +22,11 @@ from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from resource_retriever import get_filename
 import rospy
 
+from coral_usb.cfg import EdgeTPUPanoramaSemanticSegmenterConfig
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
+from dynamic_reconfigure.server import Server
 from jsk_topic_tools import ConnectionBasedTransport
 from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
@@ -96,6 +98,9 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         else:
             self.label_ids, self.label_names = self._load_labels(label_file)
 
+        # dynamic reconfigure
+        self.start_dynamic_reconfigure(namespace)
+
         self.namespace = namespace
         self.pub_label = self.advertise(
             namespace + 'output/label', Image, queue_size=1)
@@ -113,6 +118,10 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             self.img = None
             self.header = None
             self.label = None
+
+    def start_dynamic_reconfigure(self, namespace):
+        # dynamic reconfigure
+        pass
 
     def start(self):
         self.engine = BasicEngine(self.model_file)
@@ -146,11 +155,6 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
     def visualize(self):
         return self.pub_image.get_num_connections() > 0 or \
             self.pub_image_compressed.get_num_connections() > 0
-
-    def config_callback(self, config, level):
-        self.score_thresh = config.score_thresh
-        self.top_k = config.top_k
-        return config
 
     def _load_labels(self, path):
         p = re.compile(r'\s*(\d+)(.+)')
@@ -244,7 +248,6 @@ class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
         super(EdgeTPUPanoramaSemanticSegmenter, self).__init__(
             namespace=namespace,
         )
-        self.n_split = rospy.get_param('~n_split', 3)
 
     def _segment(self, orig_img):
         _, orig_W = orig_img.shape[:2]
@@ -261,3 +264,16 @@ class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
         else:
             label = np.empty((0, 0), dtype=np.int32)
         return label
+
+    def config_callback(self, config, level):
+        self.n_split = config.n_split
+        return config
+
+    def start_dynamic_reconfigure(self, namespace):
+        # dynamic reconfigure
+        dyn_namespace = namespace
+        if namespace == '~':
+            dyn_namespace = ''
+        self.srv = Server(
+            EdgeTPUPanoramaSemanticSegmenterConfig,
+            self.config_callback, namespace=dyn_namespace)

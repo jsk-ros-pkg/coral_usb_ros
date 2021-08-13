@@ -172,7 +172,15 @@ sudo adduser $(whoami) plugdev
 
 ## Demo
 
+Please choose one of these demo.
+
+- [USB or Laptop camera demo](https://github.com/knorth55/coral_usb_ros#usb-or-laptop-camera-demo)
+- [No camera demo](https://github.com/knorth55/coral_usb_ros#no-camera-demo)
+- [Insta 360 air demo](https://github.com/knorth55/coral_usb_ros#insta360-air-camera-demo)
+
 ### USB or Laptop camera demo
+
+Run all following commands in different terminals in parallel.
 
 #### Run `roscore`
 
@@ -247,6 +255,8 @@ rosrun image_view image_view image:=/edgetpu_object_detector/output/image _image
 
 ### No camera demo
 
+Run all following commands in different terminals in parallel.
+
 #### Run `roscore`
 
 ```bash
@@ -307,6 +317,8 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 ```
 
 ### Insta360 air camera demo
+
+Run all following commands in different terminals in parallel.
 
 #### Run `roscore`
 

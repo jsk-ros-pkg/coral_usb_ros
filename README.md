@@ -180,6 +180,8 @@ roscore
 
 ### Publish image
 
+For publishing image, you can choose one of these method below.
+
 #### Run `image_publisher` for virtual camera
 
 ```bash
@@ -190,7 +192,7 @@ source /opt/ros/melodic/setup.bash
 rosrun jsk_perception image_publisher.py _file_name:=$(rospack find jsk_perception)/sample/object_detection_example_1.jpg
 ```
 
-### Run `usb_cam` for normal image
+#### Run `usb_cam` for normal image
 
 ```bash
 # source normal workspace, not edge tpu workspace
@@ -200,7 +202,7 @@ source /opt/ros/melodic/setup.bash
 rosrun usb_cam usb_cam_node
 ```
 
-### Run `insta360 air` for panorama image
+#### Run `insta360 air` for panorama image
 
 ```bash
 # source normal workspace, not edge tpu workspace

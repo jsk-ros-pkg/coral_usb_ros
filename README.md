@@ -219,7 +219,8 @@ roslaunch edgetpu_object_detector.launch INPUT_IMAGE:=/image_publisher/output IM
 ```bash
 # source normal workspace, not edge tpu workspace
 # /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-source /opt/ros/kinetic/setup.bash
+# source /opt/ros/kinetic/setup.bash
+source /opt/ros/melodic/setup.bash
 # object detector
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 # face detector
@@ -285,7 +286,8 @@ roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/image_publis
 ```bash
 # source normal workspace, not edge tpu workspace
 # /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-source /opt/ros/kinetic/setup.bash
+# source /opt/ros/kinetic/setup.bash
+source /opt/ros/melodic/setup.bash
 # object detector
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 # face detector
@@ -347,7 +349,8 @@ roslaunch coral_usb edgetpu_panorama_semantic_segmenter.launch INPUT_IMAGE:=/dua
 ```bash
 # source normal workspace, not edge tpu workspace
 # /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-source /opt/ros/kinetic/setup.bash
+# source /opt/ros/kinetic/setup.bash
+source /opt/ros/melodic/setup.bash
 # object detector
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 # face detector

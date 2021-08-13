@@ -2,6 +2,38 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* markdownlint
+* update readme
+* update readme
+* add EdgeTPUPanoramaSemanticSegmenter.cfg
+* Merge pull request `#65 <https://github.com/knorth55/coral_usb_ros/issues/65>`_ from knorth55/panorama-nms
+  add nms for panorama detection
+* add start_dynamic_reconfigure
+* add panorama human pose estimator in readme
+* add EdgeTPUHumanPoseEstimatorConfig
+* do not append when no bbox detected
+* add edgetpu_panorama_face_detector in readme
+* support panorama nodes in node_manager
+* update readme to add panorama object detector
+* add nms option dynamic reconfigure
+* fix nms in detector_base
+* use non_maximum_suppression for panorama detection
+* use panorama config
+* add non_maximum_suppression
+* add EdgeTPUPanoramaFace/ObjectDetector.cfg
+* Merge pull request `#64 <https://github.com/knorth55/coral_usb_ros/issues/64>`_ from knorth55/panorama-overlap
+* update visualization functions for overlap
+* add get_panorama_sliced_image
+* Merge pull request `#62 <https://github.com/knorth55/coral_usb_ros/issues/62>`_ from sktometometo/feature/overlap-panorama-gap
+* Merge pull request `#1 <https://github.com/knorth55/coral_usb_ros/issues/1>`_ from knorth55/feature/overlap-panorama-gap
+  flake8
+* flake8
+* fix slice split and image concat process
+* add overlap slice
+* Contributors: Koki Shinjo, Shingo Kitagawa
+
 0.0.4 (2021-06-16)
 ------------------
 * set linetype

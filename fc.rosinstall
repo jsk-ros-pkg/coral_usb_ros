@@ -2,18 +2,3 @@
     local-name: coral_usb_ros
     uri: https://github.com/knorth55/coral_usb_ros.git
     version: master
-###
-### wait for import _pickle as pickle for python3
-### https://github.com/jsk-ros-pkg/jsk_common/pull/1636
-###
-- git:
-    local-name: jsk_common
-    uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: 2.2.11
-###
-### wait for 0.6.1 release
-###
-- git:
-    local-name: catkin_virtualenv
-    uri: https://github.com/locusrobotics/catkin_virtualenv.git
-    version: 0.6.1

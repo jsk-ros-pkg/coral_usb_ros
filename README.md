@@ -1,7 +1,7 @@
 # coral_usb_ros
 
-[![](https://github.com/knorth55/coral_usb_ros/actions/workflows/main.yml/badge.svg)](https://github.com/knorth55/coral_usb_ros/actions/workflows/main.yml)
-[![](https://github.com/knorth55/coral_usb_ros/actions/workflows/linter.yaml/badge.svg)](https://github.com/knorth55/coral_usb_ros/actions/workflows/linter.yaml)
+[![main](https://github.com/knorth55/coral_usb_ros/actions/workflows/main.yml/badge.svg)](https://github.com/knorth55/coral_usb_ros/actions/workflows/main.yml)
+[![linter](https://github.com/knorth55/coral_usb_ros/actions/workflows/linter.yaml/badge.svg)](https://github.com/knorth55/coral_usb_ros/actions/workflows/linter.yaml)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/knorth55/coral_usb_ros)
 [![Docker Stars](https://img.shields.io/docker/stars/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
 [![Docker Pulls](https://img.shields.io/docker/pulls/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)

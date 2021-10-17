@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import threading
+import grp
 
 # OpenCV import for python3.5
 if os.environ['ROS_PYTHON_VERSION'] == '3':
@@ -71,6 +72,12 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
                     'device {} is already assigned: {}'.format(
                         device_id, device_path))
         self.device_path = device_path
+
+        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
+            rospy.logerr('Current user does not belong to plugdev group')
+            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
+            rospy.logerr('And make sure to re-login the terminal by `su -l $(whoami)`')
+
         if self.model_file is not None:
             self.engine = DetectionEngine(
                 self.model_file, device_path=self.device_path)

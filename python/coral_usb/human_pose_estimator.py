@@ -5,6 +5,7 @@ import numpy as np
 import os
 import sys
 import threading
+import grp
 
 # OpenCV import for python3.5
 if os.environ['ROS_PYTHON_VERSION'] == '3':
@@ -73,6 +74,11 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
                 rospy.logwarn(
                     'device {} is already assigned: {}'.format(
                         device_id, device_path))
+
+        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
+            rospy.logerr('Current user does not belong to plugdev group')
+            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
+            rospy.logerr('And make sure to re-login the terminal by `su -l $(whoami)`')
 
         self.engine = PoseEngine(
             self.model_file, mirror=False, device_path=device_path)

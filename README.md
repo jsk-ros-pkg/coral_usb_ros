@@ -191,13 +191,8 @@ Please see [here](./training/README.md) for more detailed information.
 
 ### Add Device Access Permission
 
-Create file named `99-coral-usb-ros.rules` under `/etc/udev/rules.d/`
-```
-SUBSYSTEM=="usb",ATTRS{idVendor}=="1a6e",ATTRS{idProduct}=="089a",GROUP="plugdev"
-SUBSYSTEM=="usb",ATTRS{idVendor}=="18d1",ATTRS{idProduct}=="9302",GROUP="plugdev"
-```
-
 You need to your accout to `plugdev` group. To enable this feature, you need to re-loggin or run `exec su -l $(whoami)`.
+
 ```bash
 sudo adduser $(whoami) plugdev
 ```

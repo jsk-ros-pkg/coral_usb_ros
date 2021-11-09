@@ -1,4 +1,5 @@
 import copy
+import grp
 import matplotlib
 matplotlib.use("Agg")  # NOQA
 import matplotlib.pyplot as plt
@@ -7,7 +8,6 @@ import os
 import re
 import sys
 import threading
-import grp
 
 # OpenCV import for python3.5
 if os.environ['ROS_PYTHON_VERSION'] == '3':
@@ -74,7 +74,8 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
         if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
             rospy.logerr('Current user does not belong to plugdev group')
             rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
-            rospy.logerr('And make sure to re-login the terminal by `su -l $(whoami)`')
+            rospy.logerr(
+                'And make sure to re-login the terminal by `su -l $(whoami)`')
 
         self.engine = BasicEngine(self.model_file, device_path)
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]

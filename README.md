@@ -14,6 +14,7 @@ ROS package for Coral Edge TPU USB Accelerator
 
 - Ubuntu 16.04 + Kinetic
 - Ubuntu 18.04 + Melodic
+- Ubuntu 20.04 + Noetic
 
 If you want to run this on Ubuntu 14.04 + Indigo, please see [indigo branch](https://github.com/knorth55/coral_usb_ros/tree/indigo).
 
@@ -86,7 +87,7 @@ echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sud
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt-get update
 # If you do not have USB3, install libedgetpu1-legacy-std
-sudo apt-get install libedgetpu1-legacy-max
+sudo apt-get install libedgetpu1-legacy-max # Choose <YES> when asked
 sudo apt-get install python3-edgetpu
 ```
 
@@ -104,6 +105,12 @@ pip3 install tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl
 sudo apt-get install python3-pip
 wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
 pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
+```
+
+#### [Install just the TensorFlow Lite interpreter (Noetic)](https://www.tensorflow.org/lite/guide/python)
+
+```bash
+sudo apt-get install python3-tflite-runtime
 ```
 
 For more information, please see [here](https://coral.withgoogle.com/docs/accelerator/get-started/).
@@ -153,6 +160,23 @@ catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/inc
 catkin build
 ```
 
+#### Workspace build (Noetic)
+
+```bash
+sudo apt-get install ros-noetic-catkin
+source /opt/ros/noetic/setup.bash
+mkdir -p ~/coral_ws/src
+cd ~/coral_ws/src
+git clone https://github.com/knorth55/coral_usb_ros.git
+wstool init
+wstool merge coral_usb_ros/fc.rosinstall
+wstool update
+rosdep install --from-paths . --ignore-src -y -r
+cd ~/coral_ws
+catkin init
+catkin build
+```
+
 ### Model download
 
 ```bash
@@ -166,6 +190,8 @@ rosrun coral_usb download_models.py
 Please see [here](./training/README.md) for more detailed information.
 
 ### Add Device Access Permission
+
+You need to your accout to `plugdev` group. To enable this feature, you need to re-loggin or run `exec su -l $(whoami)`.
 
 ```bash
 sudo adduser $(whoami) plugdev
@@ -193,9 +219,7 @@ roscore
 
 ```bash
 # source normal workspace, not edge tpu workspace
-# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-# source /opt/ros/kinetic/setup.bash
-source /opt/ros/melodic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 rosrun usb_cam usb_cam_node
 ```
 
@@ -227,9 +251,7 @@ roslaunch edgetpu_object_detector.launch INPUT_IMAGE:=/image_publisher/output IM
 
 ```bash
 # source normal workspace, not edge tpu workspace
-# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-# source /opt/ros/kinetic/setup.bash
-source /opt/ros/melodic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 # object detector
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 # face detector
@@ -268,9 +290,7 @@ roscore
 
 ```bash
 # source normal workspace, not edge tpu workspace
-# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-# source /opt/ros/kinetic/setup.bash
-source /opt/ros/melodic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 rosrun jsk_perception image_publisher.py _file_name:=$(rospack find jsk_perception)/sample/object_detection_example_1.jpg
 ```
 
@@ -296,9 +316,7 @@ roslaunch coral_usb edgetpu_semantic_segmenter.launch INPUT_IMAGE:=/image_publis
 
 ```bash
 # source normal workspace, not edge tpu workspace
-# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-# source /opt/ros/kinetic/setup.bash
-source /opt/ros/melodic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 # object detector
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 # face detector
@@ -331,9 +349,7 @@ roscore
 
 ```bash
 # source normal workspace, not edge tpu workspace
-# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-# source /opt/ros/kinetic/setup.bash
-source /opt/ros/melodic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 roslaunch jsk_perception sample_insta360_air.launch gui:=false
 ```
 
@@ -361,9 +377,7 @@ roslaunch coral_usb edgetpu_panorama_semantic_segmenter.launch INPUT_IMAGE:=/dua
 
 ```bash
 # source normal workspace, not edge tpu workspace
-# /opt/ros/kinetic/setup.bash or /opt/ros/melodic/setup.bash
-# source /opt/ros/kinetic/setup.bash
-source /opt/ros/melodic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 # object detector
 rosrun image_view image_view image:=/edgetpu_object_detector/output/image
 # face detector

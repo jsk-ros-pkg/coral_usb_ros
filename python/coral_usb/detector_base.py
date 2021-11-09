@@ -1,4 +1,5 @@
 import copy
+import grp
 import matplotlib
 import matplotlib.cm
 import numpy as np
@@ -8,9 +9,12 @@ import sys
 import threading
 
 # OpenCV import for python3.5
-sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
-import cv2  # NOQA
-sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
+if os.environ['ROS_PYTHON_VERSION'] == '3':
+    import cv2
+else:
+    sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
+    import cv2  # NOQA
+    sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
 from cv_bridge import CvBridge
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
@@ -68,6 +72,13 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
                     'device {} is already assigned: {}'.format(
                         device_id, device_path))
         self.device_path = device_path
+
+        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
+            rospy.logerr('Current user does not belong to plugdev group')
+            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
+            rospy.logerr(
+                'And make sure to re-login the terminal by `su -l $(whoami)`')
+
         if self.model_file is not None:
             self.engine = DetectionEngine(
                 self.model_file, device_path=self.device_path)

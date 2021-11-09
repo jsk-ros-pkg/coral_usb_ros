@@ -1,4 +1,5 @@
 import copy
+import grp
 import matplotlib
 matplotlib.use("Agg")  # NOQA
 import matplotlib.pyplot as plt
@@ -9,9 +10,12 @@ import sys
 import threading
 
 # OpenCV import for python3.5
-sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
-import cv2  # NOQA
-sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
+if os.environ['ROS_PYTHON_VERSION'] == '3':
+    import cv2
+else:
+    sys.path.remove('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
+    import cv2  # NOQA
+    sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
 from chainercv.visualizations import vis_semantic_segmentation
 from cv_bridge import CvBridge
@@ -66,6 +70,12 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
                 rospy.logwarn(
                     'device {} is already assigned: {}'.format(
                         device_id, device_path))
+
+        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
+            rospy.logerr('Current user does not belong to plugdev group')
+            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
+            rospy.logerr(
+                'And make sure to re-login the terminal by `su -l $(whoami)`')
 
         self.engine = BasicEngine(self.model_file, device_path)
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]

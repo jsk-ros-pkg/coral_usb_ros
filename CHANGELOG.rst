@@ -2,6 +2,35 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#69 <https://github.com/knorth55/coral_usb_ros/issues/69>`_ from k-okada/noetic
+  Information for Noetic user
+* flake8
+* warn if user does not belong to plugdev
+* 99-coral-usb-ros.rules is not requried
+  libedgetpu1-legacy-max installs rules under /lib/udev/rules.d
+  ```
+  $ dpkg -L libedgetpu1-legacy-max
+  /.
+  /lib
+  /lib/udev
+  /lib/udev/rules.d
+  /lib/udev/rules.d/60-libedgetpu1-legacy-max.rules
+  ```
+* on noetic, we do not need to remove /opt/ros/{}/lib/python2.7/dist-packages path because 1) it is not exists, 2) we can use default opencv module
+* update README to add noetic information
+* md045
+* Update README.md
+* Merge pull request `#67 <https://github.com/knorth55/coral_usb_ros/issues/67>`_ from sktometometo/PR/update-rosinstall
+  Update fc.rosinstall to delete jsk_common and catkin_virtualenv entry
+* update fc.rosinstall to delete jsk_common and catkin_virtualenv entry
+* Update README.md
+* update readme
+* update readme
+* update readme
+* Contributors: Kei Okada, Koki Shinjo, Shingo Kitagawa
+
 0.0.5 (2021-08-13)
 ------------------
 * markdownlint

@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2021-11-13)
+------------------
 * Merge pull request `#69 <https://github.com/knorth55/coral_usb_ros/issues/69>`_ from k-okada/noetic
   Information for Noetic user
 * flake8

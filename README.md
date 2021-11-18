@@ -22,7 +22,7 @@ If you want to run this on PR2, please see [pr2 branch](https://github.com/knort
 
 ## Notice
 
-We need `python3.5` or `python3.6` to run this package.
+We need `python3.5` and above to run this package.
 
 ## ROS node list
 

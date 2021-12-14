@@ -1,6 +1,7 @@
 <launch>
   <arg name="INPUT_IMAGE"/>
-  <arg name="YAML_PATH" default="$(find coral_usb)/launch/edgetpu_node_manager_params.yaml" />
+  <arg name="YAML_PATH"
+       default="package://coral_usb/launch/edgetpu_node_manager_params.yaml" />
 
   <rosparam command="load" file="$(arg YAML_PATH)" />
   <node name="edgetpu_node_manager"

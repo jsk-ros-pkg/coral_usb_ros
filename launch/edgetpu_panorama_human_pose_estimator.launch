@@ -2,7 +2,8 @@
   <arg name="nodename" default="edgetpu_panorama_human_pose_estimator"/>
   <arg name="INPUT_IMAGE"/>
   <arg name="IMAGE_TRANSPORT" default="raw"/>
-  <arg name="model_file" default="$(find coral_usb)/python/coral_usb/posenet/models/mobilenet/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite"/>
+  <arg name="model_file"
+       default="package://coral_usb/python/coral_usb/posenet/models/mobilenet/posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite"/>
   <arg name="device_id" default="0" />
   <arg name="n_split" default="3" />
   <arg name="overlap" default="true" />

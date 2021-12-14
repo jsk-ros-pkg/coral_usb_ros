@@ -2,8 +2,10 @@
   <arg name="nodename" default="edgetpu_panorama_object_detector"/>
   <arg name="INPUT_IMAGE"/>
   <arg name="IMAGE_TRANSPORT" default="raw"/>
-  <arg name="model_file" default="$(find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
-  <arg name="label_file" default="$(find coral_usb)/models/coco_labels.txt"/>
+  <arg name="model_file"
+       default="package://coral_usb/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
+  <arg name="label_file"
+       default="package://coral_usb/models/coco_labels.txt"/>
   <arg name="device_id" default="0" />
   <arg name="n_split" default="3" />
   <arg name="overlap" default="true" />

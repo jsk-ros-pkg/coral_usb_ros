@@ -20,7 +20,7 @@ jobs:
         run: |
           flake8 . --ignore=E402,W503,H102
       - name: Run Super-Linter
-        uses: github/super-linter@v3
+        uses: github/super-linter@v4.8.5
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

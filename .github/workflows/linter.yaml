@@ -32,3 +32,4 @@ jobs:
           VALIDATE_PYTHON_MYPY: false
           VALIDATE_PYTHON_PYLINT: false
           VALIDATE_JSCPD: false
+          VALIDATE_NATURAL_LANGUAGE: false

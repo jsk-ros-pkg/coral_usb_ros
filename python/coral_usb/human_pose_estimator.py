@@ -68,7 +68,14 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         if device_id is None:
             device_path = None
         else:
-            device_path = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)[device_id]
+            device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)
+            if len(device_paths) == 0:
+                rospy.logerr('No device found.')
+            elif device_id >= len(device_paths):
+                rospy.logerr(
+                    'Only {} devices are found, but device id {} is set.'
+                    .format(len(device_paths), device_id))
+            device_path = device_paths[device_id]
             assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
             if device_path in assigned_device_paths:
                 rospy.logwarn(

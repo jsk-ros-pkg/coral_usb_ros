@@ -2,6 +2,20 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#76 <https://github.com/knorth55/coral_usb_ros/issues/76>`_ from knorth55/fix-ci
+* add python-numpy
+* Merge pull request `#75 <https://github.com/knorth55/coral_usb_ros/issues/75>`_ from knorth55/add-device-error
+* show device error for invalid device id or no device
+* Merge pull request `#74 <https://github.com/knorth55/coral_usb_ros/issues/74>`_ from knorth55/knorth55-patch-1
+* disable textlint
+* Update linter.yaml
+* Merge pull request `#73 <https://github.com/knorth55/coral_usb_ros/issues/73>`_ from knorth55/use-package
+* use package:// instead of find
+* update readme
+* Contributors: Shingo Kitagawa
+
 0.0.6 (2021-11-13)
 ------------------
 * Merge pull request `#69 <https://github.com/knorth55/coral_usb_ros/issues/69>`_ from k-okada/noetic

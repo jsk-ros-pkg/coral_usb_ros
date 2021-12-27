@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2021-12-27)
+------------------
 * Merge pull request `#76 <https://github.com/knorth55/coral_usb_ros/issues/76>`_ from knorth55/fix-ci
 * add python-numpy
 * Merge pull request `#75 <https://github.com/knorth55/coral_usb_ros/issues/75>`_ from knorth55/add-device-error

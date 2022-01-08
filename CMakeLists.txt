@@ -33,7 +33,10 @@ catkin_package(
 )
 
 
-if (${catkin_virtualenv_VERSION} VERSION_GREATER_EQUAL "0.6.1")
+if (${catkin_virtualenv_VERSION} VERSION_LESS "0.6.1")
+  message(WARNING "Please install catkin_virtualenv>=0.6.1.")
+  message(WARNING "Current catkin_virtualen version is ${catkin_virtualenv_VERSION}")
+else()
   catkin_generate_virtualenv(
     INPUT_REQUIREMENTS requirements.in
     PYTHON_INTERPRETER python3
@@ -46,9 +49,6 @@ if (${catkin_virtualenv_VERSION} VERSION_GREATER_EQUAL "0.6.1")
     PROGRAMS ${NODE_SCRIPTS_FILES}
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   )
-else()
-  message(WARNING "Please install catkin_virtualenv>=0.6.1.")
-  message(WARNING "Current catkin_virtualen version is ${catkin_virtualenv_VERSION}")
 endif()
 
 catkin_install_python(

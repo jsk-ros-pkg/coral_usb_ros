@@ -15,6 +15,9 @@ optional arguments:
   -c CSV_PATH, --csv_path CSV_PATH
                         Path of output .csv file. If none provided, then no file will be written.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import os
 import glob

@@ -1,4 +1,4 @@
-# Training Object detection model + VOC format dataset
+# Training Object detection model + xml format dataset
 
 ## Dataset annotation with xml file
 

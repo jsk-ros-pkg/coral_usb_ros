@@ -64,10 +64,11 @@ RUN apt-get update && \
 # install gdown
 RUN pip install gdown
 
-# install edgetpu compiler
-RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
-    apt-get update && apt-get install -y edgetpu-compiler
+# install edgetpu compiler 14.1
+RUN wget -O libedgetpu1-std_14.1_amd64.deb https://packages.cloud.google.com/apt/pool/libedgetpu1-std_14.1_amd64_c6cb84801d41bb06490d9ee18a0175c2a0b855a5d2865ae76e215a0ca2b9d1a4.deb && \
+    dpkg -i libedgetpu1-std_14.1_amd64.deb
+RUN wget -O edgetpu-compiler_14.1_amd64.deb https://packages.cloud.google.com/apt/pool/edgetpu-compiler_14.1_amd64_ef6eef29200270dcb941d2c1defa39c7d80e9c6f30cf7ced1c653a30bde0a502.deb && \
+    dpkg -i edgetpu-compiler_14.1_amd64.deb
 
 # install tree
 RUN apt-get install -y tree

@@ -30,13 +30,13 @@ from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
 import pandas as pd
 from PIL import Image
+# python 3.6
+# import tensorflow.compat.v1 as tf
+# python 2.7
 import tensorflow as tf
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'    # Suppress TensorFlow logging (1)
-# python 3.6
-# import tensorflow.compat.v1 as tf
-# python 2.7
 
 # Initiate argument parser
 parser = argparse.ArgumentParser(

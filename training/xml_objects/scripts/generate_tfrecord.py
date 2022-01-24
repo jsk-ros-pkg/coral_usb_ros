@@ -19,56 +19,64 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os
-import glob
-import pandas as pd
-import io
-import xml.etree.ElementTree as ET
 import argparse
+from collections import namedtuple
+import glob
+import io
+import os
+import xml.etree.ElementTree as ET
+
+from object_detection.utils import dataset_util
+from object_detection.utils import label_map_util
+import pandas as pd
+from PIL import Image
+import tensorflow as tf
+
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'    # Suppress TensorFlow logging (1)
-## python 3.6
+# python 3.6
 # import tensorflow.compat.v1 as tf
-## python 2.7
-import tensorflow as tf
-from PIL import Image
-from object_detection.utils import dataset_util, label_map_util
-from collections import namedtuple
+# python 2.7
 
 # Initiate argument parser
 parser = argparse.ArgumentParser(
     description="Sample TensorFlow XML-to-TFRecord converter")
-parser.add_argument("-x",
-                    "--xml_dir",
-                    help="Path to the folder where the input .xml files are stored.",
-                    type=str)
+parser.add_argument(
+    "-x",
+    "--xml_dir",
+    help="Path to the folder where the input .xml files are stored.",
+    type=str)
 parser.add_argument("-l",
                     "--labels_path",
                     help="Path to the labels (.pbtxt) file.", type=str)
 parser.add_argument("-o",
                     "--output_path",
                     help="Path of output TFRecord (.record) file.", type=str)
-parser.add_argument("-i",
-                    "--image_dir",
-                    help="Path to the folder where the input image files are stored. "
-                         "Defaults to the same directory as XML_DIR.",
-                    type=str, default=None)
-parser.add_argument("-c",
-                    "--csv_path",
-                    help="Path of output .csv file. If none provided, then no file will be "
-                         "written.",
-                    type=str, default=None)
+parser.add_argument(
+    "-i",
+    "--image_dir",
+    help="Path to the folder where the input image files are stored. "
+    "Defaults to the same directory as XML_DIR.",
+    type=str,
+    default=None)
+parser.add_argument(
+    "-c",
+    "--csv_path",
+    help="Path of output .csv file. If none provided, then no file will be "
+    "written.",
+    type=str,
+    default=None)
 
 args = parser.parse_args()
 
 if args.image_dir is None:
     args.image_dir = args.xml_dir
 
-## python 3.6
+# python 3.6
 # label_map = label_map_util.load_labelmap(args.labels_path)
 # label_map_dict = label_map_util.get_label_map_dict(label_map)
 
-## python 2.7
+# python 2.7
 label_map_dict = label_map_util.get_label_map_dict(args.labels_path)
 
 
@@ -124,7 +132,8 @@ def class_text_to_int(row_label):
 def split(df, group):
     data = namedtuple('data', ['filename', 'object'])
     gb = df.groupby(group)
-    return [data(filename, gb.get_group(x)) for filename, x in zip(gb.groups.keys(), gb.groups)]
+    return [data(filename, gb.get_group(x))
+            for filename, x in zip(gb.groups.keys(), gb.groups)]
 
 
 def create_tf_example(group, path):
@@ -150,8 +159,8 @@ def create_tf_example(group, path):
         ymaxs.append(float(row['ymax']) / float(height))
         classes_text.append(row['class'].encode('utf8'))
         classes.append(class_text_to_int(row['class']))
-    print(classes_text) 
-    print(classes) 
+    print(classes_text)
+    print(classes)
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': dataset_util.int64_feature(height),
         'image/width': dataset_util.int64_feature(width),

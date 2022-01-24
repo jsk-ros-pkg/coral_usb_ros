@@ -2,13 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import hashlib
-import io
-import logging
-import numpy as np
 import os
 
-import PIL.Image
 import tensorflow as tf
 
 
@@ -27,6 +22,7 @@ def main(_):
     os.system(
         'sed -i "s%NUM_EXAMPLES%{0}%g" "{1}"'
         .format(n_example, config_path))
+
 
 if __name__ == '__main__':
     tf.app.run()

@@ -5,9 +5,9 @@ from __future__ import print_function
 import hashlib
 import io
 import logging
-import numpy as np
 import os
 
+import numpy as np
 import PIL.Image
 import tensorflow as tf
 

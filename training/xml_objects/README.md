@@ -2,7 +2,7 @@
 
 ## Dataset annotation with xml file
 
-Please follow [here](https://github.com/himlen1990/multiple-grasping-pose-learning) and annotate dataset in xml format.
+Please follow [here](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/tensorflow-1.14/training.html#creating-label-map) and annotate dataset in xml format.
 
 ## Build docker image
 

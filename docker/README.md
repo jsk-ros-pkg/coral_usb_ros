@@ -4,9 +4,9 @@
 
 ```bash
 # noetic
-./build.bash noetic
+make noetic
 # melodic
-./build.bash melodic
+make melodic
 # kinetic
-./build.bash kinetic
+make kinetic
 ```

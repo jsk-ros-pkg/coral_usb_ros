@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2022-02-10)
+------------------
 * refactor testing ci
 * update docker/README
 * add makefile

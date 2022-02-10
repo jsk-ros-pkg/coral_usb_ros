@@ -231,7 +231,7 @@ def create_tf_record_labelimg(data_dir, output_dir, set_name, data_prefix):
     xml_dir = os.path.join(data_dir, set_name)
     image_dir = xml_dir
     labels_path = os.path.join(
-        data_dir, '{}_dataset_label_map.pbtxt'.format(data_dir))
+        data_dir, '{}_dataset_label_map.pbtxt'.format(data_prefix))
     writer = tf.python_io.TFRecordWriter(output_path)
     label_map_dict = label_map_util.get_label_map_dict(labels_path)
     examples = xml_to_csv(xml_dir)
@@ -244,7 +244,7 @@ def create_tf_record_labelimg(data_dir, output_dir, set_name, data_prefix):
 
 
 def create_tf_record(
-        data_dir, output_dir, data_prefix, set_name, data_format
+        data_dir, output_dir, set_name, data_prefix, data_format
 ):
     if data_format == 'labelimg':
         create_tf_record_labelimg(

@@ -22,7 +22,7 @@ from object_detection.utils import label_map_util
 flags = tf.app.flags
 flags.DEFINE_string('data_dir', '', 'Root directory to raw dataset.')
 flags.DEFINE_string('output_dir', '', 'Dir to output TFRecord')
-flags.DEFINE_string('data_format', 'xml', 'Dataset format (default: xml)')
+flags.DEFINE_string('data_format', '', 'Dataset format')
 flags.DEFINE_string('data_prefix', '', 'Prefix for TFRecord')
 FLAGS = flags.FLAGS
 
@@ -137,7 +137,7 @@ def get_tf_example_labelme(
     return example
 
 
-def get_tf_example_xml(group, image_dir, label_map_dict):
+def get_tf_example_labelimg(group, image_dir, label_map_dict):
     with tf.gfile.GFile(
             os.path.join(image_dir, '{}'.format(group.filename)), 'rb') as fid:
         encoded_jpg = fid.read()
@@ -225,7 +225,7 @@ def create_tf_record_labelme(data_dir, output_dir, set_name, data_prefix):
     writer.close()
 
 
-def create_tf_record_xml(data_dir, output_dir, set_name, data_prefix):
+def create_tf_record_labelimg(data_dir, output_dir, set_name, data_prefix):
     output_path = os.path.join(
         output_dir, '{}_dataset_{}.record'.format(data_prefix, set_name))
     xml_dir = os.path.join(data_dir, set_name)
@@ -237,17 +237,17 @@ def create_tf_record_xml(data_dir, output_dir, set_name, data_prefix):
     examples = xml_to_csv(xml_dir)
     grouped = split(examples, 'filename')
     for group in grouped:
-        example = get_tf_example_xml(group, image_dir, label_map_dict)
+        example = get_tf_example_labelimg(group, image_dir, label_map_dict)
         writer.write(example.SerializeToString())
     writer.close()
     print('Successfully created the TFRecord file: {}'.format(output_path))
 
 
 def create_tf_record(
-        data_dir, output_dir, data_prefix, set_name, data_format='xml'
+        data_dir, output_dir, data_prefix, set_name, data_format
 ):
-    if data_format == 'xml':
-        create_tf_record_xml(
+    if data_format == 'labelimg':
+        create_tf_record_labelimg(
             data_dir, output_dir, set_name, data_prefix)
     elif data_format == 'labelme':
         create_tf_record_labelme(

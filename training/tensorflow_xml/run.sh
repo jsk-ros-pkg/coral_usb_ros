@@ -40,7 +40,9 @@ else
             PORT=${!j}
         fi;
     done
-    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME}";
+    DOCKER_OPTION="--data_format=xml";
+    DOCKER_OPTION="${DOCKER_OPTION} --dataset_dir /tensorflow/models/research/${DATASET_NAME}";
+    DOCKER_OPTION="${DOCKER_OPTION} --data_prefix ${DATA_PREFIX}";
     if [[  RUN_TENSORBOARD -eq 1 ]]; then
         DOCKER_PORT_OPTION="-p $PORT:$PORT"
     fi

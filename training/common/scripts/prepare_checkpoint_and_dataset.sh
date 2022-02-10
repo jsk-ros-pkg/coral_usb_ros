@@ -10,6 +10,7 @@ usage() {
   Downloads checkpoint and dataset needed for the tutorial.
 
   --dataset_dir       Set path to dataset directory
+  --data_format       Dataset format
   --data_prefix       Set data file prefix
   --network_type      Can be one of [mobilenet_v1_ssd, mobilenet_v2_ssd],
                       mobilenet_v1_ssd by default.
@@ -31,6 +32,9 @@ while [[ $# -gt 0 ]]; do
       shift 2;;
     --dataset_dir)
       DATASET_DIR=$2
+      shift 2;;
+    --data_format)
+      DATA_FORMAT=$2
       shift 2;;
     --data_prefix)
       DATA_PREFIX=$2
@@ -76,7 +80,7 @@ cd "${OBJ_DET_DIR}"
 python create_tf_record.py \
     --data_dir="${DATASET_DIR}" \
     --output_dir="${DATASET_DIR}" \
-    --ckpt_dir="${CKPT_DIR}" \
+    --data_format="${DATA_FORMAT}" \
     --data_prefix="${DATA_PREFIX}"
 
 echo "REPLACING variables in config file..."

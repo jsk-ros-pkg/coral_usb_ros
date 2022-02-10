@@ -41,7 +41,9 @@ else
             PORT=${!j}
         fi;
     done
-    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME} --data_prefix ${DATA_PREFIX}";
+    DOCKER_OPTION="--data_format=labelme";
+    DOCKER_OPTION="${DOCKER_OPTION} --dataset_dir /tensorflow/models/research/${DATASET_NAME}";
+    DOCKER_OPTION="${DOCKER_OPTION} --data_prefix ${DATA_PREFIX}";
     if [[  RUN_TENSORBOARD -eq 1 ]]; then
         DOCKER_PORT_OPTION="-p $PORT:$PORT"
     fi

@@ -3,8 +3,10 @@
 ## Usage
 
 ```bash
+# noetic
+./build.bash noetic
 # melodic
-docker build --build-arg ROS_DISTRO=melodic --build-arg UBUNTU_VERSION=bionic -t knorth55/coral_usb_ros:melodic-latest .
+./build.bash melodic
 # kinetic
-docker build --build-arg ROS_DISTRO=kinetic --build-arg UBUNTU_VERSION=xenial -t knorth55/coral_usb_ros:kinetic-latest .
+./build.bash kinetic
 ```

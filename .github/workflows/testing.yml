@@ -34,4 +34,3 @@ jobs:
       - name: Industrial CI
         uses: 'ros-industrial/industrial_ci@master'
         env: ${{matrix.env}}
-        continue-on-error: true

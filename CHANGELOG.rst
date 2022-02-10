@@ -2,6 +2,29 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.8 (2022-02-10)
+------------------
+* refactor testing ci
+* update docker/README
+* add makefile
+* Merge pull request `#84 <https://github.com/knorth55/coral_usb_ros/issues/84>`_ from knorth55/noetic-test
+* add noetic test
+* Merge pull request `#83 <https://github.com/knorth55/coral_usb_ros/issues/83>`_ from knorth55/docker-ga
+* update docker README
+* add docker ci
+* not use ros-testing in docker
+* fix dependencies
+* fix linter dependencies
+* fix linter
+* update docker
+* Merge pull request `#79 <https://github.com/knorth55/coral_usb_ros/issues/79>`_ from fanshi14/downgrade_tpu_compiler_14-1
+* update download link for libedgetpu1-std deb.
+* Merge pull request `#78 <https://github.com/knorth55/coral_usb_ros/issues/78>`_ from fanshi14/downgrade_tpu_compiler_14-1
+* downgrade edgetpu-compiler to be 14.1
+* use VERSION_LESS for lower cmake version
+* check catkin_virtualenv_VERSION in CMakeLists
+* Contributors: Fan Shi, Shingo Kitagawa
+
 0.0.7 (2021-12-27)
 ------------------
 * Merge pull request `#76 <https://github.com/knorth55/coral_usb_ros/issues/76>`_ from knorth55/fix-ci

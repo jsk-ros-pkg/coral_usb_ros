@@ -15,7 +15,8 @@ jobs:
           python-version: 3.8
       - name: Install dependencies
         run: |
-          pip install flake8 hacking
+          pip install wheel -U
+          pip install flake8==3.8.4 hacking==4.1.0 -U
       - name: Lint with hacking
         run: |
           flake8 . --ignore=E402,W503,H102

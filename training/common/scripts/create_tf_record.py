@@ -15,7 +15,7 @@ import tensorflow as tf
 flags = tf.app.flags
 flags.DEFINE_string('data_dir', '', 'Root directory to raw dataset.')
 flags.DEFINE_string('output_dir', '', 'Dir to output TFRecord')
-flags.DEFINE_string('ckpt_dir', '', 'Dir to ckpt')
+flags.DEFINE_string('data_prefix', '', 'Prefix for TFRecord')
 FLAGS = flags.FLAGS
 
 
@@ -142,19 +142,13 @@ def create_tf_record(root_dir, output_path):
 
 def main(_):
     data_dir = FLAGS.data_dir
-    ckpt_dir = FLAGS.ckpt_dir
+    data_prefix = FLAGS.data_prefix
     for set_name in ['train', 'test']:
         root_dir = os.path.join(data_dir, set_name)
         output_path = os.path.join(
-            FLAGS.output_dir, 'labelme_voc_dataset_{}.record'.format(set_name))
+            FLAGS.output_dir,
+            '{}_dataset_{}.record'.format(data_prefix, set_name))
         create_tf_record(root_dir, output_path)
-        if set_name == 'test':
-            config_path = os.path.join(ckpt_dir, 'pipeline.config')
-            n_example = sum(
-                1 for _ in tf.python_io.tf_record_iterator(output_path))
-            os.system(
-                'sed -i "s%NUM_EXAMPLES%{0}%g" "{1}"'
-                .format(n_example, config_path))
 
 
 if __name__ == '__main__':

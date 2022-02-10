@@ -17,6 +17,7 @@ fi
 
 DATASET_DIR=$(realpath $1); shift 1;
 DATASET_NAME=$(basename $DATASET_DIR)
+DATA_PREFIX=${DATASET_NAME}
 if [ ! -e $DATASET_DIR/train/JPEGImages -o \
        ! -e $DATASET_DIR/train/class_names.txt ]; then
     message 31 "Invalid VOC format annotation"
@@ -40,7 +41,7 @@ else
             PORT=${!j}
         fi;
     done
-    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME}";
+    DOCKER_OPTION="--dataset_dir /tensorflow/models/research/${DATASET_NAME} --data_prefix ${DATA_PREFIX}";
     if [[  RUN_TENSORBOARD -eq 1 ]]; then
         DOCKER_PORT_OPTION="-p $PORT:$PORT"
     fi

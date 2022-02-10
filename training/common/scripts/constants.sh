@@ -27,11 +27,3 @@ LEARN_DIR="${RESEARCH_DIR}/learn"
 CKPT_DIR="${LEARN_DIR}/ckpt"
 TRAIN_DIR="${LEARN_DIR}/train"
 OUTPUT_DIR="${LEARN_DIR}/models"
-
-# need to set DATASET_DIR
-if [ ! -e $DATASET_DIR/train/JPEGImages -o \
-       ! -e $DATASET_DIR/train/class_names.txt ]; then
-    echo "Invalid VOC format annotation"
-    exit 1
-fi
-

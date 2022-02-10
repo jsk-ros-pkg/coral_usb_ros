@@ -8,12 +8,13 @@ usage() {
   Downloads checkpoint and dataset needed for the tutorial.
 
   --dataset_dir        Set path to VOC dataset directory
+  --data_prefix        Data file prefix
   --network_type       Can be one of [mobilenet_v1_ssd, mobilenet_v2_ssd],
                        mobilenet_v2_ssd by default.
   --train_whole_model  Whether or not to train all layers of the model. false
                        by default, in which only the last few layers are trained.
-  --num_training_steps Number of training steps to run, 500 by default.
-  --checkpoint_num     Checkpoint number, by default 50.
+  --num_training_steps Number of training steps to run, 2000 by default.
+  --checkpoint_num     Checkpoint number, by default 2000.
   --gpu                Specify GPU id, by default 0
   --help               Display this help.
 
@@ -118,6 +119,9 @@ while [[ $# -gt 0 ]]; do
     --gpu)
       gpu=$2
       shift 2;;
+    --data_prefix)
+      DATA_PREFIX=$2
+      shift 2;;
     --help)
       usage
       exit 0 ;;
@@ -141,10 +145,11 @@ if [ $RUN_TENSORBOARD -eq 0 ]; then
   message 32 "checkpoint_num     : $checkpoint_num"
   message 32 "GPU                : $gpu"
   message 32 "DATASET_DIR        : $DATASET_DIR"
+  message 32 "DATA_PREFIX        : $DATA_PREFIX"
 
   run cd /tensorflow/models/research/scripts
 
-  run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model --network_type $network_type --dataset_dir $DATASET_DIR
+  run ./prepare_checkpoint_and_dataset.sh --train_whole_model $train_whole_model --network_type $network_type --dataset_dir $DATASET_DIR --data_prefix $DATA_PREFIX
   # retraining on GPU $gpu
   export CUDA_VISIBLE_DEVICES=$gpu
   message 32 "CUDA_VISIBLE_DEVICES : $gpu"

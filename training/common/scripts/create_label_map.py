@@ -8,6 +8,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir')
     parser.add_argument('--output_dir')
+    parser.add_argument('--data_prefix')
     args = parser.parse_args()
 
     root_dir = os.path.join(args.data_dir, 'train')
@@ -27,7 +28,8 @@ def main():
         text = text + txt
     text = text[:-1]
     output_path = os.path.join(
-        args.output_dir, 'labelme_voc_dataset_label_map.pbtxt')
+        args.output_dir,
+        '{}_dataset_label_map.pbtxt'.format(args.data_prefix))
     with open(output_path, 'w') as f:
         f.write(text)
 

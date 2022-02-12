@@ -8,6 +8,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir')
     parser.add_argument('--output_dir')
+    parser.add_argument('--data_prefix')
     args = parser.parse_args()
 
     root_dir = os.path.join(args.data_dir, 'train')
@@ -18,11 +19,17 @@ def main():
     fg_class_names = class_names[1:]
     text = u""
     for i, name in enumerate(fg_class_names):
-        txt = u"""{0} {1}
-""".format(i, name)
+        txt = u"""item {{
+  id: {0}
+  name: '{1}'
+}}
+
+""".format(i + 1, name)
         text = text + txt
+    text = text[:-1]
     output_path = os.path.join(
-        args.output_dir, 'labels.txt')
+        args.output_dir,
+        '{}_dataset_label_map.pbtxt'.format(args.data_prefix))
     with open(output_path, 'w') as f:
         f.write(text)
 

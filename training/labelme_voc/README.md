@@ -1,4 +1,4 @@
-# Training Object detection model + VOC format dataset
+# Training Object detection model + LabelMe VOC format dataset
 
 ## Dataset annotation by labelme
 

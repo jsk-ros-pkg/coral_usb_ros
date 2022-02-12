@@ -1,15 +1,15 @@
-# Training Object detection model + xml format dataset
+# Training Object detection model + LabelImg VOC (XML) format dataset
 
 ## Dataset annotation with xml file
 
-Please follow [here](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/tensorflow-1.14/training.html#creating-label-map) and annotate dataset in xml format.
+Please follow [here](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/tensorflow-1.14/training.html) and annotate dataset in VOC (XML) format.
 
 ## Build docker image
 
 Then, you need to build docker image called `train-edgetpu-object-detection-xml`.
 
 ```bash
-roscd coral_usb_ros/training/xml_objects
+roscd coral_usb_ros/training/labelimg_voc
 make
 ```
 
@@ -18,7 +18,7 @@ make
 Finally, you can train the model with your dataset.
 
 ```bash
-roscd coral_usb_ros/training/xml_objects
+roscd coral_usb_ros/training/labelimg_voc
 bash ./run.sh <your_dataset_path>
 ```
 
@@ -34,6 +34,6 @@ You can visualize your training result with TensorBoard.
 TensorBoard port is often set around `6006`.
 
 ```bash
-roscd coral_usb_ros/training/xml_objects
+roscd coral_usb_ros/training/labelimg_voc
 bash ./run.sh <your_dataset_path> --port <port> tensorboard
 ```

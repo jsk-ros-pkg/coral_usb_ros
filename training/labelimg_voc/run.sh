@@ -23,13 +23,6 @@ DOCKER_OPTION=""
 DOCKER_PORT_OPTION=""
 RUN_TENSORBOARD=0
 RUN_BASH=0
-
-if [ ! -e $DATASET_DIR/train/JPEGImages -o \
-       ! -e $DATASET_DIR/train/class_names.txt ]; then
-    message 31 "Invalid VOC format annotation"
-    exit 1
-fi
-
 if [ "$1" == "bash" -o "$1" == "/bin/bash" ]; then
     DOCKER_OPTION="";
     RUN_BASH=1
@@ -42,7 +35,7 @@ else
             PORT=${!j}
         fi;
     done
-    DOCKER_OPTION="--data_format labelme";
+    DOCKER_OPTION="--data_format labelimg";
     DOCKER_OPTION="${DOCKER_OPTION} --dataset_dir /tensorflow/models/research/${DATASET_NAME}";
     DOCKER_OPTION="${DOCKER_OPTION} --data_prefix ${DATA_PREFIX}";
     if [[  RUN_TENSORBOARD -eq 1 ]]; then
@@ -64,7 +57,7 @@ docker run --rm --privileged ${DOCKER_PORT_OPTION} \
     --name $USER-train-edgetpu-object-detection-${DATASET_NAME}-$$ \
     --mount type=bind,src=${DATASET_DIR}/learn,dst=/tensorflow/models/research/learn \
     --mount type=bind,src=${DATASET_DIR},dst=/tensorflow/models/research/${DATASET_NAME} \
-    ${TTY_OPT} train-edgetpu-object-detection ${DOCKER_OPTION} $@
+    ${TTY_OPT} train-edgetpu-object-detection-xml ${DOCKER_OPTION} $@
 set +x
 
 if [ $RUN_BASH -eq 0 -a $RUN_TENSORBOARD -eq 0 ]; then

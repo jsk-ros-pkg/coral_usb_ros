@@ -2,6 +2,49 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#89 <https://github.com/knorth55/coral_usb_ros/issues/89>`_ from knorth55/knorth55-patch-2
+* Merge pull request `#88 <https://github.com/knorth55/coral_usb_ros/issues/88>`_ from knorth55/knorth55-patch-1
+* Merge pull request `#87 <https://github.com/knorth55/coral_usb_ros/issues/87>`_ from Kanazawanaoaki/fix-package-name-of-labelimg-docs
+* fix epic kitchens 55 readme
+* fix labelme_voc readme
+* fix package name
+* Merge pull request `#80 <https://github.com/knorth55/coral_usb_ros/issues/80>`_ from fanshi14/add_xml_label
+* Merge branch 'master' into add_xml_label
+* Merge branch 'knorth55-add_xml_label' into add_xml_label
+* Merge pull request `#85 <https://github.com/knorth55/coral_usb_ros/issues/85>`_ from knorth55/common-scripts
+* fix typo
+* retactor run.sh
+* change to labelimg
+* update training/readme
+* rename direcotry to labelimg_voc
+* support xml format
+* remove duplicated scripts
+* use common scripts
+* rename to tensorflow_xml
+* add common scripts
+* Merge branch 'master' into add_xml_label
+* add common scripts
+* Merge branch 'master' into add_xml_label
+* remove unused file
+* update readme for xml label
+* fix typo
+* fix typo.
+* format adjust for annotation.
+* Merge pull request `#1 <https://github.com/knorth55/coral_usb_ros/issues/1>`_ from iory/add_xml_label
+  Add format
+* Format
+* Add setup.cfg for flake8 and isort
+* downgrade edgetpu-compiler in xml_objects example.
+* improve readme.
+* Add print library for python 2.7.
+* Move tfrecord generator files into scripts folder.
+* Fix integer division to be float in tfrecord generator.
+* add generate tfrecord file for xml labels.
+* add examples of dataset with xml labels.
+* Contributors: Fan Shi, Kanazawanaoaki, Shingo Kitagawa, iory
+
 0.0.8 (2022-02-10)
 ------------------
 * refactor testing ci

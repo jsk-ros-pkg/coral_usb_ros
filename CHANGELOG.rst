@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.9 (2022-03-03)
+------------------
 * Merge pull request `#89 <https://github.com/knorth55/coral_usb_ros/issues/89>`_ from knorth55/knorth55-patch-2
 * Merge pull request `#88 <https://github.com/knorth55/coral_usb_ros/issues/88>`_ from knorth55/knorth55-patch-1
 * Merge pull request `#87 <https://github.com/knorth55/coral_usb_ros/issues/87>`_ from Kanazawanaoaki/fix-package-name-of-labelimg-docs

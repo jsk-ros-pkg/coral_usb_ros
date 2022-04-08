@@ -20,11 +20,16 @@ else:
 if os.environ['ROS_PYTHON_VERSION'] == '3':
     from cv_bridge import CvBridge
 else:
-    ws_python2_path = [p for p in sys.path if 'devel/lib/python2.7' in p][0]
-    ws_python3_path = ws_python2_path.replace('python2.7', 'python3')
-    sys.path = [ws_python3_path] + sys.path
-    from cv_bridge import CvBridge
-    sys.path.remove(ws_python3_path)
+    ws_python3_paths = [p for p in sys.path if 'devel/lib/python3' in p]
+    if len(ws_python3_paths) == 0:
+        ws_python2_paths = [p for p in sys.path if 'devel/lib/python2.7' in p]
+        ws_python2_path = ws_python2_paths[0]
+        ws_python3_path = ws_python2_path.replace('python2.7', 'python3')
+        sys.path = [ws_python3_path] + sys.path
+        from cv_bridge import CvBridge
+        sys.path.remove(ws_python3_path)
+    else:
+        from cv_bridge import CvBridge
 
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
 from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE

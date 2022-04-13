@@ -3,10 +3,10 @@
 [![main](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/main.yml/badge.svg)](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/main.yml)
 [![linter](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/linter.yaml/badge.svg)](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/linter.yaml)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/jsk-ros-pkg/coral_usb_ros)
-[![Docker Stars](https://img.shields.io/docker/stars/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Pulls](https://img.shields.io/docker/pulls/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Automated](https://img.shields.io/docker/cloud/automated/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Build Status](https://img.shields.io/docker/cloud/build/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
+[![Docker Stars](https://img.shields.io/docker/stars/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
+[![Docker Pulls](https://img.shields.io/docker/pulls/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
+[![Docker Automated](https://img.shields.io/docker/cloud/automated/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
 
 ROS package for Coral Edge TPU USB Accelerator
 

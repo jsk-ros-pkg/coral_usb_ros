@@ -119,7 +119,7 @@ For more information, please see [here](https://coral.withgoogle.com/docs/accele
 
 #### Workspace build (Kinetic)
 
-**Kinetic workspace requires cv-bridge build with python3.5**
+Kinetic workspace requires cv-bridge build with python3.5.
 
 ```bash
 sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy

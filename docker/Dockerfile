@@ -87,9 +87,7 @@ RUN rosdep update --include-eol-distros && \
 ARG ROS_DISTRO
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
     cd ~/ros/${ROS_DISTRO} && \
-    if [ ${ROS_DISTRO} = "melodic" ] ; then \
-      catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so ; \
-    elif [ ${ROS_DISTRO} = "kinetic" ] ; then \
+    if [ ${ROS_DISTRO} = "kinetic" ] ; then \
       catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so; \
     fi && \
     catkin build

@@ -1,4 +1,4 @@
 - git:
     local-name: coral_usb_ros
-    uri: https://github.com/knorth55/coral_usb_ros.git
+    uri: https://github.com/jsk-ros-pkg/coral_usb_ros.git
     version: master

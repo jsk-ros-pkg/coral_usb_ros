@@ -1,12 +1,12 @@
 # coral_usb_ros
 
-[![main](https://github.com/knorth55/coral_usb_ros/actions/workflows/main.yml/badge.svg)](https://github.com/knorth55/coral_usb_ros/actions/workflows/main.yml)
-[![linter](https://github.com/knorth55/coral_usb_ros/actions/workflows/linter.yaml/badge.svg)](https://github.com/knorth55/coral_usb_ros/actions/workflows/linter.yaml)
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/knorth55/coral_usb_ros)
-[![Docker Stars](https://img.shields.io/docker/stars/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Pulls](https://img.shields.io/docker/pulls/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Automated](https://img.shields.io/docker/cloud/automated/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Build Status](https://img.shields.io/docker/cloud/build/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
+[![main](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/main.yml/badge.svg)](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/main.yml)
+[![linter](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/linter.yaml/badge.svg)](https://github.com/jsk-ros-pkg/coral_usb_ros/actions/workflows/linter.yaml)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/jsk-ros-pkg/coral_usb_ros)
+[![Docker Stars](https://img.shields.io/docker/stars/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
+[![Docker Pulls](https://img.shields.io/docker/pulls/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
+[![Docker Automated](https://img.shields.io/docker/cloud/automated/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/jskrobotics/coral_usb_ros.svg)](https://hub.docker.com/r/jskrobotics/coral_usb_ros)
 
 ROS package for Coral Edge TPU USB Accelerator
 
@@ -16,9 +16,9 @@ ROS package for Coral Edge TPU USB Accelerator
 - Ubuntu 18.04 + Melodic
 - Ubuntu 20.04 + Noetic
 
-If you want to run this on Ubuntu 14.04 + Indigo, please see [indigo branch](https://github.com/knorth55/coral_usb_ros/tree/indigo).
+If you want to run this on Ubuntu 14.04 + Indigo, please see [indigo branch](https://github.com/jsk-ros-pkg/coral_usb_ros/tree/indigo).
 
-If you want to run this on PR2, please see [pr2 branch](https://github.com/knorth55/coral_usb_ros/tree/pr2).
+If you want to run this on PR2, please see [pr2 branch](https://github.com/jsk-ros-pkg/coral_usb_ros/tree/pr2).
 
 ## Notice
 
@@ -30,51 +30,51 @@ We need `python3.5` and above to run this package.
 
 ![edgetpu_object_detector](./media/edgetpu_object_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_object_detectorpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#object-detector-edgetpu_object_detectorpy-1).
 
 ### Face detector: `edgetpu_face_detector.py`
 
 ![edgetpu_face_detector](./media/edgetpu_face_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_face_detectorpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#face-detector-edgetpu_face_detectorpy-1).
 
 ### Human pose estimator: `edgetpu_human_pose_estimator.py`
 
 ![edgetpu_human_pose_estimator](./media/edgetpu_human_pose_estimator.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#human-pose-estimator-edgetpu_human_pose_estimatorpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#human-pose-estimator-edgetpu_human_pose_estimatorpy-1).
 
 ### Semantic segmenter: `edgetpu_semantic_segmenter.py`
 
 ![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy-1).
 
 ### Panorama object detector: `edgetpu_panorama_object_detector.py`
 
 ![edgetpu_panorama_object_detector](./media/edgetpu_panorama_object_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-object-detector-edgetpu_panorama_object_detectorpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#panorama-object-detector-edgetpu_panorama_object_detectorpy-1).
 
 ### Panorama face detector: `edgetpu_panorama_face_detector.py`
 
 ![edgetpu_panorama_face_detector](./media/edgetpu_panorama_face_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-face-detector-edgetpu_panorama_face_detectorpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#panorama-face-detector-edgetpu_panorama_face_detectorpy-1).
 
 ### Panorama human pose estimator: `edgetpu_panorama_human_pose_estimator.py`
 
 ![edgetpu_panorama_human_pose_estimator](./media/edgetpu_panorama_human_pose_estimator.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-human-pose-estimator-edgetpu_panorama_human_pose_estimatorpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#panorama-human-pose-estimator-edgetpu_panorama_human_pose_estimatorpy-1).
 
 ### Panorama semantic segmenter: `edgetpu_panorama_semantic_segmenter.py`
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#panorama-semantic-segmenter-edgetpu_panorama_semantic_segmenterpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#panorama-semantic-segmenter-edgetpu_panorama_semantic_segmenterpy-1).
 
 ### Node manager: `edgetpu_node_manager.py`
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).
 
 ## Setup
 
@@ -119,6 +119,8 @@ For more information, please see [here](https://coral.withgoogle.com/docs/accele
 
 #### Workspace build (Kinetic)
 
+Kinetic workspace requires cv-bridge build with python3.5.
+
 ```bash
 sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
 sudo apt-get install ros-kinetic-opencv3
@@ -127,7 +129,7 @@ pip3 install --user opencv-python==4.2.0.32 numpy\<1.19.0
 source /opt/ros/kinetic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
-git clone https://github.com/knorth55/coral_usb_ros.git
+git clone https://github.com/jsk-ros-pkg/coral_usb_ros.git
 wstool init
 wstool merge coral_usb_ros/fc.rosinstall
 wstool merge coral_usb_ros/fc.rosinstall.kinetic
@@ -139,7 +141,7 @@ catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/inc
 catkin build
 ```
 
-#### Workspace build (Melodic)
+#### Workspace build (Melodic + cv-bridge-python3)
 
 ```bash
 sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
@@ -148,7 +150,25 @@ sudo apt-get install ros-melodic-catkin
 source /opt/ros/melodic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
-git clone https://github.com/knorth55/coral_usb_ros.git
+git clone https://github.com/jsk-ros-pkg/coral_usb_ros.git
+wstool init
+wstool merge coral_usb_ros/fc.rosinstall
+wstool update
+rosdep install --from-paths . --ignore-src -y -r
+cd ~/coral_ws
+catkin init
+catkin build
+```
+
+<!--
+```bash
+sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
+sudo apt-get install python3-opencv
+sudo apt-get install ros-melodic-catkin
+source /opt/ros/melodic/setup.bash
+mkdir -p ~/coral_ws/src
+cd ~/coral_ws/src
+git clone https://github.com/jsk-ros-pkg/coral_usb_ros.git
 wstool init
 wstool merge coral_usb_ros/fc.rosinstall
 wstool merge coral_usb_ros/fc.rosinstall.melodic
@@ -159,6 +179,7 @@ catkin init
 catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
 catkin build
 ```
+-->
 
 #### Workspace build (Noetic)
 
@@ -167,7 +188,7 @@ sudo apt-get install ros-noetic-catkin
 source /opt/ros/noetic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
-git clone https://github.com/knorth55/coral_usb_ros.git
+git clone https://github.com/jsk-ros-pkg/coral_usb_ros.git
 wstool init
 wstool merge coral_usb_ros/fc.rosinstall
 wstool update
@@ -201,9 +222,9 @@ sudo adduser $(whoami) plugdev
 
 Please choose one of these demo.
 
-- [USB or Laptop camera demo](https://github.com/knorth55/coral_usb_ros#usb-or-laptop-camera-demo)
-- [No camera demo](https://github.com/knorth55/coral_usb_ros#no-camera-demo)
-- [Insta 360 air demo](https://github.com/knorth55/coral_usb_ros#insta360-air-camera-demo)
+- [USB or Laptop camera demo](https://github.com/jsk-ros-pkg/coral_usb_ros#usb-or-laptop-camera-demo)
+- [No camera demo](https://github.com/jsk-ros-pkg/coral_usb_ros#no-camera-demo)
+- [Insta 360 air demo](https://github.com/jsk-ros-pkg/coral_usb_ros#insta360-air-camera-demo)
 
 ### USB or Laptop camera demo
 

@@ -68,7 +68,7 @@ RUN cd ~ && \
     mkdir -p ros/${ROS_DISTRO}/src && \
     cd ros/${ROS_DISTRO}/src && \
     wstool init && \
-    wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git -v master --git -y && \
+    wstool set coral_usb_ros https://github.com/jsk-ros-pkg/coral_usb_ros.git -v master --git -y && \
     wstool up -j 2 && \
     wstool merge -y coral_usb_ros/fc.rosinstall && \
     if [ -f coral_usb_ros/fc.rosinstall.${ROS_DISTRO} ]; then \
@@ -87,9 +87,7 @@ RUN rosdep update --include-eol-distros && \
 ARG ROS_DISTRO
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
     cd ~/ros/${ROS_DISTRO} && \
-    if [ ${ROS_DISTRO} = "melodic" ] ; then \
-      catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so ; \
-    elif [ ${ROS_DISTRO} = "kinetic" ] ; then \
+    if [ ${ROS_DISTRO} = "kinetic" ] ; then \
       catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so; \
     fi && \
     catkin build

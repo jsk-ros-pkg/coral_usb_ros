@@ -1,12 +1,12 @@
-- git:
-    local-name: catkin_virtualenv
-    uri: https://github.com/locusrobotics/catkin_virtualenv.git
-    version: 0.6.1
-- git:
-    local-name: vision_opencv
-    uri: https://github.com/ros-perception/vision_opencv.git
-    version: melodic
-- git:
-    local-name: dynamic_reconfigure
-    uri: https://github.com/ros/dynamic_reconfigure.git
-    version: 1.6.3
+# - git:
+#     local-name: catkin_virtualenv
+#     uri: https://github.com/locusrobotics/catkin_virtualenv.git
+#     version: 0.6.1
+# - git:
+#     local-name: vision_opencv
+#     uri: https://github.com/ros-perception/vision_opencv.git
+#     version: melodic
+# - git:
+#     local-name: dynamic_reconfigure
+#     uri: https://github.com/ros/dynamic_reconfigure.git
+#     version: 1.6.3

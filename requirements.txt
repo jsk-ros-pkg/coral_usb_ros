@@ -1,16 +1,37 @@
-chainer==7.7.0            # via chainercv
-chainercv==0.13.1         # via -r requirements.in
-cycler==0.10.0            # via matplotlib
-filelock==3.0.12          # via chainer
-kiwisolver==1.1.0         # via matplotlib
-matplotlib==3.0.3         # via -r requirements.in
-numpy==1.18.5             # via -r requirements.in, chainer, matplotlib
-pillow==7.2.0             # via -r requirements.in, chainercv
-protobuf==3.13.0          # via chainer
-pyparsing==2.4.7          # via matplotlib
-python-dateutil==2.8.1    # via matplotlib
-six==1.15.0               # via chainer, cycler, protobuf, python-dateutil
-typing-extensions==3.7.4.3  # via chainer
+chainer==7.7.0
+    # via chainercv
+chainercv==0.13.1
+    # via -r requirements.in
+cycler==0.10.0
+    # via matplotlib
+filelock==3.0.12
+    # via chainer
+kiwisolver==1.1.0
+    # via matplotlib
+matplotlib==3.0.3
+    # via -r requirements.in
+numpy==1.18.5
+    # via
+    #   -r requirements.in
+    #   chainer
+    #   matplotlib
+pillow==9.0.1
+    # via
+    #   -r requirements.in
+    #   chainercv
+protobuf==3.13.0
+    # via chainer
+pyparsing==2.4.7
+    # via matplotlib
+python-dateutil==2.8.1
+    # via matplotlib
+six==1.15.0
+    # via
+    #   chainer
+    #   cycler
+    #   python-dateutil
+typing-extensions==3.7.4.3
+    # via chainer
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

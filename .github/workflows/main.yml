@@ -25,7 +25,7 @@ jobs:
             UPSTREAM_WORKSPACE: '.ci.rosinstall.kinetic'
             UPSTREAM_CMAKE_ARGS: '-DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so'
             ADDITIONAL_DEBS: 'python3-catkin-pkg-modules python3-rospkg-modules python3-numpy ros-kinetic-opencv3 python3-venv python3-empy python-catkin-tools'
-            ROSDEP_SKIP_KEYS: 'python-numpy cv-bridge-python3'
+            ROSDEP_SKIP_KEYS: 'python-numpy cv_bridge_python3'
             NOT_TEST_BUILD: true
     runs-on: ubuntu-latest
     steps:

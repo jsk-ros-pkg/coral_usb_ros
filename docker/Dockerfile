@@ -68,7 +68,7 @@ RUN cd ~ && \
     mkdir -p ros/${ROS_DISTRO}/src && \
     cd ros/${ROS_DISTRO}/src && \
     wstool init && \
-    wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git -v master --git -y && \
+    wstool set coral_usb_ros https://github.com/jsk-ros-pkg/coral_usb_ros.git -v master --git -y && \
     wstool up -j 2 && \
     wstool merge -y coral_usb_ros/fc.rosinstall && \
     if [ -f coral_usb_ros/fc.rosinstall.${ROS_DISTRO} ]; then \

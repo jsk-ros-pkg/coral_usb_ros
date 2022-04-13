@@ -12,7 +12,8 @@
   <buildtool_depend>catkin</buildtool_depend>
   <buildtool_depend>python3-catkin-pkg-modules</buildtool_depend>
   <build_depend version_gte="0.6.1">catkin_virtualenv</build_depend>
-  <build_depend>cv_bridge</build_depend>
+  <!-- <build_depend>cv_bridge</build_depend> -->
+  <build_depend>cv_bridge_python3</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>jsk_recognition_msgs</build_depend>
   <build_depend>jsk_topic_tools</build_depend>

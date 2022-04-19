@@ -233,14 +233,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             visibles.append(visible)
             y_max = int(np.round(max(ys)))
             y_min = int(np.round(min(ys)))
-            if y_offset:
-                y_max = y_max + y_offset
-                y_min = y_min + y_offset
             x_max = int(np.round(max(xs)))
             x_min = int(np.round(min(xs)))
-            if x_offset:
-                x_max = x_max + x_offset
-                x_min = x_min + x_offset
             bboxes.append([y_min, x_min, y_max, x_max])
             labels.append(0)
             scores.append(score)

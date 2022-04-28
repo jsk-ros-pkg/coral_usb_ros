@@ -21,6 +21,7 @@ generate_messages()
 generate_dynamic_reconfigure_options(
   cfg/EdgeTPUObjectDetector.cfg
   cfg/EdgeTPUPanoramaObjectDetector.cfg
+  cfg/EdgeTPUTileObjectDetector.cfg
   cfg/EdgeTPUFaceDetector.cfg
   cfg/EdgeTPUPanoramaFaceDetector.cfg
   cfg/EdgeTPUHumanPoseEstimator.cfg

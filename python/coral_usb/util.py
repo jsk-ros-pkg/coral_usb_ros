@@ -30,26 +30,23 @@ def get_panorama_sliced_image(panorama_img, panorama_slice):
     return img
 
 
-def get_tiles(width, height, overlap=True,
+def get_tiles(img_height, img_width, overlap=True,
               tile_sizes=[[300, 300], [250, 250]], tile_overlap_rate=0.1):
-    if overlap:
-        tile_overlap = int(tile_overlap_rate
-                           * min([min(w) for w in tile_sizes]))
-    else:
-        tile_overlap = 0
     tiles = []
     for tile_size in tile_sizes:
-        tile_width, tile_height = tile_size
-        img_width = width
-        img_height = height
-        h_stride = tile_height - tile_overlap
-        w_stride = tile_width - tile_overlap
-        for h in range(0, img_height, h_stride):
-            for w in range(0, img_width, w_stride):
-                xmin = w
-                ymin = h
-                xmax = min(img_width, w + tile_width)
-                ymax = min(img_height, h + tile_height)
+        tile_height, tile_width = tile_size
+        if overlap:
+            tile_height_overlap = int(tile_height * tile_overlap_rate)
+            tile_width_overlap = int(tile_width * tile_overlap_rate)
+        else:
+            tile_height_overlap = 0
+            tile_width_overlap = 0
+        h_stride = tile_height - tile_height_overlap
+        w_stride = tile_width - tile_width_overlap
+        for ymin in range(0, img_height, h_stride):
+            for xmin in range(0, img_width, w_stride):
+                ymax = min(img_height, ymin + tile_height)
+                xmax = min(img_width, xmin + tile_width)
                 tiles.append([ymin, xmin, ymax, xmax])
     return tiles
 

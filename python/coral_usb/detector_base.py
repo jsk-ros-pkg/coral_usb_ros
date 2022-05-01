@@ -409,7 +409,7 @@ class EdgeTPUTileDetectorBase(EdgeTPUPanoramaDetectorBase):
     def _detect(self, orig_img):
         orig_H, orig_W = orig_img.shape[:2]
         tiles = get_tiles(
-            orig_W, orig_H, overlap=self.overlap)
+            orig_H, orig_W, overlap=self.overlap)
 
         bboxes = []
         labels = []

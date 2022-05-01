@@ -30,11 +30,10 @@ def get_panorama_sliced_image(panorama_img, panorama_slice):
     return img
 
 
-def get_tiles(width, height, overlap=True):
-    tile_sizes = [[300, 300], [250, 250]]
-    tile_overlap = 0
+def get_tiles(width, height, overlap=True,
+              tile_sizes=[[300, 300], [250, 250]], tile_overlap=20):
     if overlap:
-        tile_overlap = 20
+        tile_overlap = 0
     tiles = []
     for tile_size in tile_sizes:
         tile_width, tile_height = tile_size
@@ -48,12 +47,12 @@ def get_tiles(width, height, overlap=True):
                 ymin = h
                 xmax = min(img_width, w + tile_width)
                 ymax = min(img_height, h + tile_height)
-                tiles.append([xmin, ymin, xmax, ymax])
+                tiles.append([ymin, xmin, ymax, xmax])
     return tiles
 
 
 def get_tiled_image(source_img, tile):
-    tile_img = source_img[tile[1]:tile[3], tile[0]:tile[2]]
+    tile_img = source_img[tile[0]:tile[2], tile[1]:tile[3]]
     return tile_img
 
 

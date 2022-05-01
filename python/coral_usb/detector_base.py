@@ -417,7 +417,9 @@ class EdgeTPUTileDetectorBase(EdgeTPUPanoramaDetectorBase):
         for tile_slice in tile_slices:
             img = get_tile_sliced_image(orig_img, tile_slice)
             bbox, label, score = self._detect_step(
-                img, y_offset=tile_slice[0], x_offset=tile_slice[1])
+                img,
+                y_offset=tile_slice[0].start,
+                x_offset=tile_slice[1].start)
             if len(bbox) > 0:
                 bboxes.append(bbox)
                 labels.append(label)

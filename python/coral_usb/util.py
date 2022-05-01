@@ -30,8 +30,8 @@ def get_panorama_sliced_image(panorama_img, panorama_slice):
     return img
 
 
-def get_tile_slices(img_height, img_width, overlap=True,
-                    tile_sizes=[[300, 300], [250, 250]],
+def get_tile_slices(height, width, overlap=True,
+                    tile_sizes=((300, 300), (250, 250)),
                     tile_overlap_rate=0.1):
     tile_slices = []
     for tile_size in tile_sizes:
@@ -44,16 +44,17 @@ def get_tile_slices(img_height, img_width, overlap=True,
             tile_width_overlap = 0
         h_stride = tile_height - tile_height_overlap
         w_stride = tile_width - tile_width_overlap
-        for ymin in range(0, img_height, h_stride):
-            for xmin in range(0, img_width, w_stride):
-                ymax = min(img_height, ymin + tile_height)
-                xmax = min(img_width, xmin + tile_width)
-                tile_slices.append([ymin, xmin, ymax, xmax])
+        for y_min in range(0, height, h_stride):
+            for x_min in range(0, width, w_stride):
+                y_max = min(height, y_min + tile_height)
+                x_max = min(width, x_min + tile_width)
+                tile_slices.append((slice(y_min, y_max), slice(x_min, x_max)))
     return tile_slices
 
 
-def get_tile_sliced_image(img, tile):
-    sliced_img = img[tile[0]:tile[2], tile[1]:tile[3]]
+def get_tile_sliced_image(img, tile_slice):
+    sliced_img = img[tile_slice[0].start:tile_slice[0].stop,
+                     tile_slice[1].start:tile_slice[1].stop]
     return sliced_img
 
 

@@ -30,6 +30,33 @@ def get_panorama_sliced_image(panorama_img, panorama_slice):
     return img
 
 
+def get_tile_slices(height, width, overlap=True,
+                    tile_sizes=((300, 300), (250, 250)),
+                    tile_overlap_rate=0.1):
+    tile_slices = []
+    for tile_size in tile_sizes:
+        tile_height, tile_width = tile_size
+        if overlap:
+            tile_height_overlap = int(tile_height * tile_overlap_rate)
+            tile_width_overlap = int(tile_width * tile_overlap_rate)
+        else:
+            tile_height_overlap = 0
+            tile_width_overlap = 0
+        h_stride = tile_height - tile_height_overlap
+        w_stride = tile_width - tile_width_overlap
+        for y_min in range(0, height, h_stride):
+            for x_min in range(0, width, w_stride):
+                y_max = min(height, y_min + tile_height)
+                x_max = min(width, x_min + tile_width)
+                tile_slices.append((slice(y_min, y_max), slice(x_min, x_max)))
+    return tile_slices
+
+
+def get_tile_sliced_image(img, tile_slice):
+    sliced_img = img[tile_slice[0], tile_slice[1], :]
+    return sliced_img
+
+
 # copied from chainercv
 def non_maximum_suppression(bbox, thresh, score=None, limit=None):
     if len(bbox) == 0:

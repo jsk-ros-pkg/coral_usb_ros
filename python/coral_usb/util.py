@@ -31,8 +31,11 @@ def get_panorama_sliced_image(panorama_img, panorama_slice):
 
 
 def get_tiles(width, height, overlap=True,
-              tile_sizes=[[300, 300], [250, 250]], tile_overlap=20):
+              tile_sizes=[[300, 300], [250, 250]], tile_overlap_rate=0.1):
     if overlap:
+        tile_overlap = int(tile_overlap_rate
+                           * min([min(w) for w in tile_sizes]))
+    else:
         tile_overlap = 0
     tiles = []
     for tile_size in tile_sizes:

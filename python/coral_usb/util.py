@@ -53,8 +53,7 @@ def get_tile_slices(height, width, overlap=True,
 
 
 def get_tile_sliced_image(img, tile_slice):
-    sliced_img = img[tile_slice[0].start:tile_slice[0].stop,
-                     tile_slice[1].start:tile_slice[1].stop]
+    sliced_img = img[tile_slice[0], tile_slice[1], :]
     return sliced_img
 
 

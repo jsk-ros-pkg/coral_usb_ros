@@ -399,7 +399,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
         return config
 
 
-class EdgeTPUTileDetectorBase(EdgeTPUPanoramaDetectorBase):
+class EdgeTPUTileDetectorBase(EdgeTPUDetectorBase):
 
     def __init__(self, model_file=None, label_file=None, namespace='~'):
         super(EdgeTPUTileDetectorBase, self).__init__(
@@ -468,6 +468,6 @@ class EdgeTPUTileDetectorBase(EdgeTPUPanoramaDetectorBase):
         self.nms = config.nms
         self.nms_thresh = config.nms_thresh
         self.overlap = config.overlap
-        config = super(EdgeTPUPanoramaDetectorBase, self).config_callback(
+        config = super(EdgeTPUTileDetectorBase, self).config_callback(
             config, level)
         return config

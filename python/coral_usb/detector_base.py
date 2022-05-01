@@ -52,8 +52,8 @@ import rospy
 
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
-from coral_usb.util import get_tiled_image
-from coral_usb.util import get_tiles
+from coral_usb.util import get_tile_sliced_image
+from coral_usb.util import get_tile_slices
 from coral_usb.util import non_maximum_suppression
 
 
@@ -408,16 +408,16 @@ class EdgeTPUTileDetectorBase(EdgeTPUPanoramaDetectorBase):
 
     def _detect(self, orig_img):
         orig_H, orig_W = orig_img.shape[:2]
-        tiles = get_tiles(
+        tile_slices = get_tile_slices(
             orig_H, orig_W, overlap=self.overlap)
 
         bboxes = []
         labels = []
         scores = []
-        for tile in tiles:
-            img = get_tiled_image(orig_img, tile)
+        for tile_slice in tile_slices:
+            img = get_tile_sliced_image(orig_img, tile_slice)
             bbox, label, score = self._detect_step(
-                img, x_offset=tile[1], y_offset=tile[0])
+                img, y_offset=tile_slice[0], x_offset=tile_slice[1])
             if len(bbox) > 0:
                 bboxes.append(bbox)
                 labels.append(label)

@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.10 (2022-05-09)
+-------------------
 * Merge pull request `#97 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/97>`_ from fanshi14/tiled_object_detection
 * change file mode of EdgeTPUTileObjectDetector.cfg
 * fix base class name for EdgeTPUTileDetectorBase

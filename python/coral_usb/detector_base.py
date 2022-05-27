@@ -113,6 +113,11 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
             rospy.logerr(
                 'And make sure to re-login the terminal by `su -l $(whoami)`')
 
+        self.input_topic = rospy.get_param(
+            namespace + 'input_topic', None)
+        if self.input_topic is None:
+            self.input_topic = rospy.resolve_name('~input')
+
         if self.model_file is not None:
             self.engine = DetectionEngine(
                 self.model_file, device_path=self.device_path)
@@ -168,11 +173,12 @@ class EdgeTPUDetectorBase(ConnectionBasedTransport):
     def subscribe(self):
         if self.transport_hint == 'compressed':
             self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(rospy.resolve_name('~input')),
+                '{}/compressed'.format(self.input_topic),
                 CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
         else:
             self.sub_image = rospy.Subscriber(
-                '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
+                self.input_topic, Image,
+                self.image_cb, queue_size=1, buff_size=2**26)
 
     def unsubscribe(self):
         self.sub_image.unregister()

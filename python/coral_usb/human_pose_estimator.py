@@ -113,6 +113,11 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             rospy.logerr(
                 'And make sure to re-login the terminal by `su -l $(whoami)`')
 
+        self.input_topic = rospy.get_param(
+            namespace + 'input_topic', None)
+        if self.input_topic is None:
+            self.input_topic = rospy.resolve_name('~input')
+
         self.engine = PoseEngine(
             self.model_file, mirror=False, device_path=device_path)
         self.resized_H = self.engine.image_height
@@ -175,11 +180,12 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
     def subscribe(self):
         if self.transport_hint == 'compressed':
             self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(rospy.resolve_name('~input')),
+                '{}/compressed'.format(self.input_topic),
                 CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
         else:
             self.sub_image = rospy.Subscriber(
-                '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
+                self.input_topic, Image,
+                self.image_cb, queue_size=1, buff_size=2**26)
 
     def unsubscribe(self):
         self.sub_image.unregister()

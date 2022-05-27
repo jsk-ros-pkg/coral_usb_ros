@@ -14,6 +14,7 @@ add_service_files(
   FILES
   StartNode.srv
   StopNode.srv
+  ListNodes.srv
 )
 
 generate_messages()

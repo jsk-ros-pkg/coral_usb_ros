@@ -34,14 +34,14 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
 
     _engine_class = PoseEngine
     _config_class = EdgeTPUHumanPoseEstimatorConfig
+    _default_model_file = 'package://coral_usb/python/coral_usb/posenet/' + \
+        'models/mobilenet/' + \
+        'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite'
+    _default_label_file = None
 
     def __init__(self, model_file=None, namespace='~'):
-        if model_file is None:
-            model_file = 'package://coral_usb/python/coral_usb/posenet/' + \
-                'models/mobilenet/' + \
-                'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite'
         super(EdgeTPUHumanPoseEstimator, self).__init__(
-            model_file=model_file, label_file=False, namespace=namespace)
+            model_file=model_file, label_file=None, namespace=namespace)
 
         # for human pose estimator
         self.label_ids = [0]

@@ -7,6 +7,9 @@ from coral_usb.detector_base import EdgeTPUPanoramaDetectorBase
 class EdgeTPUFaceDetector(EdgeTPUDetectorBase):
 
     _config_class = EdgeTPUFaceDetectorConfig
+    _default_model_file = 'package://coral_usb/models/' + \
+        'mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite'
+    _default_label_file = None
 
     def __init__(self, namespace='~'):
         super(EdgeTPUFaceDetector, self).__init__(None, None, namespace)

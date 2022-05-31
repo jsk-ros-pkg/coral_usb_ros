@@ -53,6 +53,11 @@ from sensor_msgs.msg import Image
 
 class EdgeTPUNodeBase(ConnectionBasedTransport):
 
+    _engine_class = None
+    _config_class = None
+    _default_model_file = None
+    _default_label_file = None
+
     def __init__(self, model_file=None, label_file=None, namespace='~'):
         super(EdgeTPUNodeBase, self).__init__()
 
@@ -65,18 +70,21 @@ class EdgeTPUNodeBase(ConnectionBasedTransport):
         self.classifier_name = rospy.get_param(
             namespace + 'classifier_name', rospy.get_name())
 
+        if model_file is None:
+            model_file = self._default_model_file
+
         self.model_file = rospy.get_param(
             namespace + 'model_file', model_file)
         if self.model_file is not None:
             self.model_file = get_filename(self.model_file, False)
 
-        if label_file is not False:
-            self.label_file = rospy.get_param(
-                namespace + 'label_file', label_file)
-            if self.label_file is not None:
-                self.label_file = get_filename(self.label_file, False)
-        else:
-            self.label_file = None
+        if label_file is None:
+            label_file = self._default_label_file
+
+        self.label_file = rospy.get_param(
+            namespace + 'label_file', label_file)
+        if self.label_file is not None:
+            self.label_file = get_filename(self.label_file, False)
 
         self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
         self.enable_visualization = rospy.get_param(

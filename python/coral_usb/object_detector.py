@@ -9,6 +9,9 @@ from coral_usb.detector_base import EdgeTPUTileDetectorBase
 class EdgeTPUObjectDetector(EdgeTPUDetectorBase):
 
     _config_class = EdgeTPUObjectDetectorConfig
+    _default_model_file = 'package://coral_usb/models/' + \
+        'mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite'
+    _default_label_file = 'package://coral_usb/models/coco_labels.txt'
 
     def __init__(self, namespace='~'):
         super(EdgeTPUObjectDetector, self).__init__(None, None, namespace)

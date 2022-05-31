@@ -30,11 +30,11 @@ class EdgeTPUSemanticSegmenter(EdgeTPUNodeBase):
 
     _engine_class = BasicEngine
     _config_class = None
+    _default_model_file = 'package://coral_usb/models/' + \
+        'deeplabv3_mnv2_pascal_quant_edgetpu.tflite'
+    _default_label_file = None
 
     def __init__(self, model_file=None, label_file=None, namespace='~'):
-        if model_file is None:
-            model_file = 'package://coral_usb/models/' + \
-                'deeplabv3_mnv2_pascal_quant_edgetpu.tflite'
         super(EdgeTPUSemanticSegmenter, self).__init__(
             model_file=model_file, label_file=label_file, namespace=namespace)
 

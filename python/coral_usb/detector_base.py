@@ -1,12 +1,9 @@
 import copy
-import grp
 import matplotlib
 import matplotlib.cm
 import numpy as np
 import os
-import re
 import sys
-import threading
 
 # OpenCV import for python3
 if os.environ['ROS_PYTHON_VERSION'] == '3':
@@ -16,198 +13,55 @@ else:
     import cv2  # NOQA
     sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
-# cv_bridge_python3 import
-if os.environ['ROS_PYTHON_VERSION'] == '3':
-    from cv_bridge import CvBridge
-else:
-    ws_python3_paths = [p for p in sys.path if 'devel/lib/python3' in p]
-    if len(ws_python3_paths) == 0:
-        # search cv_bridge in workspace and append
-        ws_python2_paths = [
-            p for p in sys.path if 'devel/lib/python2.7' in p]
-        for ws_python2_path in ws_python2_paths:
-            ws_python3_path = ws_python2_path.replace('python2.7', 'python3')
-            if os.path.exists(os.path.join(ws_python3_path, 'cv_bridge')):
-                ws_python3_paths.append(ws_python3_path)
-        if len(ws_python3_paths) == 0:
-            opt_python3_path = '/opt/ros/{}/lib/python3/dist-packages'.format(
-                os.getenv('ROS_DISTRO'))
-            sys.path = [opt_python3_path] + sys.path
-            from cv_bridge import CvBridge
-            sys.path.remove(opt_python3_path)
-        else:
-            sys.path = [ws_python3_paths[0]] + sys.path
-            from cv_bridge import CvBridge
-            sys.path.remove(ws_python3_paths[0])
-    else:
-        from cv_bridge import CvBridge
-
-from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
-from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
-from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
 from edgetpu.detection.engine import DetectionEngine
 import PIL.Image
 from resource_retriever import get_filename
-import rospy
 
+from coral_usb.node_base import EdgeTPUNodeBase
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 from coral_usb.util import get_tile_sliced_image
 from coral_usb.util import get_tile_slices
 from coral_usb.util import non_maximum_suppression
 
-
 from jsk_recognition_msgs.msg import ClassificationResult
 from jsk_recognition_msgs.msg import Rect
 from jsk_recognition_msgs.msg import RectArray
-from jsk_topic_tools import ConnectionBasedTransport
 from sensor_msgs.msg import CompressedImage
-from sensor_msgs.msg import Image
 
 
-class EdgeTPUDetectorBase(ConnectionBasedTransport):
+class EdgeTPUDetectorBase(EdgeTPUNodeBase):
+
+    _engine_class = DetectionEngine
 
     def __init__(self, model_file=None, label_file=None, namespace='~'):
-        # get image_trasport before ConnectionBasedTransport subscribes ~input
-        self.transport_hint = rospy.get_param(
-            namespace + 'image_transport', 'raw')
-        rospy.loginfo("Using transport {}".format(self.transport_hint))
+        super(EdgeTPUDetectorBase, self).__init__(
+            model_file=model_file, label_file=label_file, namespace=namespace)
 
-        super(EdgeTPUDetectorBase, self).__init__()
-        self.bridge = CvBridge()
-        self.classifier_name = rospy.get_param(
-            namespace + 'classifier_name', rospy.get_name())
-        self.model_file = rospy.get_param(namespace + 'model_file', model_file)
-        if self.model_file is not None:
-            self.model_file = get_filename(self.model_file, False)
-        self.label_file = rospy.get_param(namespace + 'label_file', label_file)
-        if self.label_file is not None:
-            self.label_file = get_filename(self.label_file, False)
-
-        self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
-        self.enable_visualization = rospy.get_param(
-            namespace + 'enable_visualization', True)
-
-        device_id = rospy.get_param(namespace + 'device_id', None)
-        if device_id is None:
-            device_path = None
-        else:
-            device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)
-            if len(device_paths) == 0:
-                rospy.logerr('No device found.')
-            elif device_id >= len(device_paths):
-                rospy.logerr(
-                    'Only {} devices are found, but device id {} is set.'
-                    .format(len(device_paths), device_id))
-            device_path = device_paths[device_id]
-            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
-            if device_path in assigned_device_paths:
-                rospy.logwarn(
-                    'device {} is already assigned: {}'.format(
-                        device_id, device_path))
-        self.device_path = device_path
-
-        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
-            rospy.logerr('Current user does not belong to plugdev group')
-            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
-            rospy.logerr(
-                'And make sure to re-login the terminal by `su -l $(whoami)`')
-
-        self.input_topic = rospy.get_param(
-            namespace + 'input_topic', None)
-        if self.input_topic is None:
-            self.input_topic = rospy.resolve_name('~input')
-
-        if self.model_file is not None:
-            self.engine = DetectionEngine(
-                self.model_file, device_path=self.device_path)
-
-        if self.label_file is None:
-            self.label_ids = None
-            self.label_names = None
-        else:
-            self.label_ids, self.label_names = self._load_labels(
-                self.label_file)
-
-        # dynamic reconfigure
-        self.start_dynamic_reconfigure(namespace)
-
+        # publishers
         self.pub_rects = self.advertise(
             namespace + 'output/rects', RectArray, queue_size=1)
         self.pub_class = self.advertise(
             namespace + 'output/class', ClassificationResult, queue_size=1)
 
-        # visualize timer
-        if self.enable_visualization:
-            self.lock = threading.Lock()
-            self.pub_image = self.advertise(
-                namespace + 'output/image', Image, queue_size=1)
-            self.pub_image_compressed = self.advertise(
-                namespace + 'output/image/compressed',
-                CompressedImage, queue_size=1)
-            self.timer = rospy.Timer(
-                rospy.Duration(self.duration), self.visualize_cb)
-            self.img = None
-            self.encoding = None
-            self.header = None
-            self.bboxes = None
-            self.labels = None
-            self.scores = None
+        # initialization
+        self.img = None
+        self.encoding = None
+        self.header = None
+        self.bboxes = None
+        self.labels = None
+        self.scores = None
 
-    def start(self):
-        if self.model_file is not None:
-            self.engine = DetectionEngine(
-                self.model_file, device_path=self.device_path)
-        self.subscribe()
-        if self.enable_visualization:
-            self.timer = rospy.Timer(
-                rospy.Duration(self.duration), self.visualize_cb)
-
-    def stop(self):
-        self.unsubscribe()
-        del self.sub_image
-        if self.enable_visualization:
-            self.timer.shutdown()
-            del self.timer
-        del self.engine
-
-    def subscribe(self):
-        if self.transport_hint == 'compressed':
-            self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(self.input_topic),
-                CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
-        else:
-            self.sub_image = rospy.Subscriber(
-                self.input_topic, Image,
-                self.image_cb, queue_size=1, buff_size=2**26)
-
-    def unsubscribe(self):
-        self.sub_image.unregister()
-
-    @property
-    def visualize(self):
-        return self.pub_image.get_num_connections() > 0 or \
-            self.pub_image_compressed.get_num_connections() > 0
-
-    def config_callback(self, config, level):
+    def config_cb(self, config, level):
         self.score_thresh = config.score_thresh
         self.top_k = config.top_k
         self.model_file = get_filename(config.model_file, False)
         if 'label_file' in config:
             self.label_file = get_filename(config.label_file, False)
-            self.label_ids, self.label_names = self._load_labels(
-                self.label_file)
+            self._load_labels()
         if self.model_file is not None:
-            self.engine = DetectionEngine(
-                self.model_file, device_path=self.device_path)
+            self._load_model()
         return config
-
-    def _load_labels(self, path):
-        p = re.compile(r'\s*(\d+)(.+)')
-        with open(path, 'r', encoding='utf-8') as f:
-            lines = (p.match(line).groups() for line in f.readlines())
-            labels = {int(num): text.strip() for num, text in lines}
-            return list(labels.keys()), list(labels.values())
 
     def _process_result(self, objs, H, W, y_offset=None, x_offset=None):
         bboxes = []
@@ -401,12 +255,12 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
             nms_scores = np.empty((0, ), dtype=np.float)
         return nms_bboxes, nms_labels, nms_scores
 
-    def config_callback(self, config, level):
+    def config_cb(self, config, level):
         self.nms = config.nms
         self.nms_thresh = config.nms_thresh
         self.n_split = config.n_split
         self.overlap = config.overlap
-        config = super(EdgeTPUPanoramaDetectorBase, self).config_callback(
+        config = super(EdgeTPUPanoramaDetectorBase, self).config_cb(
             config, level)
         return config
 
@@ -476,10 +330,10 @@ class EdgeTPUTileDetectorBase(EdgeTPUDetectorBase):
             nms_scores = np.empty((0, ), dtype=np.float)
         return nms_bboxes, nms_labels, nms_scores
 
-    def config_callback(self, config, level):
+    def config_cb(self, config, level):
         self.nms = config.nms
         self.nms_thresh = config.nms_thresh
         self.overlap = config.overlap
-        config = super(EdgeTPUTileDetectorBase, self).config_callback(
+        config = super(EdgeTPUTileDetectorBase, self).config_cb(
             config, level)
         return config

@@ -3,6 +3,10 @@
     uri: https://github.com/knorth55/coral_usb_ros.git
     version: pr2
 - git:
+    local-name: diagnostics
+    uri: https://github.com/ros/diagnostics
+    version: 1.9.4
+- git:
     local-name: jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
     version: master

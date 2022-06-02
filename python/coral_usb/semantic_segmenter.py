@@ -284,7 +284,8 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
             # publish compressed http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber  # NOQA
             vis_compressed_msg = CompressedImage()
             vis_compressed_msg.header = header
-            vis_compressed_msg.format = "jpeg"
+            # image format https://github.com/ros-perception/image_transport_plugins/blob/f0afd122ed9a66ff3362dc7937e6d465e3c3ccf7/compressed_image_transport/src/compressed_publisher.cpp#L116  # NOQA
+            vis_compressed_msg.format = 'rgb8; jpeg compressed bgr8'
             vis_img_rgb = cv2.cvtColor(vis_img, cv2.COLOR_BGR2RGB)
             vis_compressed_msg.data = np.array(
                 cv2.imencode('.jpg', vis_img_rgb)[1]).tostring()

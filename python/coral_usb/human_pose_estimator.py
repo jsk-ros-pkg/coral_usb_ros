@@ -148,6 +148,7 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             self.timer = rospy.Timer(
                 rospy.Duration(self.duration), self.visualize_cb)
             self.img = None
+            self.header = None
             self.visibles = None
             self.points = None
 

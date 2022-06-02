@@ -148,6 +148,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             self.timer = rospy.Timer(
                 rospy.Duration(self.duration), self.visualize_cb)
             self.img = None
+            self.encoding = None
+            self.header = None
             self.visibles = None
             self.points = None
 
@@ -274,8 +276,10 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             np_arr = np.fromstring(msg.data, np.uint8)
             img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             img = img[:, :, ::-1]
+            encoding = msg.format
         else:
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
+            encoding = msg.encoding
 
         points, key_names, visibles, bboxes, labels, scores \
             = self._estimate(img)
@@ -315,17 +319,19 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         if self.enable_visualization:
             with self.lock:
                 self.img = img
+                self.encoding = encoding
                 self.header = msg.header
                 self.points = points
                 self.visibles = visibles
 
     def visualize_cb(self, event):
-        if (not self.visualize or self.img is None
+        if (not self.visualize or self.img is None or self.encoding is None
                 or self.points is None or self.visibles is None):
             return
 
         with self.lock:
             vis_img = self.img.copy()
+            encoding = copy.copy(self.encoding)
             header = copy.deepcopy(self.header)
             points = self.points.copy()
             visibles = self.visibles.copy()
@@ -352,7 +358,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             # publish compressed http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber  # NOQA
             vis_compressed_msg = CompressedImage()
             vis_compressed_msg.header = header
-            vis_compressed_msg.format = "jpeg"
+            # image format https://github.com/ros-perception/image_transport_plugins/blob/f0afd122ed9a66ff3362dc7937e6d465e3c3ccf7/compressed_image_transport/src/compressed_publisher.cpp#L116  # NOQA
+            vis_compressed_msg.format = encoding + '; jpeg compressed bgr8'
             vis_img_rgb = cv2.cvtColor(vis_img, cv2.COLOR_BGR2RGB)
             vis_compressed_msg.data = np.array(
                 cv2.imencode('.jpg', vis_img_rgb)[1]).tostring()

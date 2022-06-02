@@ -25,6 +25,7 @@ generate_dynamic_reconfigure_options(
   cfg/EdgeTPUTileObjectDetector.cfg
   cfg/EdgeTPUFaceDetector.cfg
   cfg/EdgeTPUPanoramaFaceDetector.cfg
+  cfg/EdgeTPUTileFaceDetector.cfg
   cfg/EdgeTPUHumanPoseEstimator.cfg
   cfg/EdgeTPUPanoramaHumanPoseEstimator.cfg
   cfg/EdgeTPUPanoramaSemanticSegmenter.cfg

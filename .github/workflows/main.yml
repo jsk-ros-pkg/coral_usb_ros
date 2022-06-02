@@ -31,6 +31,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
+      - name: Install edgetpu
+        run: |
+          echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list &&
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - &&
+          sudo apt-get update &&
+          sudo apt-get install -y libedgetpu1-legacy-std python3-edgetpu
+      - name: Install tensorflow lite runtime
+        run: |
+          # FIXME: wheel cannot be installed in GA because of unsupported platform
+          uname -a &&
+          if [[ ${{matrix.env.ROS_DISTRO}} == "noetic" ]]; then
+            sudo apt-get install -y python3-tflite-runtime;
+          fi
       - name: Industrial CI
         uses: 'ros-industrial/industrial_ci@master'
         env: ${{matrix.env}}

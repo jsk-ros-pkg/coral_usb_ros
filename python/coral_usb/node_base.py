@@ -216,3 +216,16 @@ class EdgeTPUNodeBase(ConnectionBasedTransport):
 
     def config_cb(self, config, level):
         rospy.logerr('image_cb is not implemented.')
+
+
+class DummyEdgeTPUNodeBase(EdgeTPUNodeBase):
+
+    def _load_device_path(self, device_id):
+        self.device_path = None
+
+    def _load_labels(self):
+        self.label_ids = None
+        self.label_names = None
+
+    def _load_model(self):
+        self.engine = None

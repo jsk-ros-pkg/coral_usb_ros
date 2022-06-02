@@ -67,3 +67,23 @@ install(
 install(FILES requirements.in requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+if(CATKIN_ENABLE_TESTING)
+  catkin_install_python(
+    PROGRAMS
+      test/dummy_edgetpu_object_detector.py
+      test/dummy_edgetpu_panorama_object_detector.py
+      test/dummy_edgetpu_tile_object_detector.py
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+  find_package(rostest REQUIRED)
+  add_rostest(test/dummy_edgetpu_object_detector.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+  add_rostest(test/dummy_edgetpu_panorama_object_detector.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+  add_rostest(test/dummy_edgetpu_tile_object_detector.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+endif()

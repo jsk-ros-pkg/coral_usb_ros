@@ -17,7 +17,9 @@ from edgetpu.detection.engine import DetectionEngine
 import PIL.Image
 from resource_retriever import get_filename
 
+from coral_usb.node_base import DummyEdgeTPUNodeBase
 from coral_usb.node_base import EdgeTPUNodeBase
+from coral_usb.util import generate_random_bbox
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 from coral_usb.util import get_tile_sliced_image
@@ -337,3 +339,23 @@ class EdgeTPUTileDetectorBase(EdgeTPUDetectorBase):
         config = super(EdgeTPUTileDetectorBase, self).config_cb(
             config, level)
         return config
+
+
+class DummyEdgeTPUDetectorBase(EdgeTPUDetectorBase, DummyEdgeTPUNodeBase):
+
+    def _detect_step(self, img, y_offset=None, x_offset=None):
+        H, W = img.shape[:2]
+        n = np.random.randint(5, 10)
+        bboxes = generate_random_bbox(
+            n, (H, W), 10, int(min(H, W) / 2.0))
+        if y_offset:
+            bboxes[:, 0] += y_offset
+            bboxes[:, 2] += y_offset
+        if x_offset:
+            bboxes[:, 1] += x_offset
+            bboxes[:, 3] += x_offset
+        bboxes = bboxes.astype(np.int)
+        labels = np.random.randint(
+            0, len(self.label_ids), size=(n, ))
+        scores = np.random.uniform(0.0, 1.0, (n, ))
+        return bboxes, labels, scores

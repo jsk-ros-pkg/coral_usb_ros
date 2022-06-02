@@ -1,6 +1,7 @@
 from coral_usb.cfg import EdgeTPUObjectDetectorConfig
 from coral_usb.cfg import EdgeTPUPanoramaObjectDetectorConfig
 from coral_usb.cfg import EdgeTPUTileObjectDetectorConfig
+from coral_usb.detector_base import DummyEdgeTPUDetectorBase
 from coral_usb.detector_base import EdgeTPUDetectorBase
 from coral_usb.detector_base import EdgeTPUPanoramaDetectorBase
 from coral_usb.detector_base import EdgeTPUTileDetectorBase
@@ -33,3 +34,17 @@ class EdgeTPUTileObjectDetector(
 
     def __init__(self, namespace='~'):
         super(EdgeTPUTileObjectDetector, self).__init__(namespace)
+
+
+class DummyEdgeTPUObjectDetector(
+        EdgeTPUObjectDetector, DummyEdgeTPUDetectorBase):
+
+    def _load_labels(self):
+        self.label_names = [
+            'person',
+            'bicycle',
+            'car',
+            'motorcycle',
+            'airplane',
+        ]
+        self.label_ids = list(range(len(self.label_names)))

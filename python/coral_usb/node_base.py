@@ -70,69 +70,48 @@ class EdgeTPUNodeBase(ConnectionBasedTransport):
         self.classifier_name = rospy.get_param(
             namespace + 'classifier_name', rospy.get_name())
 
+        # device id
+        device_id = rospy.get_param(namespace + 'device_id', None)
+        self._load_device_path(device_id)
+
+        # model load
         if model_file is None:
             model_file = self._default_model_file
-
         self.model_file = rospy.get_param(
             namespace + 'model_file', model_file)
-        if self.model_file is not None:
-            self.model_file = get_filename(self.model_file, False)
-
-        if label_file is None:
-            label_file = self._default_label_file
-
-        self.label_file = rospy.get_param(
-            namespace + 'label_file', label_file)
-        if self.label_file is not None:
-            self.label_file = get_filename(self.label_file, False)
-
-        self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
-        self.enable_visualization = rospy.get_param(
-            namespace + 'enable_visualization', True)
-
-        device_id = rospy.get_param(namespace + 'device_id', None)
-        if device_id is None:
-            device_path = None
-        else:
-            device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)
-            if len(device_paths) == 0:
-                rospy.logerr('No device found.')
-            elif device_id >= len(device_paths):
-                rospy.logerr(
-                    'Only {} devices are found, but device id {} is set.'
-                    .format(len(device_paths), device_id))
-            device_path = device_paths[device_id]
-            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
-            if device_path in assigned_device_paths:
-                rospy.logwarn(
-                    'device {} is already assigned: {}'.format(
-                        device_id, device_path))
-        self.device_path = device_path
-
-        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
-            rospy.logerr('Current user does not belong to plugdev group')
-            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
-            rospy.logerr(
-                'And make sure to re-login the terminal by `su -l $(whoami)`')
-
-        self.input_topic = rospy.get_param(
-            namespace + 'input_topic', None)
-        if self.input_topic is None:
-            self.input_topic = rospy.resolve_name('~input')
 
         if self.model_file is None:
             self.engine = None
         else:
+            self.model_file = get_filename(self.model_file, False)
             self._load_model()
+
+        # label load
+        if label_file is None:
+            label_file = self._default_label_file
+        self.label_file = rospy.get_param(
+            namespace + 'label_file', label_file)
 
         if self.label_file is None:
             self.label_ids = None
             self.label_names = None
         else:
+            self.label_file = get_filename(self.label_file, False)
             self._load_labels()
+
+        # input topic
+        self.input_topic = rospy.get_param(
+            namespace + 'input_topic', None)
+        if self.input_topic is None:
+            self.input_topic = rospy.resolve_name('~input')
 
         # dynamic reconfigure
         self.start_dynamic_reconfigure()
+
+        # visualization param
+        self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
+        self.enable_visualization = rospy.get_param(
+            namespace + 'enable_visualization', True)
 
         # visualize timer
         if self.enable_visualization:
@@ -165,6 +144,30 @@ class EdgeTPUNodeBase(ConnectionBasedTransport):
 
     def _init_parameters(self):
         pass
+
+    def _load_device_path(self, device_id):
+        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
+            rospy.logerr('Current user does not belong to plugdev group')
+            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
+            rospy.logerr(
+                'And make sure to re-login the terminal by `su -l $(whoami)`')
+        if device_id is None:
+            device_path = None
+        else:
+            device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)
+            if len(device_paths) == 0:
+                rospy.logerr('No device found.')
+            elif device_id >= len(device_paths):
+                rospy.logerr(
+                    'Only {} devices are found, but device id {} is set.'
+                    .format(len(device_paths), device_id))
+            device_path = device_paths[device_id]
+            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
+            if device_path in assigned_device_paths:
+                rospy.logwarn(
+                    'device {} is already assigned: {}'.format(
+                        device_id, device_path))
+        self.device_path = device_path
 
     def _load_model(self):
         self.engine = self._engine_class(

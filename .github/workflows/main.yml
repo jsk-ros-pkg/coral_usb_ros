@@ -13,7 +13,6 @@ jobs:
         env:
           - ROS_DISTRO: noetic
             ROS_REPO: main
-            NOT_TEST_BUILD: true
           - ROS_DISTRO: melodic
             ROS_REPO: main
             # UPSTREAM_WORKSPACE: '.ci.rosinstall.melodic'

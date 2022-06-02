@@ -36,8 +36,8 @@ RUN apt-get update && apt-get dist-upgrade -y &&  \
     rm -rf /var/lib/apt/lists/*
 
 RUN if [ ${ROS_DISTRO} != "noetic" ]; then \
-      pip install 'pip==9.0.3'; \
-      pip install 'setuptools==44.1.0'; \
+      pip install pip==9.0.3; \
+      pip install setuptools==44.1.0; \
     fi
 
 RUN apt-get update && \
@@ -75,6 +75,11 @@ RUN cd ~ && \
       wstool merge -y coral_usb_ros/fc.rosinstall.${ROS_DISTRO}; \
     fi && \
     wstool up -j 2
+
+RUN if [ ${ROS_DISTRO} != "noetic" ]; then \
+      pip install dlib==19.21.1; \
+      pip install fcn chainercv chainer==6.7.0 protobuf==3.18.0; \
+    fi
 
 # /opt/ros/${ROS_DISTRO}/share can be changed after rosdep install, so we run it 3 times.
 RUN rosdep update --include-eol-distros && \

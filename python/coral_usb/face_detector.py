@@ -1,6 +1,7 @@
 from coral_usb.cfg import EdgeTPUFaceDetectorConfig
 from coral_usb.cfg import EdgeTPUPanoramaFaceDetectorConfig
 from coral_usb.cfg import EdgeTPUTileFaceDetectorConfig
+from coral_usb.detector_base import DummyEdgeTPUDetectorBase
 from coral_usb.detector_base import EdgeTPUDetectorBase
 from coral_usb.detector_base import EdgeTPUPanoramaDetectorBase
 from coral_usb.detector_base import EdgeTPUTileDetectorBase
@@ -37,3 +38,8 @@ class EdgeTPUTileFaceDetector(
 
     def __init__(self, namespace='~'):
         super(EdgeTPUTileFaceDetector, self).__init__(namespace)
+
+
+class DummyEdgeTPUFaceDetector(
+        EdgeTPUFaceDetector, DummyEdgeTPUDetectorBase):
+    pass

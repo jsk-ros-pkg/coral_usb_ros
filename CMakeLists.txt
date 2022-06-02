@@ -75,6 +75,9 @@ if(CATKIN_ENABLE_TESTING)
       test/dummy_edgetpu_object_detector.py
       test/dummy_edgetpu_panorama_object_detector.py
       test/dummy_edgetpu_tile_object_detector.py
+      test/dummy_edgetpu_face_detector.py
+      test/dummy_edgetpu_panorama_face_detector.py
+      test/dummy_edgetpu_tile_face_detector.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
   find_package(rostest REQUIRED)
@@ -85,6 +88,15 @@ if(CATKIN_ENABLE_TESTING)
     DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
   )
   add_rostest(test/dummy_edgetpu_tile_object_detector.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+  add_rostest(test/dummy_edgetpu_face_detector.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+  add_rostest(test/dummy_edgetpu_panorama_face_detector.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+  add_rostest(test/dummy_edgetpu_tile_face_detector.test
     DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
   )
 endif()

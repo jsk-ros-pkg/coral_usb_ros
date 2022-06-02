@@ -17,19 +17,19 @@ class EdgeTPUObjectDetector(EdgeTPUDetectorBase):
         super(EdgeTPUObjectDetector, self).__init__(None, None, namespace)
 
 
-class EdgeTPUPanoramaObjectDetector(EdgeTPUPanoramaDetectorBase):
+class EdgeTPUPanoramaObjectDetector(
+        EdgeTPUObjectDetector, EdgeTPUPanoramaDetectorBase):
 
     _config_class = EdgeTPUPanoramaObjectDetectorConfig
 
     def __init__(self, namespace='~'):
-        super(EdgeTPUPanoramaObjectDetector, self).__init__(
-            None, None, namespace)
+        super(EdgeTPUPanoramaObjectDetector, self).__init__(namespace)
 
 
-class EdgeTPUTileObjectDetector(EdgeTPUTileDetectorBase):
+class EdgeTPUTileObjectDetector(
+        EdgeTPUObjectDetector, EdgeTPUTileDetectorBase):
 
     _config_class = EdgeTPUTileObjectDetectorConfig
 
     def __init__(self, namespace='~'):
-        super(EdgeTPUTileObjectDetector, self).__init__(
-            None, None, namespace)
+        super(EdgeTPUTileObjectDetector, self).__init__(namespace)

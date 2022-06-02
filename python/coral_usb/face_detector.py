@@ -19,13 +19,13 @@ class EdgeTPUFaceDetector(EdgeTPUDetectorBase):
         self.label_names = ['face']
 
 
-class EdgeTPUPanoramaFaceDetector(EdgeTPUPanoramaDetectorBase):
+class EdgeTPUPanoramaFaceDetector(
+        EdgeTPUFaceDetector, EdgeTPUPanoramaDetectorBase):
 
     _config_class = EdgeTPUPanoramaFaceDetectorConfig
 
     def __init__(self, namespace='~'):
-        super(EdgeTPUPanoramaFaceDetector, self).__init__(
-            None, None, namespace)
+        super(EdgeTPUPanoramaFaceDetector, self).__init__(namespace)
 
         # only for human face
         self.label_ids = [0]

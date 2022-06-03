@@ -10,6 +10,8 @@ from coral_usb.object_detector import EdgeTPUPanoramaObjectDetector
 from coral_usb.semantic_segmenter import EdgeTPUPanoramaSemanticSegmenter
 from coral_usb.semantic_segmenter import EdgeTPUSemanticSegmenter
 
+from coral_usb.srv import ListNodes
+from coral_usb.srv import ListNodesResponse
 from coral_usb.srv import StartNode
 from coral_usb.srv import StartNodeResponse
 from coral_usb.srv import StopNode
@@ -41,6 +43,8 @@ class EdgeTPUNodeManager(object):
             '~start', StartNode, self._start_cb)
         self.stop_server = rospy.Service(
             '~stop', StopNode, self._stop_cb)
+        self.list_server = rospy.Service(
+            '~list', ListNodes, self._list_cb)
 
         if default is not None:
             self._start_node(default)
@@ -103,3 +107,6 @@ class EdgeTPUNodeManager(object):
     def _stop_cb(self, req):
         success = self._stop_node()
         return StopNodeResponse(success)
+
+    def _list_cb(self, req):
+        return ListNodesResponse(node_names=self.node_names)

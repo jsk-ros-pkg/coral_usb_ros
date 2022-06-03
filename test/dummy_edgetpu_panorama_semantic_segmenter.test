@@ -1,0 +1,35 @@
+<launch>
+  <arg name="INPUT_IMAGE"/>
+  <arg name="IMAGE_TRANSPORT" default="raw"/>
+
+  <node name="image_publisher"
+        pkg="jsk_perception" type="image_publisher.py">
+    <rosparam subst_value="true">
+      file_name: $(find coral_usb)/test/test_data/knorth55.jpg
+      encoding: rgb8
+    </rosparam>
+  </node>
+
+  <node name="dummy_edgetpu_panorama_semantic_segmenter"
+        pkg="coral_usb" type="dummy_edgetpu_panorama_semantic_segmenter.py"
+        output="screen" respawn="true">
+    <remap from="~input" to="image_publisher/output" />
+    <rosparam subst_value="true" >
+      image_transport: $(arg IMAGE_TRANSPORT)
+    </rosparam>
+  </node>
+
+  <test test-name="test_dummy_edgetpu_panorama_semantic_segmenter"
+        pkg="jsk_tools" type="test_topic_published.py"
+        retry="3">
+    <rosparam>
+      topic_0: /dummy_edgetpu_panorama_semantic_segmenter/output/image
+      timeout_0: 120
+      topic_1: /dummy_edgetpu_panorama_semantic_segmenter/output/image/compressed
+      timeout_1: 120
+      topic_2: /dummy_edgetpu_panorama_semantic_segmenter/output/label
+      timeout_2: 120
+    </rosparam>
+  </test>
+
+</launch>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>coral_usb</name>
-  <version>0.0.9</version>
+  <version>0.0.10</version>
   <description>The coral_usb package</description>
   <license>BSD</license>
   <url type="website">http://wiki.ros.org/coral_usb</url>
@@ -29,6 +29,9 @@
   <exec_depend>python3-numpy</exec_depend>
   <exec_depend>python3-setuptools</exec_depend>
   <exec_depend>resource_retriever</exec_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>jsk_tools</test_depend>
 
   <export>
     <pip_requirements>requirements.txt</pip_requirements>

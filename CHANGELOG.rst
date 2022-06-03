@@ -2,6 +2,42 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.10 (2022-05-09)
+-------------------
+* Merge pull request `#97 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/97>`_ from fanshi14/tiled_object_detection
+* change file mode of EdgeTPUTileObjectDetector.cfg
+* fix base class name for EdgeTPUTileDetectorBase
+* improve slice usage.
+* fix slice typo.
+* rename as slices to follow the code style in coral_usb_ros.
+* improve code quality to follow the coral_usb_ros fashion.
+* change tile_overlap calculation based on rate and minimal tile size
+* fix typo in TileObjectDetection.
+* add tiled object detection script.
+* Merge pull request `#96 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/96>`_ from sktometometo/PR/fix-panorama-human-pose-estimator
+* Fix offsets for panorama_human_pose_estimator
+* Merge pull request `#94 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/94>`_ from knorth55/docker-testing
+* use ros-testing for docker build
+* Merge pull request `#92 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/92>`_ from knorth55/cv-bridge-python3-package
+* use cv-bridge-python3 in docker
+* comment out rosinstall
+* fix skip keys
+* fix README linter
+* install cv_bridge_python3 for melodic
+* update gtihub actions for cv-bridge-python3
+* disable docker github action
+* update to use jskrobotics dockerhub
+* change uri to jsk-ros-pkg
+* update README
+* use cv_bridge_python3 in package.xml
+* Merge pull request `#91 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/91>`_ from jsk-ros-pkg/cv-bridge-python3
+  support cv_bridge_python3 with python2 workspace
+* use /opt/ros/distro/lib/python3 path when no ws found
+* append sys.path when python3 is not sourced
+* support for cv_bridge_python3 in workspace build
+  not checked for deb install
+* Contributors: Fan Shi, Koki Shinjo, Shingo Kitagawa
+
 0.0.9 (2022-03-03)
 ------------------
 * Merge pull request `#89 <https://github.com/knorth55/coral_usb_ros/issues/89>`_ from knorth55/knorth55-patch-2

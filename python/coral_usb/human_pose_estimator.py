@@ -1,11 +1,9 @@
 import copy
-import grp
 import matplotlib
 import matplotlib.cm
 import numpy as np
 import os
 import sys
-import threading
 
 # OpenCV import for python3
 if os.environ['ROS_PYTHON_VERSION'] == '3':
@@ -15,42 +13,16 @@ else:
     import cv2  # NOQA
     sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
-# cv_bridge_python3 import
-if os.environ['ROS_PYTHON_VERSION'] == '3':
-    from cv_bridge import CvBridge
-else:
-    ws_python3_paths = [p for p in sys.path if 'devel/lib/python3' in p]
-    if len(ws_python3_paths) == 0:
-        # search cv_bridge in workspace and append
-        ws_python2_paths = [
-            p for p in sys.path if 'devel/lib/python2.7' in p]
-        for ws_python2_path in ws_python2_paths:
-            ws_python3_path = ws_python2_path.replace('python2.7', 'python3')
-            if os.path.exists(os.path.join(ws_python3_path, 'cv_bridge')):
-                ws_python3_paths.append(ws_python3_path)
-        if len(ws_python3_paths) == 0:
-            opt_python3_path = '/opt/ros/{}/lib/python3/dist-packages'.format(
-                os.getenv('ROS_DISTRO'))
-            sys.path = [opt_python3_path] + sys.path
-            from cv_bridge import CvBridge
-            sys.path.remove(opt_python3_path)
-        else:
-            sys.path = [ws_python3_paths[0]] + sys.path
-            from cv_bridge import CvBridge
-            sys.path.remove(ws_python3_paths[0])
-    else:
-        from cv_bridge import CvBridge
-
-from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
-from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
-from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
-from resource_retriever import get_filename
-import rospy
-
+from coral_usb.cfg import EdgeTPUHumanPoseEstimatorConfig
+from coral_usb.cfg import EdgeTPUPanoramaHumanPoseEstimatorConfig
+from coral_usb.node_base import DummyEdgeTPUNodeBase
+from coral_usb.node_base import EdgeTPUNodeBase
+from coral_usb.posenet.pose_engine import PoseEngine
+from coral_usb.util import generate_random_bbox
+from coral_usb.util import generate_random_point
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
-from dynamic_reconfigure.server import Server
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Pose
 from jsk_recognition_msgs.msg import ClassificationResult
@@ -58,73 +30,27 @@ from jsk_recognition_msgs.msg import PeoplePose
 from jsk_recognition_msgs.msg import PeoplePoseArray
 from jsk_recognition_msgs.msg import Rect
 from jsk_recognition_msgs.msg import RectArray
-from jsk_topic_tools import ConnectionBasedTransport
 from sensor_msgs.msg import CompressedImage
-from sensor_msgs.msg import Image
-
-from coral_usb.cfg import EdgeTPUHumanPoseEstimatorConfig
-from coral_usb.cfg import EdgeTPUPanoramaHumanPoseEstimatorConfig
-from coral_usb.posenet.pose_engine import PoseEngine
 
 
-class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
+class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
 
-    def __init__(self, namespace='~'):
-        # get image_trasport before ConnectionBasedTransport subscribes ~input
-        self.transport_hint = rospy.get_param(
-            namespace + 'image_transport', 'raw')
-        rospy.loginfo("Using transport {}".format(self.transport_hint))
+    _engine_class = PoseEngine
+    _config_class = EdgeTPUHumanPoseEstimatorConfig
+    _default_model_file = 'package://coral_usb/python/coral_usb/posenet/' + \
+        'models/mobilenet/' + \
+        'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite'
+    _default_label_file = None
 
-        super(EdgeTPUHumanPoseEstimator, self).__init__()
-        self.bridge = CvBridge()
-        self.classifier_name = rospy.get_param(
-            namespace + 'classifier_name', rospy.get_name())
-        model_file = 'package://coral_usb/python/coral_usb/posenet/' + \
-            'models/mobilenet/' + \
-            'posenet_mobilenet_v1_075_481_641_quant_decoder_edgetpu.tflite'
-        model_file = rospy.get_param(namespace + 'model_file', model_file)
-        if model_file is not None:
-            self.model_file = get_filename(model_file, False)
-        self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
-        self.enable_visualization = rospy.get_param(
-            namespace + 'enable_visualization', True)
+    def __init__(self, model_file=None, namespace='~'):
+        super(EdgeTPUHumanPoseEstimator, self).__init__(
+            model_file=model_file, label_file=None, namespace=namespace)
 
-        device_id = rospy.get_param(namespace + 'device_id', None)
-        if device_id is None:
-            device_path = None
-        else:
-            device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)
-            if len(device_paths) == 0:
-                rospy.logerr('No device found.')
-            elif device_id >= len(device_paths):
-                rospy.logerr(
-                    'Only {} devices are found, but device id {} is set.'
-                    .format(len(device_paths), device_id))
-            device_path = device_paths[device_id]
-            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
-            if device_path in assigned_device_paths:
-                rospy.logwarn(
-                    'device {} is already assigned: {}'.format(
-                        device_id, device_path))
-
-        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
-            rospy.logerr('Current user does not belong to plugdev group')
-            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
-            rospy.logerr(
-                'And make sure to re-login the terminal by `su -l $(whoami)`')
-
-        self.engine = PoseEngine(
-            self.model_file, mirror=False, device_path=device_path)
-        self.resized_H = self.engine.image_height
-        self.resized_W = self.engine.image_width
-
-        # only for human
+        # for human pose estimator
         self.label_ids = [0]
         self.label_names = ['human']
 
-        # dynamic reconfigure
-        self.start_dynamic_reconfigure(namespace)
-
+        # publishers
         self.pub_pose = self.advertise(
             namespace + 'output/poses', PeoplePoseArray, queue_size=1)
         self.pub_rects = self.advertise(
@@ -132,64 +58,24 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         self.pub_class = self.advertise(
             namespace + 'output/class', ClassificationResult, queue_size=1)
 
-        # visualize timer
-        if self.enable_visualization:
-            self.lock = threading.Lock()
-            self.pub_image = self.advertise(
-                namespace + 'output/image', Image, queue_size=1)
-            self.pub_image_compressed = self.advertise(
-                namespace + 'output/image/compressed',
-                CompressedImage, queue_size=1)
-            self.timer = rospy.Timer(
-                rospy.Duration(self.duration), self.visualize_cb)
-            self.img = None
-            self.visibles = None
-            self.points = None
+        # initialization
+        self.img = None
+        self.encoding = None
+        self.header = None
+        self.visibles = None
+        self.points = None
 
-    def start_dynamic_reconfigure(self, namespace):
-        # dynamic reconfigure
-        dyn_namespace = namespace
-        if namespace == '~':
-            dyn_namespace = ''
-        self.srv = Server(
-            EdgeTPUHumanPoseEstimatorConfig,
-            self.config_callback, namespace=dyn_namespace)
-
-    def start(self):
-        self.engine = PoseEngine(self.model_file, mirror=False)
+    def _init_parameters(self):
         self.resized_H = self.engine.image_height
         self.resized_W = self.engine.image_width
-        self.subscribe()
-        if self.enable_visualization:
-            self.timer = rospy.Timer(
-                rospy.Duration(self.duration), self.visualize_cb)
 
-    def stop(self):
-        self.unsubscribe()
-        del self.sub_image
-        if self.enable_visualization:
-            self.timer.shutdown()
-            del self.timer
-        del self.engine
+    # overwrite _load_model for mirror argument
+    def _load_model(self):
+        self.engine = self._engine_class(
+            self.model_file, device_path=self.device_path, mirror=False)
+        self._init_parameters()
 
-    def subscribe(self):
-        if self.transport_hint == 'compressed':
-            self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(rospy.resolve_name('~input')),
-                CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
-        else:
-            self.sub_image = rospy.Subscriber(
-                '~input', Image, self.image_cb, queue_size=1, buff_size=2**26)
-
-    def unsubscribe(self):
-        self.sub_image.unregister()
-
-    @property
-    def visualize(self):
-        return self.pub_image.get_num_connections() > 0 or \
-            self.pub_image_compressed.get_num_connections() > 0
-
-    def config_callback(self, config, level):
+    def config_cb(self, config, level):
         self.score_thresh = config.score_thresh
         self.joint_score_thresh = config.joint_score_thresh
         return config
@@ -233,14 +119,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             visibles.append(visible)
             y_max = int(np.round(max(ys)))
             y_min = int(np.round(min(ys)))
-            if y_offset:
-                y_max = y_max + y_offset
-                y_min = y_min + y_offset
             x_max = int(np.round(max(xs)))
             x_min = int(np.round(min(xs)))
-            if x_offset:
-                x_max = x_max + x_offset
-                x_min = x_min + x_offset
             bboxes.append([y_min, x_min, y_max, x_max])
             labels.append(0)
             scores.append(score)
@@ -274,8 +154,10 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             np_arr = np.fromstring(msg.data, np.uint8)
             img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             img = img[:, :, ::-1]
+            encoding = msg.format
         else:
             img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
+            encoding = msg.encoding
 
         points, key_names, visibles, bboxes, labels, scores \
             = self._estimate(img)
@@ -315,17 +197,19 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
         if self.enable_visualization:
             with self.lock:
                 self.img = img
+                self.encoding = encoding
                 self.header = msg.header
                 self.points = points
                 self.visibles = visibles
 
     def visualize_cb(self, event):
-        if (not self.visualize or self.img is None
+        if (not self.visualize or self.img is None or self.encoding is None
                 or self.points is None or self.visibles is None):
             return
 
         with self.lock:
             vis_img = self.img.copy()
+            encoding = copy.copy(self.encoding)
             header = copy.deepcopy(self.header)
             points = self.points.copy()
             visibles = self.visibles.copy()
@@ -352,7 +236,8 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
             # publish compressed http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber  # NOQA
             vis_compressed_msg = CompressedImage()
             vis_compressed_msg.header = header
-            vis_compressed_msg.format = "jpeg"
+            # image format https://github.com/ros-perception/image_transport_plugins/blob/f0afd122ed9a66ff3362dc7937e6d465e3c3ccf7/compressed_image_transport/src/compressed_publisher.cpp#L116  # NOQA
+            vis_compressed_msg.format = encoding + '; jpeg compressed bgr8'
             vis_img_rgb = cv2.cvtColor(vis_img, cv2.COLOR_BGR2RGB)
             vis_compressed_msg.data = np.array(
                 cv2.imencode('.jpg', vis_img_rgb)[1]).tostring()
@@ -360,6 +245,9 @@ class EdgeTPUHumanPoseEstimator(ConnectionBasedTransport):
 
 
 class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
+
+    _config_class = EdgeTPUPanoramaHumanPoseEstimatorConfig
+
     def __init__(self, namespace='~'):
         super(EdgeTPUPanoramaHumanPoseEstimator, self).__init__(
             namespace=namespace
@@ -401,19 +289,45 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             scores = np.empty((0, ), dtype=np.float)
         return points, key_names, visibles, bboxes, labels, scores
 
-    def config_callback(self, config, level):
+    def config_cb(self, config, level):
         self.n_split = config.n_split
         self.overlap = config.overlap
         config = super(
-            EdgeTPUPanoramaHumanPoseEstimator, self).config_callback(
+            EdgeTPUPanoramaHumanPoseEstimator, self).config_cb(
                 config, level)
         return config
 
-    def start_dynamic_reconfigure(self, namespace):
-        # dynamic reconfigure
-        dyn_namespace = namespace
-        if namespace == '~':
-            dyn_namespace = ''
-        self.srv = Server(
-            EdgeTPUPanoramaHumanPoseEstimatorConfig,
-            self.config_callback, namespace=dyn_namespace)
+
+class DummyEdgeTPUHumanPoseEstimator(
+        EdgeTPUHumanPoseEstimator, DummyEdgeTPUNodeBase):
+
+    _dummy_key_names = [
+        'head',
+        'left_arm',
+        'right_arm',
+        'left_leg',
+        'right_leg',
+    ]
+
+    def _load_model(self):
+        self.engine = None
+
+    def _estimate_step(self, img, y_offset=None, x_offset=None):
+        H, W = img.shape[:2]
+        n = np.random.randint(5, 10)
+        n_key = len(self._dummy_key_names)
+        bboxes = generate_random_bbox(
+            n, (H, W), 10, int(min(H, W) / 2.0))
+        if y_offset:
+            bboxes[:, 0] += y_offset
+            bboxes[:, 2] += y_offset
+        if x_offset:
+            bboxes[:, 1] += x_offset
+            bboxes[:, 3] += x_offset
+        points = generate_random_point(n_key, bboxes)
+        scores = np.random.uniform(0.0, 1.0, (n, n_key, ))
+        key_names = [
+            copy.copy(self._dummy_key_names) for _ in range(n)]
+        visibles = scores > self.joint_score_thresh
+        labels = np.zeros((n, ), dtype=np.int)
+        return points, key_names, visibles, bboxes, labels, scores

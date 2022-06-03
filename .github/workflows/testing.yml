@@ -8,40 +8,36 @@ on:
 
 jobs:
   industrial_ci:
+    runs-on: ubuntu-latest
+    env:
+      BEFORE_INIT: |
+        apt update && apt install -y gnupg2 curl sudo apt-transport-https ca-certificates &&
+        echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list &&
+        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
     strategy:
       matrix:
         env:
           - ROS_DISTRO: noetic
             ROS_REPO: testing
+            ADDITIONAL_DEBS: 'libedgetpu1-legacy-std python3-edgetpu python3-tflite-runtime'
           - ROS_DISTRO: melodic
             ROS_REPO: testing
             # UPSTREAM_WORKSPACE: '.ci.rosinstall.melodic'
             # UPSTREAM_CMAKE_ARGS: '-DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so'
+            # FIXME: wheel cannot be installed in GA because of unsupported platform
             ADDITIONAL_DEBS: 'python3-catkin-pkg-modules python3-rospkg-modules python3-opencv python3-venv python3-empy python-catkin-tools'
             NOT_TEST_BUILD: true
           - ROS_DISTRO: kinetic
             ROS_REPO: testing
             UPSTREAM_WORKSPACE: '.ci.rosinstall.kinetic'
             UPSTREAM_CMAKE_ARGS: '-DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so'
+            # FIXME: wheel cannot be installed in GA because of unsupported platform
             ADDITIONAL_DEBS: 'python3-catkin-pkg-modules python3-rospkg-modules python3-numpy ros-kinetic-opencv3 python3-venv python3-empy python-catkin-tools'
             ROSDEP_SKIP_KEYS: 'python-numpy cv_bridge_python3'
             NOT_TEST_BUILD: true
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
-      - name: Install edgetpu
-        run: >
-          echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list &&
-          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - &&
-          sudo apt-get update &&
-          sudo apt-get install -y libedgetpu1-legacy-std python3-edgetpu
-      - name: Install tensorflow lite runtime
-        run: |
-          # FIXME: wheel cannot be installed in GA because of unsupported platform
-          if [[ ${{matrix.env.ROS_DISTRO}} == "noetic" ]]; then
-            sudo apt-get install -y python3-tflite-runtime;
-          fi
       - name: Industrial CI
         uses: 'ros-industrial/industrial_ci@master'
         env: ${{matrix.env}}

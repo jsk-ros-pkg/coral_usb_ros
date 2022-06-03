@@ -1,13 +1,10 @@
 import copy
-import grp
 import matplotlib
 matplotlib.use("Agg")  # NOQA
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import re
 import sys
-import threading
 
 # OpenCV import for python3
 if os.environ['ROS_PYTHON_VERSION'] == '3':
@@ -17,107 +14,34 @@ else:
     import cv2  # NOQA
     sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
-# cv_bridge_python3 import
-if os.environ['ROS_PYTHON_VERSION'] == '3':
-    from cv_bridge import CvBridge
-else:
-    ws_python3_paths = [p for p in sys.path if 'devel/lib/python3' in p]
-    if len(ws_python3_paths) == 0:
-        # search cv_bridge in workspace and append
-        ws_python2_paths = [
-            p for p in sys.path if 'devel/lib/python2.7' in p]
-        for ws_python2_path in ws_python2_paths:
-            ws_python3_path = ws_python2_path.replace('python2.7', 'python3')
-            if os.path.exists(os.path.join(ws_python3_path, 'cv_bridge')):
-                ws_python3_paths.append(ws_python3_path)
-        if len(ws_python3_paths) == 0:
-            opt_python3_path = '/opt/ros/{}/lib/python3/dist-packages'.format(
-                os.getenv('ROS_DISTRO'))
-            sys.path = [opt_python3_path] + sys.path
-            from cv_bridge import CvBridge
-            sys.path.remove(opt_python3_path)
-        else:
-            sys.path = [ws_python3_paths[0]] + sys.path
-            from cv_bridge import CvBridge
-            sys.path.remove(ws_python3_paths[0])
-    else:
-        from cv_bridge import CvBridge
-
 from chainercv.visualizations import vis_semantic_segmentation
 from edgetpu.basic.basic_engine import BasicEngine
-from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_ASSIGNED
-from edgetpu.basic.edgetpu_utils import EDGE_TPU_STATE_NONE
-from edgetpu.basic.edgetpu_utils import ListEdgeTpuPaths
-from resource_retriever import get_filename
-import rospy
 
 from coral_usb.cfg import EdgeTPUPanoramaSemanticSegmenterConfig
+from coral_usb.node_base import DummyEdgeTPUNodeBase
+from coral_usb.node_base import EdgeTPUNodeBase
+from coral_usb.util import generate_random_label
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
-from dynamic_reconfigure.server import Server
-from jsk_topic_tools import ConnectionBasedTransport
 from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
 
 
-class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
+class EdgeTPUSemanticSegmenter(EdgeTPUNodeBase):
 
-    def __init__(self, namespace='~'):
-        # get image_trasport before ConnectionBasedTransport subscribes ~input
-        self.transport_hint = rospy.get_param(
-            namespace + 'image_transport', 'raw')
-        rospy.loginfo("Using transport {}".format(self.transport_hint))
+    _engine_class = BasicEngine
+    _config_class = None
+    _default_model_file = 'package://coral_usb/models/' + \
+        'deeplabv3_mnv2_pascal_quant_edgetpu.tflite'
+    _default_label_file = None
 
-        super(EdgeTPUSemanticSegmenter, self).__init__()
-        self.bridge = CvBridge()
-        self.classifier_name = rospy.get_param(
-            namespace + 'classifier_name', rospy.get_name())
-        model_file = 'package://coral_usb/models/' + \
-            'deeplabv3_mnv2_pascal_quant_edgetpu.tflite'
-        model_file = rospy.get_param(namespace + 'model_file', model_file)
-        label_file = rospy.get_param(namespace + 'label_file', None)
-        if model_file is not None:
-            self.model_file = get_filename(model_file, False)
-        if label_file is not None:
-            label_file = get_filename(label_file, False)
-        self.duration = rospy.get_param(namespace + 'visualize_duration', 0.1)
-        self.enable_visualization = rospy.get_param(
-            namespace + 'enable_visualization', True)
+    def __init__(self, model_file=None, label_file=None, namespace='~'):
+        super(EdgeTPUSemanticSegmenter, self).__init__(
+            model_file=model_file, label_file=label_file, namespace=namespace)
 
-        device_id = rospy.get_param(namespace + 'device_id', None)
-        if device_id is None:
-            device_path = None
-        else:
-            device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_NONE)
-            if len(device_paths) == 0:
-                rospy.logerr('No device found.')
-            elif device_id >= len(device_paths):
-                rospy.logerr(
-                    'Only {} devices are found, but device id {} is set.'
-                    .format(len(device_paths), device_id))
-            device_path = device_paths[device_id]
-            assigned_device_paths = ListEdgeTpuPaths(EDGE_TPU_STATE_ASSIGNED)
-            if device_path in assigned_device_paths:
-                rospy.logwarn(
-                    'device {} is already assigned: {}'.format(
-                        device_id, device_path))
-
-        if not grp.getgrnam('plugdev').gr_gid in os.getgroups():
-            rospy.logerr('Current user does not belong to plugdev group')
-            rospy.logerr('Please run `sudo adduser $(whoami) plugdev`')
-            rospy.logerr(
-                'And make sure to re-login the terminal by `su -l $(whoami)`')
-
-        self.input_topic = rospy.get_param(
-            namespace + 'input_topic', None)
-        if self.input_topic is None:
-            self.input_topic = rospy.resolve_name('~input')
-
-        self.engine = BasicEngine(self.model_file, device_path)
-        self.input_shape = self.engine.get_input_tensor_shape()[1:3]
-
-        if label_file is None:
+        # for semantic segmenter
+        if (self.label_names is None and self.label_ids is None):
             self.label_names = [
                 'background',
                 'aeroplane',
@@ -142,75 +66,19 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
                 'tvmonitor'
             ]
             self.label_ids = list(range(len(self.label_names)))
-        else:
-            self.label_ids, self.label_names = self._load_labels(label_file)
 
-        # dynamic reconfigure
-        self.start_dynamic_reconfigure(namespace)
-
-        self.namespace = namespace
+        # publishers
         self.pub_label = self.advertise(
             namespace + 'output/label', Image, queue_size=1)
 
-        # visualize timer
-        if self.enable_visualization:
-            self.lock = threading.Lock()
-            self.pub_image = self.advertise(
-                namespace + 'output/image', Image, queue_size=1)
-            self.pub_image_compressed = self.advertise(
-                namespace + 'output/image/compressed',
-                CompressedImage, queue_size=1)
-            self.timer = rospy.Timer(
-                rospy.Duration(self.duration), self.visualize_cb)
-            self.img = None
-            self.encoding = None
-            self.header = None
-            self.label = None
+        # initialization
+        self.img = None
+        self.encoding = None
+        self.header = None
+        self.label = None
 
-    def start_dynamic_reconfigure(self, namespace):
-        # dynamic reconfigure
-        pass
-
-    def start(self):
-        self.engine = BasicEngine(self.model_file)
+    def _init_parameters(self):
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]
-        self.subscribe()
-        if self.enable_visualization:
-            self.timer = rospy.Timer(
-                rospy.Duration(self.duration), self.visualize_cb)
-
-    def stop(self):
-        self.unsubscribe()
-        del self.sub_image
-        if self.enable_visualization:
-            self.timer.shutdown()
-            del self.timer
-        del self.engine
-
-    def subscribe(self):
-        if self.transport_hint == 'compressed':
-            self.sub_image = rospy.Subscriber(
-                '{}/compressed'.format(rospy.resolve_name(self.input_topic)),
-                CompressedImage, self.image_cb, queue_size=1, buff_size=2**26)
-        else:
-            self.sub_image = rospy.Subscriber(
-                self.input_topic, Image,
-                self.image_cb, queue_size=1, buff_size=2**26)
-
-    def unsubscribe(self):
-        self.sub_image.unregister()
-
-    @property
-    def visualize(self):
-        return self.pub_image.get_num_connections() > 0 or \
-            self.pub_image_compressed.get_num_connections() > 0
-
-    def _load_labels(self, path):
-        p = re.compile(r'\s*(\d+)(.+)')
-        with open(path, 'r', encoding='utf-8') as f:
-            lines = (p.match(line).groups() for line in f.readlines())
-            labels = {int(num): text.strip() for num, text in lines}
-            return list(labels.keys()), list(labels.values())
 
     def _segment_step(self, img):
         H, W = img.shape[:2]
@@ -298,6 +166,9 @@ class EdgeTPUSemanticSegmenter(ConnectionBasedTransport):
 
 
 class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
+
+    _config_class = EdgeTPUPanoramaSemanticSegmenterConfig
+
     def __init__(self, namespace='~'):
         super(EdgeTPUPanoramaSemanticSegmenter, self).__init__(
             namespace=namespace,
@@ -319,15 +190,16 @@ class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
             label = np.empty((0, 0), dtype=np.int32)
         return label
 
-    def config_callback(self, config, level):
+    def config_cb(self, config, level):
         self.n_split = config.n_split
         return config
 
-    def start_dynamic_reconfigure(self, namespace):
-        # dynamic reconfigure
-        dyn_namespace = namespace
-        if namespace == '~':
-            dyn_namespace = ''
-        self.srv = Server(
-            EdgeTPUPanoramaSemanticSegmenterConfig,
-            self.config_callback, namespace=dyn_namespace)
+
+class DummyEdgeTPUSemanticSegmenter(
+        EdgeTPUSemanticSegmenter, DummyEdgeTPUNodeBase):
+
+    def _segment_step(self, img):
+        H, W = img.shape[:2]
+        label = generate_random_label(
+            (H, W), self.label_ids).astype(np.int32)
+        return label

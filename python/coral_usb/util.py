@@ -85,3 +85,30 @@ def non_maximum_suppression(bbox, thresh, score=None, limit=None):
     if score is not None:
         selec = order[selec]
     return selec.astype(np.int32)
+
+
+# copied from chainercv
+def generate_random_bbox(n, img_size, min_length, max_length):
+    H, W = img_size
+    y_min = np.random.uniform(0, H - max_length, size=(n,))
+    x_min = np.random.uniform(0, W - max_length, size=(n,))
+    y_max = y_min + np.random.uniform(min_length, max_length, size=(n,))
+    x_max = x_min + np.random.uniform(min_length, max_length, size=(n,))
+    bbox = np.stack((y_min, x_min, y_max, x_max), axis=1).astype(np.int)
+    return bbox
+
+
+def generate_random_point(n_key, bbox):
+    point = []
+    for bb in bbox:
+        y_min, x_min, y_max, x_max = bb
+        key_y = np.random.randint(y_min, y_max, size=(n_key, ))
+        key_x = np.random.randint(x_min, x_max, size=(n_key, ))
+        point.append(list(zip(key_y, key_x)))
+    point = np.array(point, dtype=np.int)
+    return point
+
+
+def generate_random_label(img_size, label_ids):
+    label = np.random.randint(0, len(label_ids), size=img_size)
+    return label

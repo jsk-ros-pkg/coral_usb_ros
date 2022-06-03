@@ -27,10 +27,10 @@
       timeout_0: 120
       topic_1: /dummy_edgetpu_panorama_face_detector/output/image/compressed
       timeout_1: 120
-      topic_3: /dummy_edgetpu_panorama_face_detector/output/rects
+      topic_2: /dummy_edgetpu_panorama_face_detector/output/rects
+      timeout_2: 120
+      topic_3: /dummy_edgetpu_panorama_face_detector/output/class
       timeout_3: 120
-      topic_4: /dummy_edgetpu_panorama_face_detector/output/class
-      timeout_4: 120
     </rosparam>
   </test>
 

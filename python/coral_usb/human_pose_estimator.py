@@ -15,8 +15,11 @@ else:
 
 from coral_usb.cfg import EdgeTPUHumanPoseEstimatorConfig
 from coral_usb.cfg import EdgeTPUPanoramaHumanPoseEstimatorConfig
+from coral_usb.node_base import DummyEdgeTPUNodeBase
 from coral_usb.node_base import EdgeTPUNodeBase
 from coral_usb.posenet.pose_engine import PoseEngine
+from coral_usb.util import generate_random_bbox
+from coral_usb.util import generate_random_point
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
@@ -293,3 +296,38 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             EdgeTPUPanoramaHumanPoseEstimator, self).config_cb(
                 config, level)
         return config
+
+
+class DummyEdgeTPUHumanPoseEstimator(
+        EdgeTPUHumanPoseEstimator, DummyEdgeTPUNodeBase):
+
+    _dummy_key_names = [
+        'head',
+        'left_arm',
+        'right_arm',
+        'left_leg',
+        'right_leg',
+    ]
+
+    def _load_model(self):
+        self.engine = None
+
+    def _estimate_step(self, img, y_offset=None, x_offset=None):
+        H, W = img.shape[:2]
+        n = np.random.randint(5, 10)
+        n_key = len(self._dummy_key_names)
+        bboxes = generate_random_bbox(
+            n, (H, W), 10, int(min(H, W) / 2.0))
+        if y_offset:
+            bboxes[:, 0] += y_offset
+            bboxes[:, 2] += y_offset
+        if x_offset:
+            bboxes[:, 1] += x_offset
+            bboxes[:, 3] += x_offset
+        points = generate_random_point(n_key, bboxes)
+        scores = np.random.uniform(0.0, 1.0, (n, n_key, ))
+        key_names = [
+            copy.copy(self._dummy_key_names) for _ in range(n)]
+        visibles = scores > self.joint_score_thresh
+        labels = np.zeros((n, ), dtype=np.int)
+        return points, key_names, visibles, bboxes, labels, scores

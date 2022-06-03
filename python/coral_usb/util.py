@@ -96,3 +96,14 @@ def generate_random_bbox(n, img_size, min_length, max_length):
     x_max = x_min + np.random.uniform(min_length, max_length, size=(n,))
     bbox = np.stack((y_min, x_min, y_max, x_max), axis=1).astype(np.int)
     return bbox
+
+
+def generate_random_point(n_key, bbox):
+    point = []
+    for bb in bbox:
+        y_min, x_min, y_max, x_max = bb
+        key_y = np.random.randint(y_min, y_max, size=(n_key, ))
+        key_x = np.random.randint(x_min, x_max, size=(n_key, ))
+        point.append(list(zip(key_y, key_x)))
+    point = np.array(point, dtype=np.int)
+    return point

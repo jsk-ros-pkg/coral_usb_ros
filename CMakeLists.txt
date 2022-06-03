@@ -80,6 +80,8 @@ if(CATKIN_ENABLE_TESTING)
       test/dummy_edgetpu_tile_face_detector.py
       test/dummy_edgetpu_human_pose_estimator.py
       test/dummy_edgetpu_panorama_human_pose_estimator.py
+      test/dummy_edgetpu_semantic_segmenter.py
+      test/dummy_edgetpu_panorama_semantic_segmenter.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
   find_package(rostest REQUIRED)
@@ -108,6 +110,13 @@ if(CATKIN_ENABLE_TESTING)
     DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
   )
   add_rostest(test/dummy_edgetpu_panorama_human_pose_estimator.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+  # semantic segmenter 
+  add_rostest(test/dummy_edgetpu_semantic_segmenter.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+  add_rostest(test/dummy_edgetpu_panorama_semantic_segmenter.test
     DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
   )
 endif()

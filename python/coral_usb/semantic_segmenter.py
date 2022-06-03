@@ -1,7 +1,6 @@
 import copy
 import matplotlib
-matplotlib.use("Agg")  # NOQA
-import matplotlib.pyplot as plt
+import matplotlib.cm
 import numpy as np
 import os
 import sys
@@ -14,7 +13,6 @@ else:
     import cv2  # NOQA
     sys.path.append('/opt/ros/{}/lib/python2.7/dist-packages'.format(os.getenv('ROS_DISTRO')))  # NOQA
 
-from chainercv.visualizations import vis_semantic_segmentation
 from edgetpu.basic.basic_engine import BasicEngine
 
 from coral_usb.cfg import EdgeTPUPanoramaSemanticSegmenterConfig
@@ -125,28 +123,23 @@ class EdgeTPUSemanticSegmenter(EdgeTPUNodeBase):
             return
 
         with self.lock:
-            img = self.img.copy()
+            vis_img = self.img.copy()
             encoding = copy.copy(self.encoding)
             header = copy.deepcopy(self.header)
             label = self.label.copy()
 
-        fig = plt.figure(
-            tight_layout={'pad': 0})
-        ax = plt.subplot(1, 1, 1)
-        ax.axis('off')
-        ax, legend_handles = vis_semantic_segmentation(
-            img.transpose((2, 0, 1)), label,
-            label_names=self.label_names, alpha=0.7,
-            all_label_names_in_legend=True, ax=ax)
-        ax.legend(
-            handles=legend_handles, bbox_to_anchor=(1, 1), loc=2)
-        fig.canvas.draw()
-        w, h = fig.canvas.get_width_height()
-        vis_img = np.fromstring(
-            fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_img.shape = (h, w, 3)
-        fig.clf()
-        plt.close()
+        vis_img = vis_img.astype(np.float)
+        cmap = matplotlib.cm.get_cmap('hsv')
+        n = len(self.label_ids)
+        for i in np.unique(label):
+            if self.label_names[i] in ['background', '__background__']:
+                continue
+            rgba = np.array(cmap(1. * i / n))
+            color = rgba[:3] * 255
+            vis_img[np.where(label == i)] *= 0.7
+            vis_img[np.where(label == i)] += 0.3 * color
+        vis_img = vis_img.astype(np.uint8)
+
         if self.pub_image.get_num_connections() > 0:
             vis_msg = self.bridge.cv2_to_imgmsg(vis_img, 'rgb8')
             # BUG: https://answers.ros.org/question/316362/sensor_msgsimage-generates-float-instead-of-int-with-python3/  # NOQA

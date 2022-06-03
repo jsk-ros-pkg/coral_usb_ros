@@ -22,19 +22,22 @@ jobs:
             ADDITIONAL_DEBS: 'libedgetpu1-legacy-std python3-edgetpu python3-tflite-runtime'
           - ROS_DISTRO: melodic
             ROS_REPO: testing
-            # UPSTREAM_WORKSPACE: '.ci.rosinstall.melodic'
-            # UPSTREAM_CMAKE_ARGS: '-DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so'
-            # FIXME: wheel cannot be installed in GA because of unsupported platform
-            ADDITIONAL_DEBS: 'python3-catkin-pkg-modules python3-rospkg-modules python3-opencv python3-venv python3-empy python-catkin-tools'
-            NOT_TEST_BUILD: true
+            ADDITIONAL_DEBS: 'python3-catkin-pkg-modules python3-rospkg-modules python3-opencv python3-venv python3-empy python-catkin-tools libedgetpu1-legacy-std python3-edgetpu'
+            BEFORE_BUILD_TARGET_WORKSPACE: |
+              cd /tmp && apt update && apt install -y wget python3-pip python3-opencv &&
+              wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl &&
+              pip3 install tflite_runtime-1.14.0-cp36-cp36m-linux_x86_64.whl
           - ROS_DISTRO: kinetic
             ROS_REPO: testing
             UPSTREAM_WORKSPACE: '.ci.rosinstall.kinetic'
             UPSTREAM_CMAKE_ARGS: '-DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.5m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.5m.so'
-            # FIXME: wheel cannot be installed in GA because of unsupported platform
-            ADDITIONAL_DEBS: 'python3-catkin-pkg-modules python3-rospkg-modules python3-numpy ros-kinetic-opencv3 python3-venv python3-empy python-catkin-tools'
+            ADDITIONAL_DEBS: 'python3-catkin-pkg-modules python3-rospkg-modules python3-numpy ros-kinetic-opencv3 python3-venv python3-empy python-catkin-tools libedgetpu1-legacy-std python3-edgetpu'
             ROSDEP_SKIP_KEYS: 'python-numpy cv_bridge_python3'
-            NOT_TEST_BUILD: true
+            BEFORE_BUILD_TARGET_WORKSPACE: |
+              cd /tmp && apt update && apt install -y wget python3-pip &&
+              wget https://dl.google.com/coral/python/tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl &&
+              pip3 install tflite_runtime-1.14.0-cp35-cp35m-linux_x86_64.whl &&
+              pip3 install opencv-python==4.2.0.32 numpy\<1.19.0
     steps:
       - name: Checkout code
         uses: actions/checkout@v1

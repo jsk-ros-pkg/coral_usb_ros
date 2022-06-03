@@ -18,7 +18,9 @@ from chainercv.visualizations import vis_semantic_segmentation
 from edgetpu.basic.basic_engine import BasicEngine
 
 from coral_usb.cfg import EdgeTPUPanoramaSemanticSegmenterConfig
+from coral_usb.node_base import DummyEdgeTPUNodeBase
 from coral_usb.node_base import EdgeTPUNodeBase
+from coral_usb.util import generate_random_label
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
 
@@ -191,3 +193,13 @@ class EdgeTPUPanoramaSemanticSegmenter(EdgeTPUSemanticSegmenter):
     def config_cb(self, config, level):
         self.n_split = config.n_split
         return config
+
+
+class DummyEdgeTPUSemanticSegmenter(
+        EdgeTPUSemanticSegmenter, DummyEdgeTPUNodeBase):
+
+    def _segment_step(self, img):
+        H, W = img.shape[:2]
+        label = generate_random_label(
+            (H, W), self.label_ids).astype(np.int32)
+        return label

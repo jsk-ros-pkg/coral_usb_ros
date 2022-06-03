@@ -107,3 +107,8 @@ def generate_random_point(n_key, bbox):
         point.append(list(zip(key_y, key_x)))
     point = np.array(point, dtype=np.int)
     return point
+
+
+def generate_random_label(img_size, label_ids):
+    label = np.random.randint(0, len(label_ids), size=img_size)
+    return label

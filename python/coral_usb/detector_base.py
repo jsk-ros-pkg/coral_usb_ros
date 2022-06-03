@@ -354,7 +354,6 @@ class DummyEdgeTPUDetectorBase(EdgeTPUDetectorBase, DummyEdgeTPUNodeBase):
         if x_offset:
             bboxes[:, 1] += x_offset
             bboxes[:, 3] += x_offset
-        bboxes = bboxes.astype(np.int)
         labels = np.random.randint(
             0, len(self.label_ids), size=(n, ))
         scores = np.random.uniform(0.0, 1.0, (n, ))

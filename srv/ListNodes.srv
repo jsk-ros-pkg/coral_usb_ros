@@ -1,2 +1,3 @@
 ---
+string running_node_name
 string[] node_names

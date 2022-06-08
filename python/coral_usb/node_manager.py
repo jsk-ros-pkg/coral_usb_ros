@@ -109,4 +109,7 @@ class EdgeTPUNodeManager(object):
         return StopNodeResponse(success)
 
     def _list_cb(self, req):
-        return ListNodesResponse(node_names=self.node_names)
+        res = ListNodesResponse()
+        res.running_node_name = self.running_node_name
+        res.node_names = self.node_names
+        return res

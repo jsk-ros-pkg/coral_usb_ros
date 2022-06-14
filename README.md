@@ -74,6 +74,32 @@ For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb
 
 ### Node manager: `edgetpu_node_manager.py`
 
+EdgeTPU node manager to start, stop and switch multiple nodes.
+
+This node manager is useful if you have limited TPU resource.
+
+#### List available and running nodes
+
+```bash
+$ rosservice call /edgetpu_node_manager/list
+running_node_name: "edgetpu_object_detector"
+node_names:
+  - edgetpu_object_detector
+  - edgetpu_panorama_object_detector
+```
+
+#### Start or switch node
+
+```bash
+$ rosservice call /edgetpu_node_manager/start "name: 'edgetpu_object_detector'"
+```
+
+#### Stop node
+
+```bash
+$ rosservice call /edgetpu_node_manager/stop "{}"
+```
+
 For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).
 
 ## Setup

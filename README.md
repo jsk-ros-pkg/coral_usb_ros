@@ -1,10 +1,10 @@
 # coral_usb_ros
-[![GitHub version](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros.svg)](https://badge.fury.io/gh/knorth55%2Fcoral_usb_ros)
-[![Build Status](https://travis-ci.com/knorth55/coral_usb_ros.svg?branch=master)](https://travis-ci.com/knorth55/coral_usb_ros)
-[![Docker Stars](https://img.shields.io/docker/stars/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Pulls](https://img.shields.io/docker/pulls/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Automated](https://img.shields.io/docker/cloud/automated/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
-[![Docker Build Status](https://img.shields.io/docker/cloud/build/knorth55/coral_usb_ros.svg)](https://hub.docker.com/r/knorth55/coral_usb_ros)
+[![GitHub version](https://badge.fury.io/gh/jsk-ros-pkg%2Fcoral_usb_ros.svg)](https://badge.fury.io/gh/jsk-ros-pkg%2Fcoral_usb_ros)
+[![Build Status](https://travis-ci.com/jsk-ros-pkg/coral_usb_ros.svg?branch=master)](https://travis-ci.com/jsk-ros-pkg/coral_usb_ros)
+[![Docker Stars](https://img.shields.io/docker/stars/jsk-ros-pkg/coral_usb_ros.svg)](https://hub.docker.com/r/jsk-ros-pkg/coral_usb_ros)
+[![Docker Pulls](https://img.shields.io/docker/pulls/jsk-ros-pkg/coral_usb_ros.svg)](https://hub.docker.com/r/jsk-ros-pkg/coral_usb_ros)
+[![Docker Automated](https://img.shields.io/docker/cloud/automated/jsk-ros-pkg/coral_usb_ros.svg)](https://hub.docker.com/r/jsk-ros-pkg/coral_usb_ros)
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/jsk-ros-pkg/coral_usb_ros.svg)](https://hub.docker.com/r/jsk-ros-pkg/coral_usb_ros)
 
 ROS package for Coral Edge TPU USB Accelerator
 
@@ -13,9 +13,9 @@ ROS package for Coral Edge TPU USB Accelerator
 - Ubuntu 16.04 + Kinetic
 - Ubuntu 18.04 + Melodic
 
-If you want to run this on Ubuntu 14.04 + Indigo, please see [indigo branch](https://github.com/knorth55/coral_usb_ros/tree/indigo).
+If you want to run this on Ubuntu 14.04 + Indigo, please see [indigo branch](https://github.com/jsk-ros-pkg/coral_usb_ros/tree/indigo).
 
-If you want to run this on PR2, please see [pr2 branch](https://github.com/knorth55/coral_usb_ros/tree/pr2).
+If you want to run this on PR2, please see [pr2 branch](https://github.com/jsk-ros-pkg/coral_usb_ros/tree/pr2).
 
 ## Notice
 
@@ -27,25 +27,25 @@ We need `python3.5` or `python3.6` to run this package.
 
 ![edgetpu_object_detector](./media/edgetpu_object_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#object-detector-edgetpu_object_detectorpy).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#object-detector-edgetpu_object_detectorpy).
 
 ### Face detector: `edgetpu_face_detector.py`
 
 ![edgetpu_face_detector](./media/edgetpu_face_detector.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#face-detector-edgetpu_face_detectorpy).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#face-detector-edgetpu_face_detectorpy).
 
 ### Human pose estimator: `edgetpu_human_pose_estimator.py`
 
 ![edgetpu_human_pose_estimator](./media/edgetpu_human_pose_estimator.gif)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#human-pose-estimator-edgetpu_human_pose_estimatorpy).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#human-pose-estimator-edgetpu_human_pose_estimatorpy).
 
 ### Semantic segmenter: `edgetpu_semantic_segmenter.py`
 
 ![edgetpu_semantic_segmenter](./media/edgetpu_semantic_segmenter.png)
 
-For more information, please see [here](https://github.com/knorth55/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy).
+For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#semantic-segmenter-edgetpu_semantic_segmenterpy).
 
 ## Setup
 
@@ -87,9 +87,11 @@ sudo adduser -a -G plugdev username
 ```bash
 mkdir ~/ros/coral_ws/src
 cd ~/ros/coral_ws/src
-git clone https://github.com/knorth55/coral_usb_ros.git
+git clone https://github.com/jsk-ros-pkg/coral_usb_ros.git
+cd coral_usb_ros
+git checkout origin/pr2 -b pr2
 wstool init
-wstool merge coral_usb_ros/fc.rosinstall.indigo
+wstool merge coral_usb_ros/fc.rosinstall
 wstool update
 rosdep install --from-paths . --ignore-src -y -r
 cd ~/coral_ws

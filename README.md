@@ -93,6 +93,7 @@ node_names:
 ```bash
 $ rosservice call /edgetpu_node_manager/start "name: 'edgetpu_object_detector'"
 success: True
+last_node_name: "edgetpu_panorama_object_detector"
 ```
 
 #### Stop node
@@ -100,6 +101,7 @@ success: True
 ```bash
 $ rosservice call /edgetpu_node_manager/stop "{}"
 success: True
+last_node_name: "edgetpu_object_detector"
 ```
 
 For more information, please see [here](https://github.com/jsk-ros-pkg/coral_usb_ros#node-manager-edgetpu_node_managerpy-1).

@@ -101,12 +101,22 @@ class EdgeTPUNodeManager(object):
         return True
 
     def _start_cb(self, req):
+        last_node_name = self.running_node_name
         success = self._start_node(req.name)
-        return StartNodeResponse(success)
+        res = StartNodeResponse()
+        res.success = success
+        if success:
+            res.last_node_name = last_node_name
+        return res
 
     def _stop_cb(self, req):
+        last_node_name = self.running_node_name
         success = self._stop_node()
-        return StopNodeResponse(success)
+        res = StopNodeResponse()
+        res.success = success
+        if success:
+            res.last_node_name = last_node_name
+        return res
 
     def _list_cb(self, req):
         res = ListNodesResponse()

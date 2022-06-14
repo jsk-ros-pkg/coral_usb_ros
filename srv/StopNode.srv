@@ -1,2 +1,3 @@
 ---
 bool success
+string last_node_name

@@ -1,4 +1,8 @@
 - git:
+    local-name: catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 0.5.2
+- git:
     local-name: coral_usb_ros
     uri: https://github.com/knorth55/coral_usb_ros.git
     version: pr2
@@ -7,6 +11,18 @@
     uri: https://github.com/ros/diagnostics
     version: 1.9.4
 - git:
+    local-name: dynamic_reconfigure
+    uri: https://github.com/ros/dynamic_reconfigure.git
+    version: 1.5.49
+- git:
     local-name: jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
     version: master
+- git:
+    local-name: resource_retriever
+    uri: https://github.com/ros/resource_retriever.git
+    version: 1.12.7
+- git:
+    local-name: vision_opencv
+    uri: https://github.com/knorth55/vision_opencv.git
+    version: indigo-python34

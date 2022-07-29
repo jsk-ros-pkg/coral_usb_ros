@@ -2,6 +2,58 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#112 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/112>`_ from knorth55/update-readme
+* Merge pull request `#113 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/113>`_ from knorth55/last-node-name
+* update last_node_name
+* add last_node_name in start/stop srv
+* update readme
+* update readme for EdgeTPU node manager
+* Merge pull request `#111 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/111>`_ from knorth55/running-node-name
+* fix typo in edgetpu_node_manager.launch
+* add running_node_name fielad in ListNodes.srv
+* Merge pull request `#109 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/109>`_ from knorth55/vis-semantic-segmenter
+* stop using matplotlib for semantic_segmenter visualizations
+* Merge pull request `#108 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/108>`_ from knorth55/use-sample-image
+  use knorth55 instead of lenna for test image
+* use knorth55 instead of lenna
+* Merge pull request `#106 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/106>`_ from knorth55/add-test
+* checkout with submodules
+* add semantic segmenter test
+* add DummyEdgeTPUSemanticSegmenter
+* add human pose estimator test
+* add DummyEdgeTPUHumanPoseEstimator
+* use int for generate_random_bbox
+* disable kinetic test
+* install dependencies for melodic and kinetic
+* fix ici test to install dependencies
+* fix typo in tests
+* add face detectors test
+* add EdgeTPUFaceDetector
+* add object detectors test
+* fix panorama and tile detector inheritance
+* add DummyEdgeTPUNodeBase
+* add generate_random_bbox
+* refactor node_base
+* enable test in noetic
+* install edgetpu and tflite runtime for test
+* add default model and label file
+* add EdgeTPUNodeBase for common node base
+* Merge pull request `#107 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/107>`_ from knorth55/fix-docker
+  fix docker build
+* install dlib, chainer and protobuf correct version
+* Merge pull request `#105 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/105>`_ from knorth55/format
+  Set the format of compressed image following image_transport.
+* use encoding for compressed image format
+* add missing header init
+* Set the format of compressed image following image_transport.
+* Merge pull request `#102 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/102>`_ from knorth55/add-list-service
+* Merge pull request `#101 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/101>`_ from knorth55/add-input-topic-rosparam
+* add listnodes service in edgetpu_node_manager
+* add input_topic rosparam
+* Contributors: JSK fetch user, Shingo Kitagawa, iory
+
 0.0.10 (2022-05-09)
 -------------------
 * Merge pull request `#97 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/97>`_ from fanshi14/tiled_object_detection

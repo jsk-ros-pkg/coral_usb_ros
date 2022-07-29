@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.11 (2022-07-29)
+-------------------
 * Merge pull request `#112 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/112>`_ from knorth55/update-readme
 * Merge pull request `#113 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/113>`_ from knorth55/last-node-name
 * update last_node_name

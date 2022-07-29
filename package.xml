@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>coral_usb</name>
-  <version>0.0.10</version>
+  <version>0.0.11</version>
   <description>The coral_usb package</description>
   <license>BSD</license>
   <url type="website">http://wiki.ros.org/coral_usb</url>

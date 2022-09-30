@@ -152,9 +152,9 @@ class EdgeTPUSemanticSegmenter(EdgeTPUNodeBase):
             vis_compressed_msg.header = header
             # image format https://github.com/ros-perception/image_transport_plugins/blob/f0afd122ed9a66ff3362dc7937e6d465e3c3ccf7/compressed_image_transport/src/compressed_publisher.cpp#L116  # NOQA
             vis_compressed_msg.format = encoding + '; jpeg compressed bgr8'
-            vis_img_rgb = cv2.cvtColor(vis_img, cv2.COLOR_BGR2RGB)
+            vis_img_bgr = cv2.cvtColor(vis_img, cv2.COLOR_RGB2BGR)
             vis_compressed_msg.data = np.array(
-                cv2.imencode('.jpg', vis_img_rgb)[1]).tostring()
+                cv2.imencode('.jpg', vis_img_bgr)[1]).tostring()
             self.pub_image_compressed.publish(vis_compressed_msg)
 
 

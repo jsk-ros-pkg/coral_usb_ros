@@ -37,6 +37,14 @@ class EdgeTPUDetectorBase(EdgeTPUNodeBase):
     _engine_class = DetectionEngine
 
     def __init__(self, model_file=None, label_file=None, namespace='~'):
+        # initialization
+        self.img = None
+        self.encoding = None
+        self.header = None
+        self.bboxes = None
+        self.labels = None
+        self.scores = None
+
         super(EdgeTPUDetectorBase, self).__init__(
             model_file=model_file, label_file=label_file, namespace=namespace)
 
@@ -45,14 +53,6 @@ class EdgeTPUDetectorBase(EdgeTPUNodeBase):
             namespace + 'output/rects', RectArray, queue_size=1)
         self.pub_class = self.advertise(
             namespace + 'output/class', ClassificationResult, queue_size=1)
-
-        # initialization
-        self.img = None
-        self.encoding = None
-        self.header = None
-        self.bboxes = None
-        self.labels = None
-        self.scores = None
 
     def config_cb(self, config, level):
         self.score_thresh = config.score_thresh

@@ -286,7 +286,7 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             visibles = np.empty((0, 0, ), dtype=np.bool)
             bboxes = np.empty((0, 4), dtype=np.int)
             labels = np.empty((0, ), dtype=np.int)
-            scores = np.empty((0, ), dtype=np.float)
+            scores = np.empty((0, 0, ), dtype=np.float)
         return points, key_names, visibles, bboxes, labels, scores
 
     def config_cb(self, config, level):

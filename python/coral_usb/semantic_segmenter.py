@@ -35,6 +35,12 @@ class EdgeTPUSemanticSegmenter(EdgeTPUNodeBase):
     _default_label_file = None
 
     def __init__(self, model_file=None, label_file=None, namespace='~'):
+        # initialization
+        self.img = None
+        self.encoding = None
+        self.header = None
+        self.label = None
+
         super(EdgeTPUSemanticSegmenter, self).__init__(
             model_file=model_file, label_file=label_file, namespace=namespace)
 
@@ -68,12 +74,6 @@ class EdgeTPUSemanticSegmenter(EdgeTPUNodeBase):
         # publishers
         self.pub_label = self.advertise(
             namespace + 'output/label', Image, queue_size=1)
-
-        # initialization
-        self.img = None
-        self.encoding = None
-        self.header = None
-        self.label = None
 
     def _init_parameters(self):
         self.input_shape = self.engine.get_input_tensor_shape()[1:3]

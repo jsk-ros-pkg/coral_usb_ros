@@ -43,6 +43,13 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
     _default_label_file = None
 
     def __init__(self, model_file=None, namespace='~'):
+        # initialization
+        self.img = None
+        self.encoding = None
+        self.header = None
+        self.visibles = None
+        self.points = None
+
         super(EdgeTPUHumanPoseEstimator, self).__init__(
             model_file=model_file, label_file=None, namespace=namespace)
 
@@ -57,13 +64,6 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
             namespace + 'output/rects', RectArray, queue_size=1)
         self.pub_class = self.advertise(
             namespace + 'output/class', ClassificationResult, queue_size=1)
-
-        # initialization
-        self.img = None
-        self.encoding = None
-        self.header = None
-        self.visibles = None
-        self.points = None
 
     def _init_parameters(self):
         self.resized_H = self.engine.image_height

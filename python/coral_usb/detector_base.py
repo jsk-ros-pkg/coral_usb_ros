@@ -247,7 +247,7 @@ class EdgeTPUPanoramaDetectorBase(EdgeTPUDetectorBase):
                 nms_bboxes.append(nms_bbox)
                 nms_labels.append(nms_label)
                 nms_scores.append(nms_score)
-        if len(bboxes) > 0:
+        if len(nms_bboxes) > 0:
             nms_bboxes = np.concatenate(nms_bboxes, axis=0).astype(np.int)
             nms_labels = np.concatenate(nms_labels, axis=0).astype(np.int)
             nms_scores = np.concatenate(nms_scores, axis=0).astype(np.float)

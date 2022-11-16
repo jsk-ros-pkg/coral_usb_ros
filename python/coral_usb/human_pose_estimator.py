@@ -22,6 +22,7 @@ from coral_usb.util import generate_random_bbox
 from coral_usb.util import generate_random_point
 from coral_usb.util import get_panorama_sliced_image
 from coral_usb.util import get_panorama_slices
+from coral_usb.util import non_maximum_suppression
 
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Pose
@@ -287,9 +288,60 @@ class EdgeTPUPanoramaHumanPoseEstimator(EdgeTPUHumanPoseEstimator):
             bboxes = np.empty((0, 4), dtype=np.int)
             labels = np.empty((0, ), dtype=np.int)
             scores = np.empty((0, 0, ), dtype=np.float)
-        return points, key_names, visibles, bboxes, labels, scores
+
+        if not self.nms:
+            return points, key_names, visibles, bboxes, labels, scores
+
+        # run with nms
+        key_names = np.array(key_names)
+        nms_points = []
+        nms_key_names = []
+        nms_visibles = []
+        nms_bboxes = []
+        nms_labels = []
+        nms_scores = []
+        for lbl in np.unique(labels):
+            mask = labels == lbl
+            nms_point = points[mask]
+            nms_key_name = key_names[mask]
+            nms_visible = visibles[mask]
+            nms_bbox = bboxes[mask]
+            nms_label = labels[mask]
+            nms_score = scores[mask]
+            keep = non_maximum_suppression(nms_bbox, self.nms_thresh)
+            nms_point = nms_point[keep]
+            nms_key_name = nms_key_name[keep]
+            nms_visible = nms_visible[keep]
+            nms_bbox = nms_bbox[keep]
+            nms_label = nms_label[keep]
+            nms_score = nms_score[keep]
+            if len(nms_point) > 0:
+                nms_points.append(nms_point)
+                nms_key_names.extend(nms_key_name.tolist())
+                nms_visibles.append(nms_visible)
+                nms_bboxes.append(nms_bbox)
+                nms_labels.append(nms_label)
+                nms_scores.append(nms_score)
+
+        if len(nms_points) > 0:
+            nms_points = np.concatenate(nms_points, axis=0).astype(np.int)
+            nms_visibles = np.concatenate(nms_visibles, axis=0).astype(np.bool)
+            nms_bboxes = np.concatenate(nms_bboxes, axis=0).astype(np.int)
+            nms_labels = np.concatenate(nms_labels, axis=0).astype(np.int)
+            nms_scores = np.concatenate(nms_scores, axis=0).astype(np.float)
+        else:
+            nms_points = np.empty((0, 0, 2), dtype=np.int)
+            nms_visibles = np.empty((0, 0, ), dtype=np.bool)
+            nms_bboxes = np.empty((0, 4), dtype=np.int)
+            nms_labels = np.empty((0, ), dtype=np.int)
+            nms_scores = np.empty((0, 0, ), dtype=np.float)
+
+        return nms_points, nms_key_names, nms_visibles, \
+            nms_bboxes, nms_labels, nms_scores
 
     def config_cb(self, config, level):
+        self.nms = config.nms
+        self.nms_thresh = config.nms_thresh
         self.n_split = config.n_split
         self.overlap = config.overlap
         config = super(

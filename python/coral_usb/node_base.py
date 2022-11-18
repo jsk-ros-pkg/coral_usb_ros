@@ -215,7 +215,7 @@ class EdgeTPUNodeBase(ConnectionBasedTransport):
         rospy.logerr('visualize_cb is not implemented.')
 
     def config_cb(self, config, level):
-        rospy.logerr('image_cb is not implemented.')
+        rospy.logerr('config_cb is not implemented.')
 
 
 class DummyEdgeTPUNodeBase(EdgeTPUNodeBase):

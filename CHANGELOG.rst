@@ -2,6 +2,26 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#128 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/128>`_ from knorth55/fix-typo
+  fix typo in node_base.py
+* fix typo in node_base.py
+* Merge pull request `#126 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/126>`_ from knorth55/human-pose-estimator-nms
+* Merge branch 'master' into human-pose-estimator-nms
+* Merge pull request `#127 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/127>`_ from knorth55/test-data
+* update test_data
+* add nms in panorama_human_pose_estimator
+* update test_data
+* fix typo
+* Merge pull request `#125 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/125>`_ from knorth55/fix-typo-nms
+* Merge pull request `#124 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/124>`_ from knorth55/initialize-order
+* fix typo in detector_base
+* initialize first
+* Merge pull request `#123 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/123>`_ from knorth55/fix-typo
+* fix typo in compressed image publish
+* Contributors: Kei Okada, Shingo Kitagawa
+
 0.0.11 (2022-07-29)
 -------------------
 * Merge pull request `#112 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/112>`_ from knorth55/update-readme

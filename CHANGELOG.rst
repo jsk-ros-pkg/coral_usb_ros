@@ -2,8 +2,8 @@
 Changelog for package coral_usb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.12 (2022-12-19)
+-------------------
 * Merge pull request `#128 <https://github.com/jsk-ros-pkg/coral_usb_ros/issues/128>`_ from knorth55/fix-typo
   fix typo in node_base.py
 * fix typo in node_base.py

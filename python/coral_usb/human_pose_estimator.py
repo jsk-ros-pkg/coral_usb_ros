@@ -182,11 +182,12 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
                     pose_msg.scores.append(sc)
                     pose_msg.poses.append(
                         Pose(position=Point(x=key_x, y=key_y)))
-            for i in range(len(pose_msg.poses)): # create skel msg
-                skel_msg.bone_names.append("{}->{}".format(pose_msg.limb_names[i-1],
-                                                          pose_msg.limb_names[i]))
+            for i in range(len(pose_msg.poses)):
+                bone_name = "{}->{}".format(pose_msg.limb_names[i - 1],
+                                            pose_msg.limb_names[i])
+                skel_msg.bone_names.append(bone_name)
                 seg = Segment()
-                seg.start_point = pose_msg.poses[i-1].position
+                seg.start_point = pose_msg.poses[i - 1].position
                 seg.end_point = pose_msg.poses[i].position
                 skel_msg.bones.append(seg)
             skels_msg.skeletons.append(skel_msg)

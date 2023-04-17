@@ -27,10 +27,13 @@ from coral_usb.util import non_maximum_suppression
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Pose
 from jsk_recognition_msgs.msg import ClassificationResult
+from jsk_recognition_msgs.msg import HumanSkeleton
+from jsk_recognition_msgs.msg import HumanSkeletonArray
 from jsk_recognition_msgs.msg import PeoplePose
 from jsk_recognition_msgs.msg import PeoplePoseArray
 from jsk_recognition_msgs.msg import Rect
 from jsk_recognition_msgs.msg import RectArray
+from jsk_recognition_msgs.msg import Segment
 from sensor_msgs.msg import CompressedImage
 
 
@@ -59,6 +62,8 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
         self.label_names = ['human']
 
         # publishers
+        self.pub_skel = self.advertise(
+            namespace + 'output/skels', HumanSkeletonArray, queue_size=1)
         self.pub_pose = self.advertise(
             namespace + 'output/poses', PeoplePoseArray, queue_size=1)
         self.pub_rects = self.advertise(
@@ -163,11 +168,13 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
         points, key_names, visibles, bboxes, labels, scores \
             = self._estimate(img)
 
+        skels_msg = HumanSkeletonArray(header=msg.header)
         poses_msg = PeoplePoseArray(header=msg.header)
         rects_msg = RectArray(header=msg.header)
         for point, key_name, visible, bbox, label, score in zip(
                 points, key_names, visibles, bboxes, labels, scores):
             pose_msg = PeoplePose()
+            skel_msg = HumanSkeleton(header=msg.header)
             for pt, key_nm, vs, sc in zip(point, key_name, visible, score):
                 if vs:
                     key_y, key_x = pt
@@ -175,6 +182,14 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
                     pose_msg.scores.append(sc)
                     pose_msg.poses.append(
                         Pose(position=Point(x=key_x, y=key_y)))
+            for i in range(len(pose_msg.poses)): # create skel msg
+                skel_msg.bone_names.append("{}->{}".format(pose_msg.limb_names[i-1],
+                                                          pose_msg.limb_names[i]))
+                seg = Segment()
+                seg.start_point = pose_msg.poses[i-1].position
+                seg.end_point = pose_msg.poses[i].position
+                skel_msg.bones.append(seg)
+            skels_msg.skeletons.append(skel_msg)
             poses_msg.poses.append(pose_msg)
             y_min, x_min, y_max, x_max = bbox
             rect = Rect(
@@ -191,6 +206,7 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
             label_proba=[np.average(score) for score in scores]
         )
 
+        self.pub_skel.publish(skels_msg)
         self.pub_pose.publish(poses_msg)
         self.pub_rects.publish(rects_msg)
         self.pub_class.publish(cls_msg)

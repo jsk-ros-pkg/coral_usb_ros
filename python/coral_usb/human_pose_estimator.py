@@ -35,6 +35,7 @@ from jsk_recognition_msgs.msg import Rect
 from jsk_recognition_msgs.msg import RectArray
 from jsk_recognition_msgs.msg import Segment
 from sensor_msgs.msg import CompressedImage
+from std_msgs.msg import Int32
 
 
 class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
@@ -63,7 +64,7 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
 
         # publishers
         self.pub_skel = self.advertise(
-            namespace + 'output/skels', HumanSkeletonArray, queue_size=1)
+            namespace + 'output/skeletons', HumanSkeletonArray, queue_size=1)
         self.pub_pose = self.advertise(
             namespace + 'output/poses', PeoplePoseArray, queue_size=1)
         self.pub_rects = self.advertise(
@@ -197,7 +198,6 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
                 x=x_min, y=y_min,
                 width=x_max - x_min, height=y_max - y_min)
             rects_msg.rects.append(rect)
-
         cls_msg = ClassificationResult(
             header=msg.header,
             classifier=self.classifier_name,
@@ -206,7 +206,8 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
             label_names=[self.label_names[lbl] for lbl in labels],
             label_proba=[np.average(score) for score in scores]
         )
-
+        for i in range(len(skels_msg.skeletons)):
+            skels_msg.human_ids.append(Int32(data=i))
         self.pub_skel.publish(skels_msg)
         self.pub_pose.publish(poses_msg)
         self.pub_rects.publish(rects_msg)

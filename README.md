@@ -974,3 +974,21 @@ You can see the sample launch [edgetpu_node_manager.launch](./launch/edgetpu_nod
 - `~stop`: (`coral_usb/StopNode`)
 
   - Stop node
+
+## Trouble shooting
+
+If you encounter the error like
+
+``` 
+process[edgetpu_node_manager-9]: started with pid [16675]
+Traceback (most recent call last):
+  File "/home/leus/spot_ws/src/coral_usb_ros/node_scripts/edgetpu_node_manager.py", line 5, in <module>
+    from coral_usb.node_manager import EdgeTPUNodeManager
+  File "/home/leus/spot_ws/src/coral_usb_ros/python/coral_usb/node_manager.py", line 6, in <module>
+    from coral_usb.human_pose_estimator import EdgeTPUHumanPoseEstimator
+  File "/home/leus/spot_ws/src/coral_usb_ros/python/coral_usb/human_pose_estimator.py", line 20, in <module>
+    from coral_usb.posenet.pose_engine import PoseEngine
+ModuleNotFoundError: No module named 'coral_usb.posenet.pose_engine'
+```
+
+you might not execute `wstool` command. Please see Workspace build instruction, carefully and execute appropriate `wstool` command. 

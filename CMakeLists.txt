@@ -36,10 +36,12 @@ catkin_package(
 )
 
 find_package(Git REQUIRED)
-add_custom_target(posenet_update ALL
-  COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive python/coral_usb/posenet
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+if (NOT EXISTS ${PROJECT_SOURCE_DIR}/python/coral_usb/posenet/pose_engine.py)
+  add_custom_target(posenet_update ALL
+    COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive python/coral_usb/posenet
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  )
+endif()
 
 if (${catkin_virtualenv_VERSION} VERSION_LESS "0.6.1")
   message(WARNING "Please install catkin_virtualenv>=0.6.1.")

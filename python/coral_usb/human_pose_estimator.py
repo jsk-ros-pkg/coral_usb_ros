@@ -191,6 +191,8 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
             label_proba=[np.average(score) for score in scores]
         )
 
+        if not self.always_publish and len(cls_msg.label_names) <= 0:
+            return
         self.pub_pose.publish(poses_msg)
         self.pub_rects.publish(rects_msg)
         self.pub_class.publish(cls_msg)

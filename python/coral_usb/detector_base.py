@@ -140,6 +140,8 @@ class EdgeTPUDetectorBase(EdgeTPUNodeBase):
                 self.labels = labels
                 self.scores = scores
 
+        if not self.always_publish and len(cls_msg.labels) <= 0:
+            return
         self.pub_rects.publish(rect_msg)
         self.pub_class.publish(cls_msg)
 

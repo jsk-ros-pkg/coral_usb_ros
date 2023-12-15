@@ -124,6 +124,11 @@ class EdgeTPUNodeBase(ConnectionBasedTransport):
             self.timer = rospy.Timer(
                 rospy.Duration(self.duration), self.visualize_cb)
 
+        self.always_publish = rospy.get_param("~always_publish", True)
+        rospy.loginfo(
+            "Publish even if object/human_pose is not found : {}".format(
+                self.always_publish))
+
     def subscribe(self):
         if self.transport_hint == 'compressed':
             self.sub_image = rospy.Subscriber(

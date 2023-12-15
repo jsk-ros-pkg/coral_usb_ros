@@ -491,6 +491,10 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
+- `~always_subscribe` (`Bool`, default: `True`)
+
+  - Set false to publish when an object is detected.
+
 #### Dynamic parameters
 
 - `~score_thresh`: (`Float`, default: `0.6`)
@@ -550,6 +554,10 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 - `~image_transport:` (`String`, default: `raw`)
 
   - Set `compressed` to subscribe compressed image
+
+- `~always_subscribe` (`Bool`, default: `True`)
+
+  - Set false to publish when a face is detected.
 
 #### Dynamic parameters
 
@@ -614,6 +622,10 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 - `~image_transport:` (`String`, default: `raw`)
 
   - Set `compressed` to subscribe compressed image
+
+- `~always_subscribe` (`Bool`, default: `True`)
+
+  - Set false to publish when a human pose is detected.
 
 #### Dynamic parameters
 
@@ -713,6 +725,10 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
+- `~always_subscribe` (`Bool`, default: `True`)
+
+  - Set false to publish when an object is detected.
+
 #### Dynamic parameters
 
 - `~score_thresh`: (`Float`, default: `0.6`)
@@ -788,6 +804,10 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 - `~image_transport:` (`String`, default: `raw`)
 
   - Set `compressed` to subscribe compressed image
+
+- `~always_subscribe` (`Bool`, default: `True`)
+
+  - Set false to publish when a face is detected.
 
 #### Dynamic parameters
 
@@ -868,6 +888,10 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 - `~image_transport:` (`String`, default: `raw`)
 
   - Set `compressed` to subscribe compressed image
+
+- `~always_subscribe` (`Bool`, default: `True`)
+
+  - Set false to publish when a human pose is detected.
 
 #### Dynamic parameters
 

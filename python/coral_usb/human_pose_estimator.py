@@ -206,12 +206,6 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
             label_names=[self.label_names[lbl] for lbl in labels],
             label_proba=[np.average(score) for score in scores]
         )
-        for i in range(len(skels_msg.skeletons)):
-            skels_msg.human_ids.append(Int32(data=i))
-        self.pub_skel.publish(skels_msg)
-        self.pub_pose.publish(poses_msg)
-        self.pub_rects.publish(rects_msg)
-        self.pub_class.publish(cls_msg)
 
         if self.enable_visualization:
             with self.lock:
@@ -220,6 +214,15 @@ class EdgeTPUHumanPoseEstimator(EdgeTPUNodeBase):
                 self.header = msg.header
                 self.points = points
                 self.visibles = visibles
+
+        if not self.always_publish and len(cls_msg.label_names) <= 0:
+            return
+        self.pub_pose.publish(poses_msg)
+        self.pub_rects.publish(rects_msg)
+        self.pub_class.publish(cls_msg)
+        for i in range(len(skels_msg.skeletons)):
+            skels_msg.human_ids.append(Int32(data=i))
+        self.pub_skel.publish(skels_msg)
 
     def visualize_cb(self, event):
         if (not self.visualize or self.img is None or self.encoding is None

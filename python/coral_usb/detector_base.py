@@ -131,9 +131,6 @@ class EdgeTPUDetectorBase(EdgeTPUNodeBase):
             label_names=[self.label_names[lbl] for lbl in labels],
             label_proba=scores)
 
-        self.pub_rects.publish(rect_msg)
-        self.pub_class.publish(cls_msg)
-
         if self.enable_visualization:
             with self.lock:
                 self.img = img
@@ -142,6 +139,11 @@ class EdgeTPUDetectorBase(EdgeTPUNodeBase):
                 self.bboxes = bboxes
                 self.labels = labels
                 self.scores = scores
+
+        if not self.always_publish and len(cls_msg.labels) <= 0:
+            return
+        self.pub_rects.publish(rect_msg)
+        self.pub_class.publish(cls_msg)
 
     def visualize_cb(self, event):
         if (not self.visualize or self.img is None or self.encoding is None

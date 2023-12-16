@@ -491,7 +491,7 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
-- `~always_subscribe` (`Bool`, default: `True`)
+- `~always_publish` (`Bool`, default: `True`)
 
   - Set false to publish when an object is detected.
 
@@ -555,7 +555,7 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
-- `~always_subscribe` (`Bool`, default: `True`)
+- `~always_publish` (`Bool`, default: `True`)
 
   - Set false to publish when a face is detected.
 
@@ -623,7 +623,7 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
-- `~always_subscribe` (`Bool`, default: `True`)
+- `~always_publish` (`Bool`, default: `True`)
 
   - Set false to publish when a human pose is detected.
 
@@ -725,7 +725,7 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
-- `~always_subscribe` (`Bool`, default: `True`)
+- `~always_publish` (`Bool`, default: `True`)
 
   - Set false to publish when an object is detected.
 
@@ -805,7 +805,7 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
-- `~always_subscribe` (`Bool`, default: `True`)
+- `~always_publish` (`Bool`, default: `True`)
 
   - Set false to publish when a face is detected.
 
@@ -889,7 +889,7 @@ rosrun image_view image_view image:=/edgetpu_panorama_semantic_segmenter/output/
 
   - Set `compressed` to subscribe compressed image
 
-- `~always_subscribe` (`Bool`, default: `True`)
+- `~always_publish` (`Bool`, default: `True`)
 
   - Set false to publish when a human pose is detected.
 

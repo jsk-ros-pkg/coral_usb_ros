@@ -181,9 +181,6 @@ source /opt/ros/melodic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
 git clone https://github.com/jsk-ros-pkg/coral_usb_ros.git
-wstool init
-wstool merge coral_usb_ros/fc.rosinstall
-wstool update
 rosdep install --from-paths . --ignore-src -y -r
 cd ~/coral_ws
 catkin init
@@ -219,9 +216,6 @@ source /opt/ros/noetic/setup.bash
 mkdir -p ~/coral_ws/src
 cd ~/coral_ws/src
 git clone https://github.com/jsk-ros-pkg/coral_usb_ros.git
-wstool init
-wstool merge coral_usb_ros/fc.rosinstall
-wstool update
 rosdep install --from-paths . --ignore-src -y -r
 cd ~/coral_ws
 catkin init

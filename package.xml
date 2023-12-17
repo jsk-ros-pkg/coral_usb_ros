@@ -22,6 +22,7 @@
   <build_depend>jsk_topic_tools</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>sensor_msgs</build_depend>
+  <build_depend>git</build_depend>
   <exec_depend>jsk_perception</exec_depend>
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>python3-rospkg-modules</exec_depend>

@@ -67,26 +67,19 @@ ARG ROS_DISTRO
 RUN cd ~ && \
     mkdir -p ros/${ROS_DISTRO}/src && \
     cd ros/${ROS_DISTRO}/src && \
-    wstool init && \
-    wstool set coral_usb_ros https://github.com/jsk-ros-pkg/coral_usb_ros.git -v master --git -y && \
-    wstool up -j 2 && \
-    wstool merge -y coral_usb_ros/fc.rosinstall && \
-    if [ -f coral_usb_ros/fc.rosinstall.${ROS_DISTRO} ]; then \
-      wstool merge -y coral_usb_ros/fc.rosinstall.${ROS_DISTRO}; \
-    fi && \
-    wstool up -j 2
+    git clone https://github.com/jsk-ros-pkg/coral_usb_ros && \
+    if [ ${ROS_DISTRO} = "kinetic" ] && [ -f coral_usb_ros/fc.rosinstall.${ROS_DISTRO} ]; then \
+      wstool init && wstool merge -y coral_usb_ros/fc.rosinstall.${ROS_DISTRO} && wstool up -j 2; \
+    fi
 
 RUN if [ ${ROS_DISTRO} != "noetic" ]; then \
       pip install dlib==19.21.1; \
       pip install fcn chainercv chainer==6.7.0 protobuf==3.18.0; \
     fi
 
-# /opt/ros/${ROS_DISTRO}/share can be changed after rosdep install, so we run it 3 times.
 RUN rosdep update --include-eol-distros && \
     apt-get update && \
-    for i in $(seq 3); do \
-      rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src; \
-    done && \
+    rosdep install --rosdistro ${ROS_DISTRO} -r -y -i --from-paths /opt/ros/${ROS_DISTRO}/share ~/ros/${ROS_DISTRO}/src || true && \
     rm -rf /var/lib/apt/lists/*
 
 ARG ROS_DISTRO
